@@ -22,6 +22,8 @@ RELEASE 2.03
 - First on SourceForge - Another milestone!
 - Fixed small problem with psource on callslip showchargeselect. Needed to add variable
   on return to callslip.
+- Added some options to the proposal report. Still need to add emailing proposal report and link to proposal
+  to make status changes easier.
 
 =================================================================
 RELEASE 2.02

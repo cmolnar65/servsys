@@ -5552,7 +5552,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.02";
+			vnumber = "2.03";
 		if (dbvnumber.equalsIgnoreCase("2.01")) {
 			Statement stmtu = con.createStatement();
 			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS flatrateconfig;");
@@ -12649,6 +12649,10 @@ private void doProposalReport(HttpServletRequest req, HttpServletResponse res, P
 		String startdate = req.getParameter("startdate");
 		String enddate = req.getParameter("enddate");
 		String tnolost = req.getParameter("nolost");
+		String tnoinstalled = req.getParameter("noinstalled");
+		String tnosold = req.getParameter("nosold");
+		String tnopresented = req.getParameter("nopresented");
+		String tnonew = req.getParameter("nonew");
 		int qnum;
 		double totinvestment=0.00;
 		double ptotal=0.00;
@@ -12708,25 +12712,34 @@ private void doProposalReport(HttpServletRequest req, HttpServletResponse res, P
 	                        {
 			if (qstatus.equalsIgnoreCase("installed"))
 				{
+					if (tnoinstalled!=null)
+						{
 		out.println("<tr><td>"+qdate+"</td><td>"+cname+"</td><td>"+city+"</td><td>"+hphone+"</td><td>"+qdesc+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"<tr>");
 				instdol=instdol+ptotal;
 				totdol=totdol+ptotal;
+						}
 				}
 			if (qstatus.equalsIgnoreCase("sold"))
 			{
+				if (tnosold!=null)
+					{
 		out.println("<tr><td>"+qdate+"</td><td>"+cname+"</td><td>"+city+"</td><td>"+hphone+"</td><td>"+qdesc+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"<tr>");
 				solddol=solddol+ptotal;
 				totdol=totdol+ptotal;
 				}
+			}
 			if (qstatus.equalsIgnoreCase("presented"))
 			{
+				if (tnopresented!=null)
+						{
 		out.println("<tr><td>"+qdate+"</td><td>"+cname+"</td><td>"+city+"</td><td>"+hphone+"</td><td>"+qdesc+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"<tr>");
 				presdol=presdol+ptotal;
 				totdol=totdol+ptotal;
+						}
 				}
 			if (qstatus.equalsIgnoreCase("lost")||qstatus.equalsIgnoreCase("lost $"))
 			{
-				if (tnolost==null) 
+				if (tnolost!=null) 
 					{
 		out.println("<tr><td>"+qdate+"</td><td>"+cname+"</td><td>"+city+"</td><td>"+hphone+"</td><td>"+qdesc+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"<tr>");
 					}
@@ -12735,9 +12748,12 @@ private void doProposalReport(HttpServletRequest req, HttpServletResponse res, P
 				}
 			if (qstatus.equalsIgnoreCase("new"))
 			{
+					if (tnonew!=null)
+						{
 		out.println("<tr><td>"+qdate+"</td><td>"+cname+"</td><td>"+city+"</td><td>"+hphone+"</td><td>"+qdesc+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"<tr>");
 				newdol=newdol+ptotal;
 				totdol=totdol+ptotal;
+						}
 				}
 				}
 		}
@@ -14032,13 +14048,25 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 	out.println("<p>Report Stop Date :");
 	out.println("<input type=\"date\" name=\"enddate\" value=\""+s+"\">");
 	out.println("</p>");
-	out.println("<p>Do Not Print Lost Job Names :");
+	out.println("<p>Print Lost Job Names :");
 	out.println("<input type=\"checkbox\" name=\"nolost\" value=\"TRUE\">");
+	out.println("</p>");
+	out.println("<p>Print Installed Job Names :");
+	out.println("<input type=\"checkbox\" name=\"noinstalled\" value=\"TRUE\">");
+	out.println("</p>");
+	out.println("<p>Print Sold Job Names :");
+	out.println("<input type=\"checkbox\" name=\"nosold\" value=\"TRUE\">");
+	out.println("</p>");
+	out.println("<p>Print New Job Names :");
+	out.println("<input type=\"checkbox\" name=\"nonew\" value=\"TRUE\">");
+	out.println("</p>");
+	out.println("<p>Print Presented Job Names :");
+	out.println("<input type=\"checkbox\" name=\"nopresented\" value=\"TRUE\">");
 	out.println("</p>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Show\">");
 	out.println("<INPUT TYPE=\"reset\">");
 	out.println("</CENTER>");
-		con.close();
+			con.close();
 	}
 
 
