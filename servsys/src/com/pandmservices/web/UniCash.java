@@ -25112,7 +25112,7 @@ if (action.equalsIgnoreCase("listflatrate"))
                         out.println ("<a href="+classdir+"UniCash?action=addflatrate&servicestart="+servicestart+"&serviceend="+servicestop+">Add a Flat Rate Price</a>");
 		}
 else if (action.equalsIgnoreCase("showchargeselect")) {
-	out.println("<a href="+classdir+"UniCash?action=addchargemenu&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+">Return to Prior Menu</a>");
+	out.println("<a href="+classdir+"UniCash?action=addchargemenu&psource="+psource+"&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+">Return to Prior Menu</a>");
 			}
 	
 if (!action.equalsIgnoreCase("exportflatrate"))
