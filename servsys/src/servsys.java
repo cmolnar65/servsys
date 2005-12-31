@@ -259,6 +259,8 @@ String s = formatter.format(date);
 ////////////////////////////////////////////////////////
                //String newstring = mbody.replaceAll("<br>","\n");
                 //System.out.println(mbody);
+	doMailSend(eserver, sendto, efrom, "Weekly Transmitted calls by Technician Ending: "+enddate+" ", mbody, "molnarc", "uffda");
+	doMailSend(eserver, sendto, efrom, "Weekly Transmitted calls by Department: "+enddate+" ", mbody2, "molnarc", "uffda");
 		mbody="";
 
 }
@@ -389,6 +391,8 @@ String timesheetdate = formatter.format(date);
 ////////////////////////////////////////////////////////
                //String newstring = mbody.replaceAll("<br>","\n");
                 //System.out.println(mbody);
+	doMailSend(eserver, sendto, efrom, "Transmitted calls by Technician: "+timesheetdate+" ", mbody, "molnarc", "uffda");
+	doMailSend(eserver, sendto, efrom, "Transmitted calls by Department: "+timesheetdate+" ", mbody2, "molnarc", "uffda");
 		mbody="";
 
 }
