@@ -1,0 +1,508 @@
+// !$*UTF8*$!
+{
+	88230FFE05D9926E00FE8D22 /* Project object */ = {
+		activeBuildConfigurationName = Development;
+		activeBuildStyle = 88230FFC05D9926E00FE8D22 /* Development */;
+		activeExecutable = 88934D45061E10E600F42905 /* servsys */;
+		activeTarget = 8823100505D9929B00FE8D22 /* servsys */;
+		codeSenseManager = C5F7015007FB8F1600D67813 /* Code sense */;
+		executables = (
+			88934D45061E10E600F42905 /* servsys */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					200,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					400,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Target_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					754,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					200,
+					450,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 157683472;
+			PBXWorkspaceStateSaveDate = 157683472;
+		};
+		perUserProjectItems = {
+			C53A5D9A07FB9A6400B10430 /* PBXTextBookmark */ = C53A5D9A07FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5D9B07FB9A6400B10430 /* PBXTextBookmark */ = C53A5D9B07FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5D9D07FB9A6400B10430 /* PBXTextBookmark */ = C53A5D9D07FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5D9E07FB9A6400B10430 /* PBXTextBookmark */ = C53A5D9E07FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DA007FB9A6400B10430 /* PBXTextBookmark */ = C53A5DA007FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DA207FB9A6400B10430 /* PBXTextBookmark */ = C53A5DA207FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DA507FB9A6400B10430 /* PBXTextBookmark */ = C53A5DA507FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DA607FB9A6400B10430 /* PBXTextBookmark */ = C53A5DA607FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DA807FB9A6400B10430 /* PBXTextBookmark */ = C53A5DA807FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DA907FB9A6400B10430 /* PBXTextBookmark */ = C53A5DA907FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DAB07FB9A6400B10430 /* PBXTextBookmark */ = C53A5DAB07FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DAD07FB9A6400B10430 /* PBXTextBookmark */ = C53A5DAD07FB9A6400B10430 /* PBXTextBookmark */;
+			C53A5DB107FB9A8800B10430 /* PBXTextBookmark */ = C53A5DB107FB9A8800B10430 /* PBXTextBookmark */;
+			C53A5DB207FB9A8800B10430 /* PBXTextBookmark */ = C53A5DB207FB9A8800B10430 /* PBXTextBookmark */;
+			C53A5DB407FB9A8800B10430 /* PBXTextBookmark */ = C53A5DB407FB9A8800B10430 /* PBXTextBookmark */;
+			C53A5DB507FB9A8800B10430 /* PBXTextBookmark */ = C53A5DB507FB9A8800B10430 /* PBXTextBookmark */;
+			C53C43B809660FA3005232BC /* PBXBookmark */ = C53C43B809660FA3005232BC /* PBXBookmark */;
+			C53C43B909660FA3005232BC /* PBXTextBookmark */ = C53C43B909660FA3005232BC /* PBXTextBookmark */;
+			C5F426F207FBA1F900BBCDD8 /* PBXTextBookmark */ = C5F426F207FBA1F900BBCDD8 /* PBXTextBookmark */;
+			C5F426F307FBA1F900BBCDD8 /* PBXTextBookmark */ = C5F426F307FBA1F900BBCDD8 /* PBXTextBookmark */;
+			C5F426F507FBA1F900BBCDD8 /* PBXTextBookmark */ = C5F426F507FBA1F900BBCDD8 /* PBXTextBookmark */;
+			C5F426F607FBA1F900BBCDD8 /* PBXTextBookmark */ = C5F426F607FBA1F900BBCDD8 /* PBXTextBookmark */;
+		};
+		sourceControlManager = C5F7014F07FB8F1600D67813 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8823100505D9929B00FE8D22 /* servsys */ = {
+		activeExec = 0;
+	};
+	886FEE5605D9BD280091015F /* build.xml */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {946, 720}}";
+			sepNavSelRange = "{60, 0}";
+			sepNavVisRect = "{{0, 0}, {946, 297}}";
+			sepNavWindowFrame = "{{57, 269}, {750, 558}}";
+		};
+	};
+	888251B805DAF9E10060550A /* Manifest */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {946, 297}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {946, 297}}";
+			sepNavWindowFrame = "{{80, 248}, {750, 558}}";
+		};
+	};
+	88934D45061E10E600F42905 /* servsys */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 0;
+		activeArgIndices = (
+			YES,
+		);
+		argumentStrings = (
+			"-jar \"dist/servsys.jar\"",
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = JavaDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = 88934D46061E10E600F42905 /* java */;
+		libgmallocEnabled = 0;
+		name = servsys;
+		sourceDirectories = (
+		);
+		startupPath = "<<ProjectDirectory>>";
+	};
+	88934D46061E10E600F42905 /* java */ = {
+		isa = PBXFileReference;
+		explicitFileType = "compiled.mach-o.executable";
+		name = java;
+		path = /usr/bin/java;
+		sourceTree = "<absolute>";
+	};
+	C5025E8D07FB94E300FB77D5 /* servsys.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = servsys.java;
+		path = /Users/molnarc/projects/servsys/src/servsys.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5D8A07FB98AD00B10430 /* UniCash.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = UniCash.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/web/UniCash.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5D9A07FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C5025E8D07FB94E300FB77D5 /* servsys.java */;
+		name = "servsys.java: main";
+		rLen = 0;
+		rLoc = 779;
+		rType = 0;
+		vrLen = 791;
+		vrLoc = 0;
+	};
+	C53A5D9B07FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5D9C07FB9A6400B10430 /* ServInstall.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1279;
+		vrLoc = 0;
+	};
+	C53A5D9C07FB9A6400B10430 /* ServInstall.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = ServInstall.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/web/ServInstall.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5D9D07FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5D8A07FB98AD00B10430 /* UniCash.java */;
+		name = "UniCash.java: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1169;
+		vrLoc = 0;
+	};
+	C53A5D9E07FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5D9F07FB9A6400B10430 /* UniWsItems.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1492;
+		vrLoc = 0;
+	};
+	C53A5D9F07FB9A6400B10430 /* UniWsItems.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = UniWsItems.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/UniWsItems.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DA007FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DA107FB9A6400B10430 /* WsReport.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1511;
+		vrLoc = 0;
+	};
+	C53A5DA107FB9A6400B10430 /* WsReport.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = WsReport.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/WsReport.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DA207FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DA307FB9A6400B10430 /* UniTrans.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1845;
+		vrLoc = 0;
+	};
+	C53A5DA307FB9A6400B10430 /* UniTrans.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = UniTrans.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/UniTrans.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DA507FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C5025E8D07FB94E300FB77D5 /* servsys.java */;
+		name = "servsys.java: main";
+		rLen = 0;
+		rLoc = 779;
+		rType = 0;
+		vrLen = 791;
+		vrLoc = 0;
+	};
+	C53A5DA607FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DA707FB9A6400B10430 /* ServInstall.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1279;
+		vrLoc = 0;
+	};
+	C53A5DA707FB9A6400B10430 /* ServInstall.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = ServInstall.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/web/ServInstall.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DA807FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5D8A07FB98AD00B10430 /* UniCash.java */;
+		name = "UniCash.java: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1169;
+		vrLoc = 0;
+	};
+	C53A5DA907FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DAA07FB9A6400B10430 /* UniWsItems.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1492;
+		vrLoc = 0;
+	};
+	C53A5DAA07FB9A6400B10430 /* UniWsItems.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = UniWsItems.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/UniWsItems.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DAB07FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DAC07FB9A6400B10430 /* WsReport.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1511;
+		vrLoc = 0;
+	};
+	C53A5DAC07FB9A6400B10430 /* WsReport.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = WsReport.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/WsReport.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DAD07FB9A6400B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DAE07FB9A6400B10430 /* UniTrans.java */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1845;
+		vrLoc = 0;
+	};
+	C53A5DAE07FB9A6400B10430 /* UniTrans.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = UniTrans.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/UniTrans.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DB007FB9A6400B10430 /* UniTimeSheet.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = UniTimeSheet.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/UniTimeSheet.java;
+		sourceTree = "<absolute>";
+	};
+	C53A5DB107FB9A8800B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DB007FB9A6400B10430 /* UniTimeSheet.java */;
+		name = "UniTimeSheet.java: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 428;
+		vrLoc = 0;
+	};
+	C53A5DB207FB9A8800B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 886FEE5605D9BD280091015F /* build.xml */;
+		name = "build.xml: 2";
+		rLen = 0;
+		rLoc = 60;
+		rType = 0;
+		vrLen = 758;
+		vrLoc = 0;
+	};
+	C53A5DB407FB9A8800B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53A5DB007FB9A6400B10430 /* UniTimeSheet.java */;
+		name = "UniTimeSheet.java: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 428;
+		vrLoc = 0;
+	};
+	C53A5DB507FB9A8800B10430 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 886FEE5605D9BD280091015F /* build.xml */;
+		name = "build.xml: 2";
+		rLen = 0;
+		rLoc = 60;
+		rType = 0;
+		vrLen = 758;
+		vrLoc = 0;
+	};
+	C53C431C09660F10005232BC /* release.sh */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text.script.sh;
+		path = release.sh;
+		sourceTree = "<group>";
+	};
+	C53C43B809660FA3005232BC /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = C53C431C09660F10005232BC /* release.sh */;
+	};
+	C53C43B909660FA3005232BC /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C53C43BA09660FA3005232BC /* release.sh */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 99;
+		vrLoc = 0;
+	};
+	C53C43BA09660FA3005232BC /* release.sh */ = {
+		isa = PBXFileReference;
+		name = release.sh;
+		path = /Users/molnarc/servsys/src/release.sh;
+		sourceTree = "<absolute>";
+	};
+	C5F4267507FBA00A00BBCDD8 /* FrConfig.java */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.java;
+		name = FrConfig.java;
+		path = /Users/molnarc/projects/servsys/src/com/pandmservices/FrConfig.java;
+		sourceTree = "<absolute>";
+	};
+	C5F426F207FBA1F900BBCDD8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C5F4267507FBA00A00BBCDD8 /* FrConfig.java */;
+		name = "import com.pandmservices.core.*;";
+		rLen = 33;
+		rLoc = 28;
+		rType = 0;
+		vrLen = 435;
+		vrLoc = 0;
+	};
+	C5F426F307FBA1F900BBCDD8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C5F426F407FBA1F900BBCDD8 /* release.sh */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 99;
+		vrLoc = 0;
+	};
+	C5F426F407FBA1F900BBCDD8 /* release.sh */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text.script.sh;
+		name = release.sh;
+		path = /Users/molnarc/projects/servsys/src/release.sh;
+		sourceTree = "<absolute>";
+	};
+	C5F426F507FBA1F900BBCDD8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C5F4267507FBA00A00BBCDD8 /* FrConfig.java */;
+		name = "import com.pandmservices.core.*;";
+		rLen = 33;
+		rLoc = 28;
+		rType = 0;
+		vrLen = 435;
+		vrLoc = 0;
+	};
+	C5F426F607FBA1F900BBCDD8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = C5F426F707FBA1F900BBCDD8 /* release.sh */;
+		name = "(null): 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 99;
+		vrLoc = 0;
+	};
+	C5F426F707FBA1F900BBCDD8 /* release.sh */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text.script.sh;
+		name = release.sh;
+		path = /Users/molnarc/projects/servsys/src/release.sh;
+		sourceTree = "<absolute>";
+	};
+	C5F7014F07FB8F1600D67813 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 1;
+		scmConfiguration = {
+			CVSToolPath = /usr/bin/ocvs;
+			CVSUseSSH = NO;
+		};
+		scmType = scm.cvs;
+	};
+	C5F7015007FB8F1600D67813 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+}

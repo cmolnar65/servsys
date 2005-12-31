@@ -1,0 +1,818 @@
+- Need to figure out a way for master worksheets to update when pricing updates.
+55. Identify email of callslips into system -
+54. Read email from server - 
+136. Load calc entry form -
+137. Load calc edit form -
+138. Load calc report - 
+145. Add prompting for package selection -
+146. Add color prompting for package selection -
+167. Add server update admin on software expire date -
+- Upload checkme
+- move all select statements into other classes and out of UniCash.java.
+- add serial number to software.
+- add encryption to drop dead date.
+- if running on master server allow update of server dates.
+- Update callslip from server to laptop if requested.
+- Update inspection from server to laptop if requested.
+- Update equipment from server to laptop if requested.
+
+=================================================================
+RELEASE 2.02
+==================================================================
+
+- Added some missing files
+- OOPS - Major SQL error on the update - fixed.
+- Final walk through to make sure that there are no more passwords or Company Names in code.
+- Added flat rate code to charges
+- Added flat rate code to all server updates, all prints and all screens.
+- Fixed edit inspection --> Edit flat rate charges - added psource.
+- Changed customer alphabet listing - one letter per page.
+- created flat rate export for TMS Flat Rate screen (NFE)
+- Fixed sales tax use.
+- fixed the time and collection report. Made function available to all on their laptops. Now can select dates
+  from the start and stop dates.
+- added "send arrive", "send almost done" and "send need more time" and "send complete" function to customer 
+  record to aid dispatching.
+- added table formlist (this will contain name and description of available forms)
+- removed hours from the flat rate display for selection.
+- changed preventative agreement to show 20% discount.
+- added specitemlowprice, sitemhighprice, sitemhighhours to tables and all routines. If flat
+ rate part is between high and low price it will highlight. If flatrate part is equal to are under low price
+ and hours are under high hours it will highlight.
+- added specitem to flat rate to allow highlighting of items in flat rate tables;
+- added missing function to delete flat rate price.
+- Added nodiscount field to flat rates. If nodiscount is set for 1 then the flat rate will be the price. Will
+  not use any part cost to calculate.
+- Find out why email of worksheets is not correct. The Sale price is wrong.
+- Added ability to Upload and Download time sheet categories.
+- Added customer name to email of inspection and callslip subject line.
+- Download flat rate config with any flat rate update.
+- Create new flat rate table with software update.
+- create new flat rate config table
+- automagically make database changes - do not manually do updates of tables anymore
+- keep 2 version numbers - version in database vs version in software
+- upload flat rate config
+- changes to edit flat rate config
+- Added FlatRateConfig.java for new flat rate tables
+- Download FlatRateConfig (doDownLoadFrConfig)
+- upload new flat rate table.
+- download new flate rate table.
+- fixed add, list and edit flat rates for the new flat rate structure.
+- modified flat rates to allow for part markup - missing on spreadsheets.
+- changed all flat rate selections (callslip, proposal, inspection, service proposal) to work
+  from the new flat rate tables.
+- Changed the flat rate lookup to use the part cost from the inventory database if there is a valid 
+  keycode.
+
+=================================================================
+RELEASE 1.75
+==================================================================
+-Start transition to open source. Remove all references to Meacham.
+- Removed expire date
+- removed memco ref. in all of the servsys.jar command line progs.
+
+=================================================================
+RELEASE 1.71
+==================================================================
+-Added update of user information prior to sending data
+-Added Lead generation - both new and existing customers up to save
+-Added lead table to database structure
+
+=================================================================
+RELEASE 1.70
+==================================================================
+-Added sync of Inspections following the Email of Individual Inspection Report
+
+=================================================================
+RELEASE 1.70
+==================================================================
+-Added email of commision report per Mark B. request
+
+=================================================================
+RELEASE 1.69
+==================================================================
+- Fixed stock email and stock use report to use new database
+- added link to WebMail page if internet connect and not running on main server
+- fixed main server connection on showHomePage (connection being closed by menu)
+- fixed sync to server and update if system on main server
+- fixed icons for any software running off of main server
+- Added software version number to email time sheet transmits
+
+=================================================================
+RELEASE 1.68
+==================================================================
+- fixed some problems on sync. If record does not sync for some reason set servsync flag=1
+
+=================================================================
+RELEASE 1.67
+==================================================================
+- added sync to server on Email of callslip. Will now sync ind. callslip and customer records. If it takes
+  to long change the sync current customer record only.
+- Changed customer display to display tech on callslip and inspection records
+- Will not allow edit if the logged in user is not the tech on the item
+
+=================================================================
+RELEASE 1.5.8
+==================================================================
+- Another try at the login screen problem (Think I finally found - going to wrong starting point following check
+  login - changed classpath to apphome).
+- Weekly timesheet summary
+
+=================================================================
+RELEASE 1.5.7
+==================================================================
+- Another try at the login screen problem
+
+=================================================================
+RELEASE 1.5.6
+==================================================================
+- fixed remainder of date issues on copying worksheets
+- fixed problem with closing connection on TOP.
+
+=================================================================
+RELEASE 1.5.5
+==================================================================
+
+- Reports emailed for Transmitted Time Sheet Summaries per tech and department - Daily report
+- When updating worksheet, callslip, inspections, proposals update servsync=9.
+- When copying Master Worksheets change date to current date.
+- Add to email transmit of callslips and inspection "select * from time_sheet where callslip='38115' and tdate='2005-06-14';"
+- Added email transmit to both single sheet send and daily full sends.
+- Added SyncServ routine for the upload of database backups to the server. Users need to realize that based on data
+ this can take 5 minutes.
+- Upload Inspection report
+- Added ability to check server for customer and site numbers and then update local database if customer has
+  exact match. SyncLocalCustomer.java
+- Upload callslips
+- Need to work on transmit of callslips, Inspection Reports. Steps for uploading callslips and inspections:
+	1) Identify Callslips for date
+	2) Open first record
+	3) Check master server if customer exists - get record number if exists
+	4) If not upload customer info - get record number of customer
+	5) Upload callslip info to master server
+	6) Get record number
+	8) Upload charges
+- Upload of inventory categories to server
+- Download of inventory categories with keycodes from server
+- Upload of service charges for both inspection and callslips
+- Add table and routine for time sheet categories
+- Added administrative add/edit for time sheet routines
+
+=================================================================
+RELEASE 1.5.4
+==================================================================
+
+- Upload Inventory Records
+- Added charges to inspections - based on callslip number not record number
+- Fixed callslip (send, edit, print), Inspection (send, edit, print) routines to use the new inventory methods
+- Fixed callslip and inspection routines to allow delete inventory code from new inventory method.
+- Inventory is now completly dependent on inv_keycodes table downloaded from server
+- Changed Category list and all inventory options to use keycodes rather than itemnum
+- Change inv_detail routines to look at keycodes rather than itemnum
+- Do not add inv_items without a valid keycode
+- Modified UniInvDetail.java to do InvUse - need to rename file and recompile all after checking out
+  the last version.
+- Inv category list now includes a prefix for selecting items from the inv_keycodes file.
+- Show Inv Cat Items no looks at inv_keycodes to show all items in that keycode prefix.
+
+=================================================================
+RELEASE 1.5.1
+==================================================================
+- Modified uploadcallslips to include to routines below.
+- Added custsitenum and sitenum to worksheet
+- Added custsitenum and sitenum to wsitem
+- Upload worksheets (worksheet and wsitems)
+- Upload proposals (quotes and quote_parts) options not uploaded - ignored.
+- revised all proposal adds and proposal parts adds to have custsite, servsync and sitenum
+- Add custsite, sitenum, servsync, techid to quotes
+- Add custsite, sitenum, servsync, techid to quote_parts
+- Upload Time Sheets
+- Upload preventative agreements
+- Added SyncPagreement to sync the preventative agreements
+- Added SyncEquip.java to sync equipment records.
+- Added SyncCustomer.java to sync customer records.
+- add temp split routine for the CheckMe on inspections and startups. (done on checkme form only)
+- Removed CheckMe from Inspection and made it's own form
+- Email checkme reports done - both as a ALL and individual date. 
+- Checkme edit, add and update is complete. Need to still do delete.
+- Checkme print is complete.
+- Added checkme to table
+- Added AddCheckme form
+- Added save checkme
+- Added Edit routine in same form of AddCheckme
+- Added Superheat calculator to temp split calculator - added superheat table
+- fixed error message on transmit all - had to fix date field on proposals and worksheets.
+- Added userid to Callslip table and Inspection Table - this is for sending records.
+- Added POP server information to configemail.
+- Changed Service Technicians on agreement to Service / Maintenance Technicians per Sue.
+- Fix static pressure order and heat strips.
+- Added the crectype field to callslip so that we can start migration to XML 
+  in the callslip file. (as soon as I figure out how to parse an XML string).
+- Added exspansion device and air handler age and condensor age to the inspection report
+
+
+===========================================================
+RELEASE 1.5.0
+===========================================================
+
+- Vender list into documentation
+- We are now closing database after each transaction - con.close() this is in
+  direct response to problems Mark was having. 			DONE 2005-08-26
+- Per demand from Mark added ability to move options into different order on
+  the printed proposals.
+
+
+===========================================================
+RELEASE 1.4.9
+===========================================================
+
+- Documentation category edit and update routines
+- Documentation list edit and update routines
+- Added doc category add and list
+- Added documentation add, list, save
+- Documents now display
+- add sendall worksheets to transmit paperwork form
+- fixed date on subject lines of worksheets
+- Add ability to email worksheets - goes to same email addresses as proposals do.
+- add docs directory to /var/tomcat5/webapps/servsys/ (MAKE SURE YOU DO ON ALL MACHINES!)
+- added a Check Temp Split to the Documents section - Opens a new screeen and checks returndb
+  and returnwb to come up with correct temp split.
+- add temp split table for checkme routines.
+- Added User Logout
+- User Edit and Update functions now do User name, role, login, password
+- User Add and Save functions now do User name, role, login, password
+- Add update from server to laptop on user tables (email, user, tech)
+- Add update from laptop to server on user tables (email, user, tech)
+- Added ability to edit and view callslips and inspections based from callslip report
+- Added callslip and inspection report based on date span
+- Added the ability to Edit callslips on the Followup report from the report
+- Added xml export for Time Sheet Entry and added export on sheet
+- Added xml export for Daily transmission of callslips
+- Added a check to make sure callslip is entered on Time Sheet entry Add
+- Added a check to make sure callslip is entered on time sheet entry update
+- Added add/update custsite and sitenum to equipment record
+- Added add/update custsite and sitenum to callslip
+- Added add/update custsite and sitenum to inspection
+- Added custsite and sitenum to callslip table
+- Added custsite and sitenum to inspection table
+- Added inspections to the callslip followup report  - fixed followup check on the inspection add, update, save, edit 
+- got rid of the depriciated getValue and putValue in httpsession. The new correct method is:setAttribute and getAttribute
+- Time Sheet table now records user name of user that saves and updates records
+- Changed the admin check to call for a role of admin. no more passwords once logged in.
+- security now internal to the application. Added user table
+- email and tech info now combined on update
+- lookup email and tech info based on name
+- if running on master server allow copy to master worksheet - but do not allow update - change date on master worksheet.
+- user database for permisions
+- Add this is master server field to db config.
+- if running on master server DO NOT allow updates of local database.
+
+===========================================================
+RELEASE 1.4.8
+===========================================================
+
+- Fixed followup on callslips and added callslip follow-up report
+- Add the addservices to Preventative Agreement print out
+- Add Search by Customer number to customer search
+- Added visit schedule to all forms and database
+- Added visit schedule and logic to the preventative agreement.
+
+===========================================================
+RELEASE 1.4.7
+===========================================================
+
+- Added summary of $'s billed and collected to bottom of time sheets.
+- Fixed bottom "return to package cat list" link on select package (Request of Mark).
+- Add equip3 and equip4 to inspection as we need to capture additional equipment (Request of Sue).
+- Add equip3 and equip4 to callslip as we really need the extra selection (Request of Sue).
+- Modify Planned Service Input per Sue request:
+	- if start date is left blank it will use today as start date.
+	- if end date is left blank it will use start date + term to create end date.
+- Modify Time Sheets (Add, Edit, Print, Send) for commission activity per Scott request
+169. Add server update admin on phone numbers -
+170. Add server update admin on package prices -
+171. Add server update admin on package cats -
+168. Add server update admin on flat rates -
+98. Allow a real-time transmission of Inspection and Callslip Report -
+115. Re-do email transmitted inspection report to match that of the printed - NO - This way allows cut and paste.
+
+===========================================================
+RELEASE 1.4.0
+===========================================================
+- Added outside temp to inspections.
+- Added out_temp to inspection table.
+- Added commission report from time sheets (Rob request).
+164 - Added customer search by city.
+165 - Added customer search by address (partial street search).
+34. Change delete callslip to move information to a deleted callslip database - NOT IMPLEMENTED
+
+===========================================================
+RELEASE 1.3.8	
+===========================================================
+- Copyright now is Our World Shopping, LLC
+- Version information no longer in Database - now hard coded.
+
+===========================================================
+RELEASE 1.3.7
+===========================================================
+- added zero inventory function in configuration - DONE - 2005-04-04
+- changed for single file distribution - DONE - 2005-04-04
+- added seer and btu output to equipment record - CHECKME - 2005-03-21
+- added liquid and suction line temp to inspection - CHECKME -2005-03-21
+- added return dry bulb, return wet buld, and supply dry bult temp to inspection - 2005-03-21
+- added measured CFM to inspection report - CHECKME - 2005-03-21
+- added prompt for CheckMe to display screen - CHECKME - 2005-03-21
+- added NATE id and logo to print callslip and inspection - DONE - 2005-03-30
+- IMPORTED INTO XCODE. REDID SOURCE CODE REPOSITORY AND THIS MAY NEED TO HAPPEN AGAIN 
+			DONE - 2005-03-30
+===========================================================
+RELEASE 1.3.6
+===========================================================
+- most major changes in install module
+- Added code and structure for startup forms. Currently a duplication of the 
+  inspection module. 
+- Added StartUp.java to handle database routines.
+- Added startup.sql code to the update.sql file.
+
+**** Need to neaten up the doShowCustDetails in both modules to eliminate the SQL.
+     put it all in modules.
+**** Need to add config routine to zero inventory totals.
+
+===========================================================
+RELEASE 1.3.5
+===========================================================
+- changed flat rate tables to just have the tm_primary listed.
+- added a flat rate configuration table and screens.
+- changed the selection screens for flat rates. Only those that are
+  valid for that customer type will show.
+- Callslip prints now are concious of customer types
+
+===========================================================
+RELEASE 1.3.3
+===========================================================
+
+177. Added Site Numbers to callslip prints - DONE - 2005-02-04
+
+178. Added Phone Numbers and Email to callslip prints - DONE - 2005-02-04
+
+
+===========================================================
+RELEASE 1.3.2
+===========================================================
+
+176. Fixed flat rate table update - DONE - 2005-01-20
+
+175. Fixed initial values on preventative agreement. - DONE - 2005-01-19
+
+174. Fixed update on package categories - DONE - 2005-01-16
+
+173. Update now possible on Company Phone List - DONE - 2005-01-16
+
+172. Fix Edit Job - DONE - 2005-01-15
+
+163. Fix Delete Job Completion - DONE - 2005-01-15
+
+162. Fix Edit Job Completion - DONE - 2005-01-15
+
+166. Add main server admin module - DONE - 2005-01-14
+
+161. Edit Customer notes now works in install module - DONE - 2005-01-14
+
+160. Delete Jobs now works in install module. - DONE - 2005-01-14
+
+159. Added ability to add the inventory used from the Edit Inspection 
+     page. Requested by Rob. - DONE - 2005-01-14
+
+158. Added ability to add the inventory used from the Edit Callslip 
+     page. Requested by Rob. - DONE - 2005-01-14
+
+157. Removed Package Code/Key Code from Proposal. Requested by
+     Sue - DONE - 2005-01-14
+
+156. Added customer type to customer table and edit screens. Field
+     will be used for rate selection and flat rate pricing. Start
+     of changes requested by Scott. - DONE - 2005-01-06
+
+155. Special Item (specitem) designation on flat rate table - added field
+     and will show as a different color if it is a item that can be given
+     away with a preventative maint (bridge the gap). Requested by Scott. - DONE - 2005-01-06
+
+===========================================================
+RELEASE 1.3.1
+===========================================================
+
+154. Worksheet print change requested by Dave - DONE - 2004-12-30
+153. Several changes to planned service agreement requested by Scott. DONE - 2004-12-30
+*** LOTS OF CHANGES - INCREASED VERSION TO 1.3.0
+152. Added ability to set a multiplier for categories - DONE - 2004-12-15
+	- Note: This affects all calculations in the Add Packages To Ws
+		Save and update Package and Worksheet items.
+	- This function caused us to add java.math.* to the import list.
+151. Add site-num and cust-num to customer record -
+150. Expire date in software with db update -DONE - 2004-12-14
+149. Find out why worksheets do not copy in the same order as the origional.
+	- changed order - FIXED - 2004-12-14
+
+===========================================================
+RELEASE 1.2.7
+===========================================================
+- Converted from Java 1.4.2 to 1.5 - IN PROGRESS - enum is no longer a legal variable.
+- Can't save NULLS to tables.
+- mysql.java no longer will round decimals - now need to do this on the program side.
+
+
+===========================================================
+RELEASE 1.2.6
+===========================================================
+
+147. Add per Mark request additional prompting surrounding deleting worksheets and proposals. - DONE - 2004-10-19
+148. Per Mike and Mark request added ability to copy worksheet from one customer to another. - DONE - 2004-10-19
+
+
+===========================================================
+RELEASE 1.2.5
+===========================================================
+
+- Add Installation Module (seperate code) - DONE - 2004-08-09
+- Add installation to menu bar - DONE - 2004-08-09
+- Make code changes to have 2 apps work together - DONE - 2004-08-09
+- Add resource database (name, skillset, lead / helper) - DONE - 2004-08-09
+- Add job database - DONE - 2004-08-09
+- Add install job information to customer link (job #, Salesperson, billing, hours shop, hours electrical, hours plumbing, hours field) - DONE - 2004-08-09
+- Add Edit Job Information
+- Add Delete Job Record
+- Add data entry of task/hour information per day
+
+============================================================
+RELEASE 1.1.2
+============================================================
+
+152. Add the job flow worksheet to the proposal screen and add
+     the needed edit fields and database fields. - DONE - 2004-01-29
+
+ 
+============================================================
+RELEASE 1.1.1
+============================================================
+149. Add the keycode, job time, and job code to the flat rate table - DONE - 2004-01-25
+
+150. Add Flat Rate Report - DONE - 2004-01-25
+
+151. Adjusted font size of callslip print - DONE - 2004-01-25
+
+============================================================
+RELEASE 1.1.0
+============================================================
+91. Add questionare for furnace replacement - DONE - 2004-01-20
+
+148. Add better date checking on updates - DONE - 2004-01-20
+
+147. Add Update on Package Table - DONE - 2004-01-20
+
+143. Fixed problem in dates on new Worksheet - DONE - 2004-01-19
+
+144. Added ability to delete proposals - DONE - 2004-01-19
+
+============================================================
+RELEASE 1.0.15
+============================================================
+
+52. Update keycode lookup database from server - DONE - 2004-01-18
+
+50. Update Flat-Rate Database from server - DONE - 2004-01-18
+
+51. Update planned service pricing database from server - DONE - 2004-01-18
+
+134. Load calc multiplier table - DONE - 2004-01-18
+
+135. Load calc multiplier setup form - DONE - 2004-01-18
+
+141. Add Proposal Report (from and to date) - DONE - 2004-01-18
+
+142. Add Worksheet Report (from and to date) - DONE - 2004-01-17
+
+140. Add Report Menu - DONE - 2004-01-17
+
+139. Load Calc Item Cat Setup - DONE - 2004-01-17
+
+NOTE - Somehow missed list of things in 1.0.14
+============================================================
+RELEASE 1.0.13
+============================================================
+132. Dates on preventative agreement add form -  DONE - 2004-01-15
+
+133. All 127.0.0.1 hardcoded changed to variable (classdir) - DONE - 2004-01-15
+
+130. Added edit and update of package items - DONE - 2004-01-08
+
+131. Added copy of Worksheet to new Worksheet - DONE - 2004-01-08
+
+============================================================
+RELEASE 1.0.12
+============================================================
+129. Changed all date formats to MM-DD-YYYY to make it easier to use - DONE - 2004-01-01
+
+90. Add bill of material - Replaced with Worksheets - DO NOT DO - 2003-12-31
+
+128. Fixed the WS to Proposal to use the GrossProffit Labor Ratio if higher than sell Price - DONE - 2003-12-31
+
+127. Fixed worksheets to use the GrossProfit Labor Ratio if higher than sell price - DONE - 2003-12-31
+
+125. Added quote packages - DONE - 2003-12-29
+
+126. Create proposal from worksheet - DONE - 2003-12-29
+
+124. Added air flow standards from Mark M. - DONE  - 2003-11-09
+
+123. Delete a worksheet - DONE - 2003-11-09
+
+122. Complete Worksheet including print, select from stock, add manual items,
+     print and calculations.  - DONE - 2003-11-09
+
+121. Configure of Work Sheet Config - DONE - 2003-11-09
+
+120. Added wsconfig.java for pricing configuration - DONE - 2003-11-08
+
+119. Added wsitem and worksheet database for pricing worksheets - DONE - 2003-11-08
+
+118. Added wsconfig database for worksheet configuration - DONE - 2003-11-08
+
+117. Fix error somehow introduced into the Add Service Charges - DONE - 2003-10-31
+
+116. Fix error somehow introduced into the Add Inventory Item - DONE - 2003-10-31
+
+110. Add Airflow section to inspection report - DONE - 2003-10-30
+
+111. Add Supply and return size to inspection report - DONE - 2003-10-30
+
+114. Add supply and return size fields to inspection - DONE - 2003-10-30
+
+112. Add mold disclaimer to customer page - DONE - 2003-10-30
+
+113. Transmit stock request based on category codes selected - DONE - 2003-10-29
+
+108. Need to allow selection of stock requests (as in catagory numbers) - DONE - 2003-10-29
+
+109. Seperate Gas Heat and Air Handler - in input forms - DONE - 2003-10-27
+
+106. Update to latest mysql - DONE - 2003-10-26
+
+107. Update to latest java-mysql interface - DONE - 2003-10-26
+
+
+============================================================
+RELEASE 1.0.11
+============================================================
+103. Added printable equipment list - DONE - 2003-10-18
+
+104. Add email address for stock requests - DONE - 2003-10-19
+
+105. Email Stock Requests by category - DONE - 2003-10-19
+
+
+============================================================
+RELEASE 1.0.10
+============================================================
+100. Added Customer Forms - DONE - 2003-10-10
+
+101. Added Space Heater Liability Release - DONE - 2003-10-10
+
+102. Added A/C Cover Disclaimer - DONE - 2003-10-10
+
+
+============================================================
+RELEASE 1.0.9
+============================================================
+99. Fix broken add item on inventory - DONE - 2003-10-03
+
+89. Add ability to use letterhead  (Maybe - need way to prevent side work) - DONE - 2003-09-29
+
+97. Opening flat rate lookup on new page - DONE - 2003-09-20
+
+93. Streamline the lookup of inventory items for catagory selection screen - DONE - 2003-09-20
+	- added UniInvQuant.java to handle this task
+
+96. Change all occurances of hard coded company names to variables - DONE - 2003-09-20
+
+88. Add company information - table already added - DONE - 2003-09-20
+
+94. Add Company Information Config/Update Screen - DONE - 2003-09-20
+
+95. Add Company Information Save Routine - DONE - 2003-09-20
+
+92. Add email of proposal to office - DONE - 2003-09-20
+
+48. Admin functions identified - DONE - 2003-09-20
+
+49. Admin functions blocked for non-admin users - DONE - 2003-09-20
+	- Company configuration
+	- Tech configuration
+	- Email configuration
+	- Db Server Configuration
+
+============================================================
+RELEASE 1.0.8
+============================================================
+87. Price calculator added - DONE - 2003-09-07
+
+86. Entered pricing from equipment lists - DONE - 2003-09-07
+
+85. Completed proposal printing - DONE - 2003-09-07
+
+84. Completed the delete on proposal parts - DONE - 2003-09-07
+
+83. Completed the listing and math on proposals - DONE - 2003-09-07
+
+82. Added Add and Save for proposals - DONE - 2003-09-06
+
+81. Added Edit and Update for proposals - DONE - 2003-09-06
+
+80. Added UniQuotes.java to take care of overall quotes - DONE - 2003-09-06
+
+79. Added UniQuoteParts.java to take care of individual quote parts - DONE - 2003-09-05
+
+78. Added table QUOTES and QUOTE_PARTS - DONE - 2003-09-05
+
+============================================================
+RELEASE 1.0.7
+============================================================
+
+77. Add Quote Cat Items Add/Update/Edit and Save Routines - DONE - 2003-09-03
+
+76. Added Quote Cat Item List to Quote Cat Screen - DONE - 2003-09-03
+
+75. Add Quote Cat Update/Edit and Save Routines - DONE - 2003-09-03
+
+74. Added Quote Cat List to Config Menu - DONE - 2003-09-03
+
+73. Added proposals to customer record - DONE - 2003-08-30
+
+72. Fixed the transmision of time-sheets - DONE - 2003-08-28
+
+============================================================
+RELEASE 1.0.6
+============================================================
+
+70. Added Truck Stock Report by Category - DONE - 2003-08-10
+
+71. Added Truck Stock Request by Category - DONE - 2003-08-10
+
+69. Fix keycodes on truck stock request - DONE - 2003-08-07
+
+68. Fix the send daily time report so that it says if no time sheets are available and doesn't
+	error out - DONE - 2003-07-30
+
+============================================================
+RELEASE 1.0.4
+============================================================
+
+64. Change send callslip to send each callslip by itself - DONE - 2003-07-25
+
+65. Change send inspection to send each callslip by itself - DONE - 2003-07-25
+
+66. Add inventory to inspection email and also fix equipment table - DONE - 2003-07-25
+
+67. Add database server table and configuration - DONE - 2003-07-25
+CREATE TABLE dbserver (servername TEXT , username TEXT , password TEXT , dbname TEXT )
+
+
+============================================================
+RELEASE 1.0.3
+============================================================
+
+62. Fix nulls on inventory display - DONE - 2003-07-21
+
+63. Fix delete inspection with no callslip # - DONE - 2003-07-21
+
+============================================================
+RELEASE 1.0.2
+============================================================
+
+61. Fixed LUNCH per request from Peter - DONE - 2003-07-17
+
+60. Added delete of Inspection per Jeremy's request - DONE - 2003-07-17
+
+59. Fix Delete on Callslips and Equipment to make it harder to accidently delete - DONE - 2003-07-16
+
+58. Add keycode inventory adjustment (enter keycode - get current count - input corrected - 
+	system adjusts) - DONE - 2003-07-16
+
+57. Fix Filter Print-out on Inspection Prints - DONE - 2003-07-15
+
+56. Add Dispatch Time to Time Sheet Prints - DONE - 2003-07-15
+
+53. Version information - DONE - 2003-07-17
+	- version table: 
+		CREATE TABLE version (vnumber TEXT not null , vdate DATE not null )
+		INSERT INTO version (vnumber, vdate) VALUES ('1.0.2', '2003-07-17') LIMIT 0, 30 
+
+47. Email Completions with Callslip - DONE - 2003-07-13
+
+46. Print Completions on callslip - DONE - 2003-07-13
+
+45. Delete Selected Completion from callslip - DONE - 2003-07-13
+
+44. Display Selected Completions on Callslip - DONE - 2003-07-13
+
+43. Save Callslip Completion Code - DONE - 2003-07-13
+
+42. Select Completion Code Menu - DONE - 2003-07-13
+
+41. Add Completion Code on Update Callslip (pulls up code cat menu) - DONE - 2003-07-12
+
+40. Add callcompl to database so that callslips can have completion codes assigned to them. - DONE - 2003-07-12
+
+CREATE TABLE callcompl (transnum INT not null AUTO_INCREMENT, codenum INT not null , callslip TEXT not null , INDEX (transnum)) 
+
+39. Delete Completion Codes -  DONE - 2003-07-12 
+
+38. Update Completion Codes - DONE - 2003-07-12
+
+37. Save Completion Codes - DONE - 2003-07-11
+
+36. Edit Completion Codes - DONE - 2003-07-11
+
+35. Add Completion Codes - DONE - 2003-07-11
+
+28. Add completion code category menu - DONE - 2003-07-11
+
+-------------------------------------------------
+RELEASE 1.0.1  -  2003-07-11
+-------------------------------------------------
+
+33. Delete Equipment - DONE - 2003-07-10
+
+32. Delete callslip - DONE - 2003-07-10
+
+31. Form for adding completion codes and saving to database - DONE - 2003-07-06
+
+30. Add list of completion code categories for config - DONE - 2003-07-06
+
+29. Add completion codes under config menu - DONE - 2003-07-06
+
+27. Add water furnace to Email Inspection -  DONE - 2003-07-06
+
+26. Add water furnace to Database - DONE - 2003-07-06
+
+	SQL CODE: 
+
+ALTER TABLE inspection ADD g_filter TEXT , ADD g_electrical TEXT , ADD g_looppres TEXT , ADD g_cleancoil TEXT , ADD g_cleandrain TEXT , ADD g_pansensor TEXT , ADD g_cleancomp TEXT , ADD g_cleanunit TEXT , ADD g_oilblower TEXT , ADD g_cleanpump TEXT , ADD g_tsplit TEXT , ADD g_pampr TEXT , ADD g_pampa TEXT , ADD g_compar TEXT , ADD g_compaa TEXT , ADD g_bampr TEXT , ADD g_bampa TEXT , ADD g_pdrop TEXT
+
+25. Add water furnace to edit inspection - DONE - 2003-07-06
+
+24. Add water furnace to print inspection - DONE - 2003-07-06
+
+23. Add water furnace maint to Add Inspection - DONE - 2003-07-06
+=============================================
+RELEASE 1.00
+=============================================
+22. Allow Delete of Inventory transaction - DONE - 2003-07-05
+
+21. Fix and add editinvtrans screen to edit inventory transactions - DONE - 2003-07-05
+
+20. Add inventory to Email and neaten it up a little - DONE - 2003-06-15
+
+19. Edit charges from charge selection menu - DONE - 2003-07-06
+
+18. Edit charges on callslip - DONE - 2003-06-08
+
+17. Add equipment to Inspection Transmit - DONE - 2003-06-08
+
+16. Add equipment to Service Transmit - DONE - 2003-06-08
+
+15. Add warning on transmit page to make sure you have a valid internet connect - DONE - 2003-06-08
+
+1. Need to add recommendations, repairs, and services to 
+	Planned Service print (doPrintInspection) - DONE - 2003-04-20
+
+2. Add email transmision of call slips. - DONE - 2003-06-07
+
+3. Add email transmission of Planned Service. - DONE - 2003-04-20
+
+4. Activate ToDo items. - DONE - 2003-04-20
+
+4.5 Add edit of ToDo items. - DONE - 3004-06-08
+
+5. Add phone list to system.
+		- Table added - DONE - 2003-05-21
+		- UniPhoneList Added - DONE - 2003-06-08
+		- List screen added - DONE - 2003-06-08
+		- Update screen added - 	
+
+6. Remainder of Equipment Type changes - DONE - 2003-04-20
+
+7. Add edit of Inspection - DONE - 2003-04-20
+
+8. Fix the single quote problem  - DONE - 2003-04-20
+
+9. Put code into CVS - DONE - 2003-04-20
+
+10. Add tech configuration - DONE - 2003-06-07
+
+11. Add email address configuration - DONE  - 2003-06-07
+
+12. Adjust time sheet send to use new email configuration - DONE - 2003-06-07
+
+13. Adjust inspection send to use new email configuration - DONE - 2003-06-07
+
+14. Add SMTP Server - DONE - 2003-06-07

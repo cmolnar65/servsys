@@ -1,0 +1,129 @@
+package com.pandmservices;
+import java.sql.*;
+import com.pandmservices.core.*;
+import com.pandmservices.web.*;
+import java.lang.*;
+import java.util.*;
+import java.util.Vector;
+
+public class UniMasterWsItems
+{
+        private int id;
+        private int wsrec=0;     //default value to null
+        private int itemrec=0;;     //default value to null
+        private String item=null;     //default value to null
+        private String keycode=null;     //default value to null
+        private int quantity=0;     //default value to null
+        private double cost=0;     //default value to null
+        private double laborcost=0;     //default value to null
+	private int laborhours=0;
+	private int shophours=0;
+    
+
+        public UniMasterWsItems (Connection c, int id)
+		throws SQLException, TodoException
+	{
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM masterwsitem WHERE itemrec=" + id + ";");
+		if (!rs.next())
+		{
+			throw new TodoException("Record not found, id = " + id);
+		}
+		this.wsrec = rs.getInt("wsrec");
+		this.itemrec = rs.getInt("itemrec");
+		this.item = rs.getString("item");
+		this.keycode = rs.getString("keycode");
+		this.cost = rs.getDouble("cost");
+		this.quantity = rs.getInt("quantity");
+		this.laborhours = rs.getInt("laborhours");
+		this.shophours = rs.getInt("shophours");
+		this.laborcost = rs.getDouble("laborcost");
+
+	}
+
+
+
+	public static Vector getIndividualItem(Connection c, int itemrec)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT itemrec  FROM masterwsitem where itemrec="+itemrec+" ORDER BY itemrec;");
+		while(rs.next())
+		{
+			
+			UniMasterWsItems t = new UniMasterWsItems(c,rs.getInt("itemrec"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
+	public static Vector getAllItems(Connection c, int wsrec)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT itemrec  FROM masterwsitem where wsrec="+wsrec+" order by itemrec;");
+		while(rs.next())
+		{
+			
+			UniMasterWsItems t = new UniMasterWsItems(c,rs.getInt("itemrec"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
+
+	public static Vector getAllItems(Connection c)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT itemrec  FROM masterwsitem order by itemrec;");
+		while(rs.next())
+		{
+			
+			UniMasterWsItems t = new UniMasterWsItems(c,rs.getInt("itemrec"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
+
+	public static void deleteItem(Connection con, String d)
+		throws SQLException
+	{
+		int x = Integer.parseInt(d);
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("Delete From masterwsitem Where itemrec=" + x + ";");
+	}
+	  
+
+	public static void UpdateItem(Connection con, int itemrec, int wsrec, String item, String keycode, int quantity, String cost, int laborhours, String laborcost, int shophours )
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+      		stmt.executeUpdate("Update masterwsitem Set wsrec='" +wsrec+ "',item = '"+item+"', keycode = '"+keycode +"',quantity = '"+quantity +"',cost = '"+cost +"', laborhours =  '"+laborhours+"', laborcost = '"+laborcost+"', shophours = '"+shophours+"'  Where itemrec=" + itemrec + ";");
+      	}
+
+public static void AddItem(Connection con, int wsrec, String item, String keycode, int quantity, String cost, int laborhours, String laborcost, int shophours)
+                throws SQLException
+		        {
+	       	        Statement stmt = con.createStatement();
+	                stmt.executeUpdate("INSERT INTO masterwsitem (wsrec, item, keycode, quantity, cost, laborhours, laborcost, shophours) Values ('" +wsrec+ "','" +item + "','"+keycode +"','"+quantity +"','"+cost+"','"+laborhours+"','"+laborcost+"','"+shophours+"')");
+		        }
+
+        public int getId() { return id; }
+
+        public int getItemRec() { return itemrec; }
+        public int getWsRec() { return wsrec; }
+        public String getWsItem() { return item; }
+        public String getWsKeyCode() { return keycode; }
+        public int getWsQuant() { return quantity; }
+        public double getWsCost() { return cost; }
+	public double getWsLaborCost() { return laborcost; }
+        public int getWsLaborHours() { return laborhours; }
+        public int getWsShopHours() { return shophours; }
+
+
+}

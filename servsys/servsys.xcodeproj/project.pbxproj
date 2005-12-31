@@ -1,0 +1,154 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildStyle section */
+		88230FFC05D9926E00FE8D22 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		88230FFD05D9926E00FE8D22 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		886FEE5605D9BD280091015F /* build.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = build.xml; sourceTree = "<group>"; };
+		886FEE5705D9BD280091015F /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
+		886FEE5905D9BD280091015F /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
+		888251B805DAF9E10060550A /* Manifest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Manifest; sourceTree = "<group>"; };
+		88934D71061E157F00F42905 /* dist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = dist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		88230FFA05D9926E00FE8D22 = {
+			isa = PBXGroup;
+			children = (
+				888251B805DAF9E10060550A /* Manifest */,
+				886FEE5605D9BD280091015F /* build.xml */,
+				886FEE5905D9BD280091015F /* src */,
+				886FEE5705D9BD280091015F /* lib */,
+				88934D71061E157F00F42905 /* dist */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		8823100505D9929B00FE8D22 /* servsys */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "-emacs $(ACTION)";
+			buildConfigurationList = C53C43AB09660F30005232BC /* Build configuration list for PBXLegacyTarget "servsys" */;
+			buildPhases = (
+			);
+			buildSettings = {
+				PRODUCT_NAME = servsys;
+			};
+			buildToolPath = /Developer/Java/Ant/bin/ant;
+			dependencies = (
+			);
+			name = servsys;
+			passBuildSettingsInEnvironment = 1;
+			productName = servsys;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		88230FFE05D9926E00FE8D22 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C53C43AF09660F30005232BC /* Build configuration list for PBXProject "servsys" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				88230FFC05D9926E00FE8D22 /* Development */,
+				88230FFD05D9926E00FE8D22 /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 88230FFA05D9926E00FE8D22;
+			projectDirPath = "";
+			targets = (
+				8823100505D9929B00FE8D22 /* servsys */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		C53C43AC09660F30005232BC /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				PRODUCT_NAME = servsys;
+			};
+			name = Development;
+		};
+		C53C43AD09660F30005232BC /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				PRODUCT_NAME = servsys;
+			};
+			name = Deployment;
+		};
+		C53C43AE09660F30005232BC /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = servsys;
+			};
+			name = Default;
+		};
+		C53C43B009660F30005232BC /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		C53C43B109660F30005232BC /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		C53C43B209660F30005232BC /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C53C43AB09660F30005232BC /* Build configuration list for PBXLegacyTarget "servsys" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C53C43AC09660F30005232BC /* Development */,
+				C53C43AD09660F30005232BC /* Deployment */,
+				C53C43AE09660F30005232BC /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		C53C43AF09660F30005232BC /* Build configuration list for PBXProject "servsys" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C53C43B009660F30005232BC /* Development */,
+				C53C43B109660F30005232BC /* Deployment */,
+				C53C43B209660F30005232BC /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 88230FFE05D9926E00FE8D22 /* Project object */;
+}
