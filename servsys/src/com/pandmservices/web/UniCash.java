@@ -505,6 +505,10 @@ out.println("</CENTER>");
 	                        {
                                 doSaveComplCat(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("syncdbserver"))
+	                        {
+                                doSyncDbServer(req, res, out, session, username);
+				}
                         else if (action.equalsIgnoreCase("updatetimecat"))
 	                        {
                                 doUpdateTimeCat(req, res, out, session, username);
@@ -825,6 +829,8 @@ out.println("</CENTER>");
 				}
                        else if (action.equalsIgnoreCase("sendall"))
 	                        {
+                                doSyncDbServer(req, res, out, session, username);
+				doOpenConnection();
                                 doUpdateUserInfo(req, res, out, session, username);
 				doOpenConnection();
                                 doDownloadTimeCat(req, res, out, session, username);
@@ -849,6 +855,8 @@ out.println("</CENTER>");
 				}
                        else if (action.equalsIgnoreCase("senddailytime"))
 	                        {
+                                doSyncDbServer(req, res, out, session, username);
+				doOpenConnection();
                                 doUpdateUserInfo(req, res, out, session, username);
 				doOpenConnection();
                                 doDownloadTimeCat(req, res, out, session, username);
@@ -2016,6 +2024,7 @@ out.println("</CENTER>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updatedoclist target=phpmain>Document List</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updateuserinfo target=phpmain>User Info</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadtimecat target=phpmain>Time Sheet Categories</a><br>");
+        mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=syncdbserver target=phpmain>DbServer Config</a><br>");
 					} else if (thismainserver.equalsIgnoreCase("yes"))
 					 {
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;You are on the main server - anything<br>&nbsp;&nbsp;&nbsp;-&nbsp; you have done here is live Ask<br>&nbsp;&nbsp;&nbsp;-&nbsp; server admin to update dates.<br>");
@@ -6188,6 +6197,26 @@ private void doUploadTimeCat(HttpServletRequest req, HttpServletResponse res, Pr
 		conu.close();
                  res.sendRedirect(""+classdir+"UniCash?action=edittimecats");
             }
+
+private void doSyncDbServer(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+		        {
+		String dbserver=doGetDbServer();
+		String dbpasswd=doGetDbPassword();
+		String dbuser=doGetDbUser();
+		String dbname=doGetDbName();
+		String localdate=null;
+		String remotedate=null;
+		String protocol = (String) config.getInitParameter("db.protocol");
+		String subProtocol = (String) config.getInitParameter("db.subprotocol");
+		conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+		UniDbServer.SyncTable(conu, con,"No");
+		con.close();
+		conu.close();
+		out.println("DbServer Config Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
+                //res.sendRedirect(""+classdir+"UniCash?action=top");
+            }
+
 
 private void doUpdateTimeCat(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -16187,7 +16216,10 @@ if (action.equalsIgnoreCase("showcustdetail_ide"))
 		out.println("</table>");
 
 		out.println("<br>");
-		out.println("<a href="+classdir+"UniCash?action=editcustomer&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Edit Customer Info</a>");
+		out.println("<a href="+classdir+"UniCash?action=editcustomer&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Edit Customer Info</a><br>");
+		String taddress1 = address1.replaceAll(" ","+");
+		String tcity = city.replaceAll(" ","+");
+		out.println("<a href=http://www.mapquest.com/maps/map.adp?searchtype=address&country=US&addtohistory=&searchtab=home&formtype=address&popflag=0&latitude=&longitude=&name=&phone=&cat=&address="+taddress1+"&city="+tcity+"&state="+state+"&zipcode="+zip+" target=_blank>Show on Mapquest (must have internet connect)</a>");
 	out.println("<P><P>");
 	out.println("<h3>Customer Equipment List</h3>");
 

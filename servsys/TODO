@@ -24,6 +24,9 @@ RELEASE 2.03
   on return to callslip.
 - Added some options to the proposal report. Still need to add emailing proposal report and link to proposal
   to make status changes easier.
+- Add a link to mapquest to display location - use the following format:
+ 	http://www.mapquest.com/maps/map.adp?searchtype=address&country=US&addtohistory=&searchtab=home&formtype=address&popflag=0&latitude=&longitude=&name=&phone=&cat=&address=29+potter+school+rd&city=willington&state=CT&zipcode=06279
+- Update local dbserver config from remote server.
 
 =================================================================
 RELEASE 2.02

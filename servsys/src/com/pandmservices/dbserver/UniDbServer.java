@@ -60,11 +60,42 @@ public class UniDbServer
 	}
 
 
+        public static void SyncTable (Connection con, Connection con2, String thismainserver)
+		throws SQLException, TodoException
+	{
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("select * from dbserver;");
+		Statement stmtu = con2.createStatement();
+		//int result=stmtu.executeUpdate("DROP TABLE IF EXISTS dbserver;");
+		//int result1=stmtu.executeUpdate("Create table dbserver (servername text, username text, password text, dbname text, mainservername text, mainusername text, mainpassword text, thismainserver text)");
+		while (rs.next())
+		{
+		String servername =rs.getString("servername");
+		String username = rs.getString("username");
+		String password=rs.getString("password");
+		String dbname=rs.getString("dbname");
+		String mainservername =rs.getString("mainservername");
+		String mainusername = rs.getString("mainusername");
+		String mainpassword=rs.getString("mainpassword");
+		String maindbname=rs.getString("maindbname");
+      		stmtu.executeUpdate("Update dbserver Set servername='" +servername+ "' ,username='"+username+"' , password='"+password+"', dbname='"+dbname+"', mainservername='" +mainservername+ "' ,mainusername='"+mainusername+"' , mainpassword='"+mainpassword+"', maindbname='"+maindbname+"', thismainserver='"+thismainserver+"';");
+		}
+	}
+
+
 	public static void UpdateItem(Connection con, String servername, String username, String password, String dbname, String mainservername, String mainusername, String mainpassword, String maindbname, String thismainserver)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
       		stmt.executeUpdate("Update dbserver Set servername='" +servername+ "' ,username='"+username+"' , password='"+password+"', dbname='"+dbname+"', mainservername='" +mainservername+ "' ,mainusername='"+mainusername+"' , mainpassword='"+mainpassword+"', maindbname='"+maindbname+"', thismainserver='"+thismainserver+"';");
+      	}
+
+
+	public static void UpdateItem(Connection con, String servername, String username, String password, String dbname, String mainservername, String mainusername, String mainpassword, String maindbname)
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+      		stmt.executeUpdate("Update dbserver Set servername='" +servername+ "' ,username='"+username+"' , password='"+password+"', dbname='"+dbname+"', mainservername='" +mainservername+ "' ,mainusername='"+mainusername+"' , mainpassword='"+mainpassword+"', maindbname='"+maindbname+"';");
       	}
 
 
