@@ -4511,7 +4511,7 @@ out.println("</TABLE>");
 out.println("</BODY>");
 out.println("</HTML>");
 out.println("<br><br><br><br><CENTER>");
-out.println("Copyright 2002, 2003, 2004, 2005 - Our World Shopping, LLC<br>Released under the General Public License (GPL)");
+out.println("(C) Copyright 2002-2006 - Our World Shopping, LLC<br>Released under the General Public License (GPL)");
 out.println("<br>Version: "+doVersionInfo_VNumber()+" - Compiled: "+doFormatDate(getDate(doVersionInfo_VDate()))+"<br>");
 //out.println("<br>Software Expire Date: "+doFormatDate(getDate(doGetExpireDate()))+"<br>");
 out.println("<br>Software Expire Date has been removed for GPL version.<br>");
@@ -5630,7 +5630,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2005-12-18";
+			vdate="2006-01-01";
 
                         return vdate;                       
         }
