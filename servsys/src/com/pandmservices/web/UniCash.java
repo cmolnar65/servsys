@@ -933,6 +933,10 @@ out.println("</CENTER>");
 	                        {
                                 doPrintPrevagreement(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("sendprevagreement"))
+	                        {
+                                doSendPrevagreement(req, res, out, session, username);
+				}
 			else if (action.equalsIgnoreCase("editprevagreement"))
 	                        {
                                 doEditPrevagreement(req, res, out, session, username);
@@ -5561,7 +5565,15 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.03";
+			vnumber = "2.04";
+		if (dbvnumber.equalsIgnoreCase("2.03")) {
+			Statement stmtu2 = con.createStatement();
+			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+		}
+		if (dbvnumber.equalsIgnoreCase("2.02")) {
+			Statement stmtu2 = con.createStatement();
+			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.01")) {
 			Statement stmtu = con.createStatement();
 			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS flatrateconfig;");
@@ -5569,12 +5581,12 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result4 = stmtu.executeUpdate("insert into flatrateconfig (labperhour, psdiscount, mrdiscount, commarkup, salestax, partmarkup, sitemlowprice, sitemhighprice,sitemhighhours) values ('1', '1', '1', '1', '1', '1', '1', '1', '1');");
 			int result5 = stmtu.executeUpdate("DROP TABLE IF EXISTS flat_rate_table;");
 			int result6 = stmtu.executeUpdate("CREATE TABLE flat_rate_table (code int(11) NOT NULL auto_increment, part text, category text, keycode text, hours decimal(10,2) default '0.00', partcost decimal(10,2) default 0.00, custnotes text, nodiscount text, specitem int(11), PRIMARY KEY  (code), UNIQUE KEY code (code));");
-			int result3 = stmtu.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
 			int result7 = stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
 			int result8 = stmtu.executeUpdate("create table formlist (formnum int(11) not null auto_increment, formname text, formdescription text, PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum))");
 			int result9 = stmtu.executeUpdate("alter table svc_charges add frcode int(11) after servsync;");
+			int result3 = stmtu.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
 							}
-		else if (!dbvnumber.equalsIgnoreCase("2.01")&&!dbvnumber.equalsIgnoreCase("2.02")) {
+		else if (!dbvnumber.equalsIgnoreCase("2.04")&&!dbvnumber.equalsIgnoreCase("2.01")&&!dbvnumber.equalsIgnoreCase("2.02")&&!dbvnumber.equalsIgnoreCase("2.03")) {
 			Statement stmt = con.createStatement();
 			int result = stmt.executeUpdate("UPDATE version set vnumber='2.01';");
 			}
@@ -5630,7 +5642,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-01-01";
+			vdate="2006-01-03";
 
                         return vdate;                       
         }
@@ -11556,13 +11568,13 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 // Here is where we end the http headers
 ////////////////////////////////////////////////////////
                 out.println(mbody);
-               //String newstring = mbody.replaceAll("<br>","\n");
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
 		mbody="";
 		}
+	out.println("</html>");
 ////////////////////////////////////////////////////////
 // Here is where we end the http headers
 // BLOCKED THIS TO SEPERATE CALLSLIPS INTO INDIVIDUAL MESSAGES
@@ -11573,7 +11585,6 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 //        emailsendaddress=doGetSvc_Email();
 //        techemailaddress=doGetTech_Email();
 //	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service CallSlips - "+listdate+" - "+ tech_name , mbody);
-	out.println("</html>");
 
 
 // Now sync callslip to server
@@ -16320,7 +16331,7 @@ out.println("<h3>Preventative Agreements</h3>");
  	Statement stmt5 = con.createStatement();
 	ResultSet rs5 = stmt5.executeQuery("SELECT * FROM pagreement where custnum="+tcustnum+"");
 	out.println("<table border=1 width=100%>");
-        out.println("<th>Contract</th><th>Start Date</th><th>End Date</th><th>Cost</th>");
+        out.println("<th>Contract</th><th>Start Date</th><th>End Date</th><th>Cost</th><th>Print</th><th>Email</th>");
 	while(rs5.next())
 		{
 		pcontnum=rs5.getInt("contnum");
@@ -16333,7 +16344,7 @@ out.println("<h3>Preventative Agreements</h3>");
 		if (action.equalsIgnoreCase("showcustdetail_ide")) {
 		out.println("<td><a href="+classdir+"UniCash?action=printprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+">Print Format</a></td></tr>");
 				} else {
-		out.println("<td><a href="+classdir+"UniCash?action=printprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+" target=_blank>Print Format</a></td></tr>");
+		out.println("<td><a href="+classdir+"UniCash?action=printprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+" target=_blank>Print Format</a></td><td><a href="+classdir+"UniCash?action=sendprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+" target=_blank>Email</a></tr>");
 				}
 			
                 }
@@ -23201,15 +23212,32 @@ private void doShowQuoteCatListMenu(HttpServletRequest req, HttpServletResponse 
 	out.println("<br><br><a href="+classdir+"UniCash?action=editservproposal&custnum="+crecnum+"&quotenum="+quotenum+"&custstart="+custstart+"&custstop="+custstop+">Return To Proposal</a><br><br>");
 				}
 	
+			if (action.equalsIgnoreCase("addservquoteitemmenu"))
+	                        {
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=a&serviceend=d&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices A-C</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=d&serviceend=g&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices D-F</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=g&serviceend=j&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices G-I</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=j&serviceend=m&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices J-L</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=m&serviceend=p&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices M-O</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=p&serviceend=s&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices P-R</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=s&serviceend=v&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices S-U</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=v&serviceend=&custnum="+crecnum+"&quotenum="+quotenum+"&&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices V-Z</a><br>");
+                out.println("<br><br><br>");
+				} else
+				{
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=a&serviceend=d&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices A-C</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=d&serviceend=g&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices D-F</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=g&serviceend=j&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices G-I</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=j&serviceend=m&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices J-L</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=m&serviceend=o&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices M-O</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=m&serviceend=p&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices M-O</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=p&serviceend=s&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices P-R</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=s&serviceend=v&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices S-U</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=v&serviceend=&custnum="+crecnum+"&quotenum="+quotenum+"&&psource=addquoteitemmenu target=phpmain>Flat Rate Prices V-Z</a><br>");
                 out.println("<br><br><br>");
+
+
+
+				}
 
                 Vector vp;
 		if (action.equalsIgnoreCase("addquoteitemmenu"))
@@ -24341,6 +24369,226 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
     }
 
 
+private void doSendPrevagreement(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String mbody="";
+      		String smtpuser = doGetSmtpUser(username);
+      		String smtppassword = doGetSmtpPassword(username);
+		String tcustnum = req.getParameter("custnum");
+		String tcontnum = req.getParameter("contnum");
+		String custstart = req.getParameter("custstart");
+		String custstop = req.getParameter("custstop");
+	int custnum = Integer.parseInt(tcustnum);
+       		 int contnum = Integer.parseInt(tcontnum);
+               int eenum=0;
+                int ecustnum=0;
+                String brand=null;
+                String modelnum=null;
+                String serialnum=null;
+                String filter=null;
+                String enotes=null;
+                String type=null;
+
+                int enum1 =0;
+                int enum2 = 0;
+                int enum3 = 0;
+                int enum4 = 0;
+                int enum5 = 0;
+                int enum6 = 0;
+                int enum7 = 0;
+                int enum8 = 0;
+                int enum9 = 0;
+                int enum10 =0;
+                String aservice  = null;
+                String startdate = null;
+                String enddate = null;
+                String term = null;
+                String cost = null;
+                String notes = null;
+                String agrdate = null;
+                int vperyear = 0;
+		String visit1=null;
+		String visit2=null;
+		String visit3=null;
+		String visit4=null;
+		String visit5=null;
+		String visit6=null;
+		String cname=null;
+		String address1=null;
+		String address2=null;
+		String city =null;
+		String state=null;
+		String zip=null;
+		String homephone=null;
+		String altphone=null;
+		String cust_notes=null;
+		
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+
+ 		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
+
+		 while(rs.next())
+        	        {
+			cname=rs.getString("cname");
+			address1=rs.getString("address1");
+			address2=rs.getString("address2");
+			city =rs.getString("city");
+			state=rs.getString("state");
+			zip=rs.getString("zip");
+			homephone=rs.getString("homephone");
+			altphone=rs.getString("altphone");
+			cust_notes=rs.getString("cust_notes");
+			}
+
+ 	stmt = con.createStatement();
+	rs = stmt.executeQuery("SELECT * FROM pagreement where contnum="+contnum+"");
+
+		 while(rs.next())
+                {
+		enum1=rs.getInt("enum1");
+		enum2=rs.getInt("enum2");
+		enum3=rs.getInt("enum3");
+		enum4=rs.getInt("enum4");
+		enum5=rs.getInt("enum5");
+		enum6=rs.getInt("enum6");
+		enum7=rs.getInt("enum7");
+		enum8=rs.getInt("enum8");
+		enum9=rs.getInt("enum9");
+		enum10=rs.getInt("enum10");
+		aservice=rs.getString("aservice");
+		visit1=rs.getString("visit1");
+		visit2=rs.getString("visit2");
+		visit3=rs.getString("visit3");
+		visit4=rs.getString("visit4");
+		visit5=rs.getString("visit5");
+		visit6=rs.getString("visit6");
+		startdate=doFormatDate(getDate(rs.getString("startdate")));
+		enddate=doFormatDate(getDate(rs.getString("enddate")));
+		term=rs.getString("term");
+		cost=rs.getString("cost");
+		notes=rs.getString("notes");
+		agrdate=doFormatDate(getDate(rs.getString("agrdate")));
+		vperyear=rs.getInt("vperyear");
+		}
+	int vfreq=12/vperyear;
+	int totvisits=Integer.parseInt(term)*vperyear;
+	 mbody=combinestring(mbody,"<html><basefont size=1>");
+	 mbody=combinestring(mbody,"<html><head><title>Preventative Agreement</title></head>");
+	doMHeader(req, res, out, session, username); 
+	 mbody=combinestring(mbody,"<h2 align=CENTER>Planned Service Agreement</h2>");
+	 mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
+	 mbody=combinestring(mbody,"<td>This agreement is issued to:</td><td>"+cname+" </td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+agrdate+" </td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>Covering equipment located at:</td><td><br>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
+	 mbody=combinestring(mbody,"</table></p> ");
+
+	 mbody=combinestring(mbody,"<table border=1 width=95% font=\"-2\">");
+         mbody=combinestring(mbody,"<th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Type</th><th>Notes</th>");
+
+ 	stmt = con.createStatement();
+	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+enum1+"' or enum='"+enum2+"' or enum='"+enum3+"' or enum='"+enum4+"' or enum='"+enum5+"' or enum='"+enum6+"' or enum='"+enum7+"' or enum='"+enum8+"' or enum='"+enum9+"' or enum='"+enum10+"';");
+
+		 while(rs.next())
+                {
+		brand = rs.getString("brand");
+                modelnum = rs.getString("modelnum");
+                serialnum = rs.getString("serialnum");
+                filter = rs.getString("filter");
+                notes = rs.getString("notes");
+                type = rs.getString("etype");
+	 mbody=combinestring(mbody,"<tr><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+type+"</td><td>"+notes+"</tr>");
+		}
+
+	 mbody=combinestring(mbody," ");
+	 mbody=combinestring(mbody," ");
+	 mbody=combinestring(mbody,"</table> ");
+	 mbody=combinestring(mbody,"<P ALIGN=LEFT FONT=\"-1\"><h3 ALIGN=LEFT>TERMS OF THIS AGREEMENT:</h3> ");
+
+//	 mbody=combinestring(mbody,"We agree to provide inspection and maintenance services as specified on both pages of this agreement for a period of <b>"+term+"</b> Year(s) from the date of this agreement. The inspection ");
+	if ((visit1!=null)&&(visit1.length()!=0)&&!visit1.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement starting with the "+visit1+" visit. The inspection ");
+					} else {
+	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement. The inspection ");
+					}
+	 mbody=combinestring(mbody," and maintenance services to be performed during the heating and/or cooling seasons by <b>"+doGetCompanyName()+"</b> by one of our qualified technicians. Maintenance dates may vary depending on weather and scheduling.<br><br>");
+	 mbody=combinestring(mbody,"Customer agrees to have an adult homeowner or authorized representative on-site during each maintenance visit. The approximate time for our maintenance visit is (residential between 45 minutes and 1 hour per unit)/(commercial 2-3 hours). Customer agrees to operate the specified equipment per our instructions. ");
+	 mbody=combinestring(mbody,"It is important for the customer to notify us in the event of any unusual operating conditions such as fumes, noise, etc. Customer agrees to permit only our Maintenance / Service Technicians to work on the specified equipment.");
+	 mbody=combinestring(mbody,"<h3>CONDITIONS:</h3>");
+	 mbody=combinestring(mbody,"1. Service parts not covered under warranty will be charged at regular rates less <b>20% preferential customer discount</b>.<br> ");
+	 mbody=combinestring(mbody,"2. Maintenance workmanship is guaranteed for thirty (30) days from the date of inspection. All parts and equipment are warranted per manufacturer's specifications.<br> ");
+	 mbody=combinestring(mbody,"3. Repair services requested by the customer will be provided during normal working hours (8:00am - 4:30pm) - at our current service rate less preferential customer discount noted above.<br> ");
+	 mbody=combinestring(mbody,"4. Request for emergency service after normal working hours will be charged at our current service rate less preferential customer discount.<br>");
+	 mbody=combinestring(mbody,"5. This agreement is non-refundable and may be assigned.");
+	 mbody=combinestring(mbody,"<h3>ADDITIONAL BENEFITS:</h3>");
+	 mbody=combinestring(mbody,"1. Automatic professional cleaning and maintenance.<br> ");
+	 mbody=combinestring(mbody,"2. Priority customer repair service.<br> ");
+	 mbody=combinestring(mbody,"3. Discount on all parts.<br> ");
+	 mbody=combinestring(mbody,"4. Up to date information on safety and energy saving accessories.<br> ");
+	 mbody=combinestring(mbody,"5. Increased efficiency of your unit.<br> ");
+	 mbody=combinestring(mbody,"6. Written evaluation of your equipment.<br> ");
+	 mbody=combinestring(mbody,"7. Extended life of your equipment.<br> ");
+	 mbody=combinestring(mbody,"8. Agreement is transferable to different owner.<br> ");
+	 mbody=combinestring(mbody,"9. Protection of price increases.");
+	 mbody=combinestring(mbody,"<h3>TERMS AND CONDITIONS</h3>");
+	 mbody=combinestring(mbody,"1. This planned service agreement contains the entire understanding between "+doGetCompanyName()+" (The Company) and the Customer. Any modifications, amendments or changes must be in writing and signed by both parties.<br> ");
+	 mbody=combinestring(mbody,"2. The Company shall not be liable for damage, loss or delays resulting from fire, explosion, flooding, the elements, labor troubles or any other cause beyond our control.<br> ");
+	 mbody=combinestring(mbody,"3. The Company shall not be responsible for the identification, detection, abatement, encapsulation, storage, removal or transportation of any regulated or hazardous substances. Regulated or hazardous substances may include, but are not limited to asbestos, certain refrigerants, and refrigerant oils.  ");
+	 mbody=combinestring(mbody,"If any such products or materials are encountered during the course of work, the company can discontinue work until regulated or hazardous materials have been removed or hazard or liability is eliminated.<br> ");
+	 mbody=combinestring(mbody,"4. No maintenance appointments will be scheduled before 8:00 A.M. or beginning after 3:30 P.M. - Monday through Friday. Hours or days may be changed at the discretion of The Company without notice.");
+	 mbody=combinestring(mbody,"<h3><u>DEFINITIONS:</u></h3> ");
+	 mbody=combinestring(mbody,"<b>Priority Service:</b> We will not accept non-service agreement customer emergencies before we will respond to Planned Service Agreement customer emergencies.<br> ");
+	 mbody=combinestring(mbody,"<br><b>Professionally Cleaned:</b> Due to time and cost, not every component of the system is cleaned or checked during a normal maintenance call. We maintain those items that the HVAC industry and the manufacturer typically accepts as part of routine scheduled maintenance. We do not check every electrical and mechanical component on your system unless a problem leads us to do so. e.g. cleaning of the evaporator coil is done at additional cost if necessary. This coil should only have to be cleaned every third or fourth year if a high efficiency air cleaner is used, more frequently if the standard fiberglass filter is used.<br> ");
+	 mbody=combinestring(mbody,"<br><b>Emergency Service:</b> Any situation where the Customer is in immediate danger due to a safety issue, i.e. gas leak, gas smell, threat of carbon monoxide, water leak or is without heat and there is a potential danger of frozen pipes and property damage. <u>Typically being without air conditioning is not considered an emergency</u>, unless there is a health related issue.<br><br><br> ");
+	
+		if (aservice.length()>1) {
+		 mbody=combinestring(mbody,"<br><h4>Additional Notes:</h4><br>"+aservice+"<br>");
+		 mbody=combinestring(mbody,"</td></tr>");
+		}
+	 mbody=combinestring(mbody,"<h3>PRICE OF THIS AGREEMENT: <b>"+cost+"</b></h3> ");
+	// mbody=combinestring(mbody,"<h3>THIS AGREEMENT BEGINS ON: "+startdate+" AND ENDS ON: "+enddate+"</h3> ");
+	 mbody=combinestring(mbody,"<br><br> ");
+	 mbody=combinestring(mbody,"<table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
+
+	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<br><br> ");
+	 mbody=combinestring(mbody,"<center><h3>Schedule of Visits</h3></center>");
+	 mbody=combinestring(mbody,"<table width=\"50%\" align=left border=\"1\">");
+	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 1:</td><td>"+visit1+"</td></tr> ");
+			}
+	if ((visit2!=null)&&!visit2.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 2:</td><td>"+visit2+"</td></tr> ");
+			}
+	if ((visit3!=null)&&!visit3.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 3:</td><td>"+visit3+"</td></tr> ");
+			}
+	if ((visit4!=null)&&!visit4.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 4:</td><td>"+visit4+"</td></tr> ");
+			}
+	if ((visit5!=null)&&!visit5.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 5:</td><td>"+visit5+"</td></tr> ");
+			}
+	if ((visit6!=null)&&!visit6.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 6:</td><td>"+visit6+"</td></tr> ");
+			}
+	 mbody=combinestring(mbody,"</table>");
+			}
+        emailserver = doGetSmtpServer(username);
+        emailsendaddress=doGetSvc_Email(username);
+        techemailaddress=doGetTech_Email(username);
+                out.println(mbody);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Agreement: "+cname+" - "+agrdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+		mbody="";
+	out.println("</html>");
+		con.close();
+    }
+
 private void doPrintPrevagreement(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
@@ -24673,7 +24921,7 @@ private void doAddChargeMenu(HttpServletRequest req, HttpServletResponse res, Pr
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=d&serviceend=g&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices D-F</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=g&serviceend=j&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices G-I</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=j&serviceend=m&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices J-L</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=m&serviceend=o&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices M-O</a><br>");
+                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=m&serviceend=p&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices M-O</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=p&serviceend=s&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices P-R</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=s&serviceend=v&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices S-U</a><br>");
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=v&serviceend=&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices V-Z</a><br>");

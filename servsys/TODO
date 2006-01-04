@@ -15,6 +15,13 @@
 - Update callslip from server to laptop if requested.
 - Update inspection from server to laptop if requested.
 - Update equipment from server to laptop if requested.
+=================================================================
+RELEASE 2.04
+==================================================================
+- Fix the service proposal - wrong "sourcepage" being sent.
+- Add ability to send the preventative agreements back to the office. This is "Email" selection from the customer
+  detail screen.
+
 
 =================================================================
 RELEASE 2.03
