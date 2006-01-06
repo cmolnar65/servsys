@@ -2600,12 +2600,18 @@ private void doSyncCallslips(HttpServletRequest req, HttpServletResponse res, Pr
 // Lets sync all unsynced customers first
 ////////////////////////////////////////////////////////
         SyncCustomer sc = new SyncCustomer(con,conu);
+				doOpenConnection();
 	out.println("Customer Sync Complete<br>");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
 	SyncEquip se = new SyncEquip(con,conu);
 	out.println("Equipment Sync Complete<br>");
+				doOpenConnection();
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
 	SyncInvUse siu = new SyncInvUse(con,conu);
 	out.println("Inventory Use Sync Complete<br>");
 	SyncSvcCharges ssc = new SyncSvcCharges(con,conu);
+				doOpenConnection();
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
 	out.println("Service Charges Sync Complete<br>");
 	SyncCallslip scs = new SyncCallslip(con,conu);
 	out.println("Service Callslips Sync Complete<br>");

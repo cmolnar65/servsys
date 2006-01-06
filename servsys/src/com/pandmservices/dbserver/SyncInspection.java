@@ -178,7 +178,7 @@ public class SyncInspection
 	}
 
 
-		rs= stmt2.executeQuery("SELECT * FROM inspection where (servsync=0 or servsync is NULL) and custsite is not NULL and sitenum is not NULL ORDER BY crecnum;");
+		rs= stmt2.executeQuery("SELECT * FROM inspection where (servsync!=2 or servsync is NULL) and custsite is not NULL and sitenum is not NULL ORDER BY crecnum;");
 		while(rs.next())
 		{
 		this.crecnum = rs.getInt("crecnum");

@@ -30,7 +30,7 @@ public class SyncInvUse
 	{
 		Statement stmt = con.createStatement();
 		Statement stmt2 = con.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from inv_use where servsync=0 or servsync is NULL;");
+	ResultSet rs = stmt.executeQuery("select * from inv_use where servsync!=2 or servsync is NULL;");
 	
 		 while (rs.next())
 		{

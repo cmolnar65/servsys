@@ -15,6 +15,15 @@
 - Update callslip from server to laptop if requested.
 - Update inspection from server to laptop if requested.
 - Update equipment from server to laptop if requested.
+
+=================================================================
+RELEASE 2.05
+==================================================================
+
+- Fix closed error on send single callslip when worksheets are present as well.
+- Fixed major problems with transmit of callslip. This will require all users to update and then it will
+  sync all missing callslips to the server.
+
 =================================================================
 RELEASE 2.04
 ==================================================================

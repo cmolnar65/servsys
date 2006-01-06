@@ -40,7 +40,7 @@ public class SyncCallslip
 		Statement stmt2 = con.createStatement();
 		Statement stmtu = conu.createStatement();
 		Statement stmtu2 = conu.createStatement();
-		ResultSet rs99 = stmt99.executeQuery("SELECT *  FROM callslip where servsync=0 or servsync is NULL and custsite is not NULL and sitenum is not NULL ORDER BY crecnum;");
+		ResultSet rs99 = stmt99.executeQuery("SELECT *  FROM callslip where servsync!=2 or servsync is NULL and custsite is not NULL and sitenum is not NULL ORDER BY crecnum;");
 		while(rs99.next())
 		{
 		this.crecnum = rs99.getInt("crecnum");

@@ -41,7 +41,7 @@ public class SyncCustomer
 	{
 		Statement stmt = con.createStatement();
 		Statement stmt2 = con.createStatement();
-	ResultSet rs1 = stmt.executeQuery("select * from customers where (servsync=0 or servsync is NULL) and custsite IS not NULL and length(custsite)>1;");	
+	ResultSet rs1 = stmt.executeQuery("select * from customers where (servsync!=2 or servsync is NULL) and custsite IS not NULL and length(custsite)>1;");	
 		while (rs1.next())
 		{
 		this.cusnum=rs1.getString("custnum");

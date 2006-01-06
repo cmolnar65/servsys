@@ -25,7 +25,7 @@ public class SyncSvcCharges
 		Statement stmt = con.createStatement();
 		Statement stmtu = conu.createStatement();
 		Statement stmt2 = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM svc_charges WHERE servsync=0 or servsync is NULL;");
+		ResultSet rs = stmt.executeQuery("SELECT * FROM svc_charges WHERE servsync!=2 or servsync is NULL;");
 		while(rs.next())
 		{
 		this.recnum = rs.getInt("recnum");

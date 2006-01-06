@@ -68,7 +68,7 @@ public class SyncEquip
 // get unsynced equipment with custsite and sitenum
 /////////////////////////////////////////////
 
-		rs = stmt.executeQuery("SELECT * FROM equipment where servsync=0 or servsync is NULL and custsite is not NULL and sitenum is not NULL and length(custsite)>1 and length(sitenum)>1 ORDER BY custnum;");
+		rs = stmt.executeQuery("SELECT * FROM equipment where servsync!=2 or servsync is NULL and custsite is not NULL and sitenum is not NULL and length(custsite)>1 and length(sitenum)>1 ORDER BY custnum;");
 		while(rs.next())
 		{
 
