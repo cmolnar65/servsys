@@ -32,6 +32,7 @@ public class UniTimeSheet
 	private int tsid;
 	private String dispatch_time;
 	private int servsync;
+	private String paytype;
 
         public UniTimeSheet (Connection c, String tsid)
 		throws SQLException, TodoException
@@ -58,6 +59,7 @@ public class UniTimeSheet
 		this.cisold = rs.getString("citem_sold");
 		this.camount = rs.getString("camount");
 		this.login = rs.getString("login");
+		this.paytype = rs.getString("paytype");
 		this.servsync=rs.getInt("servsync");
 	}
 
@@ -172,18 +174,18 @@ public class UniTimeSheet
       		stmt.executeUpdate("Update todo Set Done=true Where ID=" + id + ";");
       	}
 
-	public static void UpdateItem(Connection con, String tsid, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login)
+	public static void UpdateItem(Connection con, String tsid, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update time_sheet Set tdate ='" +listdate + "', callslip='"+callslip +"', customer='"+customer +"', dispatch_time='"+dispatch_time +"', time_in='"+time_in +"', time_out='"+time_out +"', item_sold='"+isold +"', amount='"+asold +"', citem_sold='"+cisold +"', camount='"+casold +"',amount_collected='"+collected +"', commision='"+commision +"', ctype='"+ctype +"', login='"+login+"'  Where tsid=" + tsid + ";");
+      		stmt.executeUpdate("Update time_sheet Set tdate ='" +listdate + "', callslip='"+callslip +"', customer='"+customer +"', dispatch_time='"+dispatch_time +"', time_in='"+time_in +"', time_out='"+time_out +"', item_sold='"+isold +"', amount='"+asold +"', citem_sold='"+cisold +"', camount='"+casold +"',amount_collected='"+collected +"', commision='"+commision +"', ctype='"+ctype +"', login='"+login+"', paytype='"+paytype+"'  Where tsid=" + tsid + ";");
       	}
 
-	public static void addTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login)
+	public static void addTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype)
                 throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
 		        {
 			Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"')");
+	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"')");
 		        }
 
         public int getId() { return tsid; }
@@ -203,17 +205,7 @@ public class UniTimeSheet
         public String CType() { return ctype; }
 	public String TLogin() { return login; }
 	public int getServSync() { return servsync; }
-
+	public String TPayType() { return paytype; }
 
         public void setId(int id) { this.id = id; }
-//        public void setCallSlip(int callslip) { this.callslip = callslip; }
-//        public void setCustomer(int customer) { this.customer = customer; }
-//        public void setTimeIn(int time_in) { this.time_in = time_in; }
-//        public void setTimeOut(int time_out) { this.time_out = time_out; }
-//        public void setDispatchTime(int dispatch_time) { this.dispatch_time = dispatch_time; }
-//        public void setItemSold(int item_sold) { this.item_sold = item_sold; }
-//        public void setAmount(int amount) { this.amount = amount; }
-//        public void setAmountCollected(int amount_collected) { this.amount_collected = amount_collected; }
-//        public void setCommision(int commision) { this.commision = commision; }
-
 }

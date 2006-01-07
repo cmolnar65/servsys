@@ -31,6 +31,7 @@ public class SyncTimeSheets
 	private String ctype;
 	private int tsid;
 	private String dispatch_time;
+	private String paytype;
 
         public SyncTimeSheets (Connection con, Connection conu)
 		throws SQLException, TodoException
@@ -57,6 +58,7 @@ public class SyncTimeSheets
 		this.cisold = rs.getString("citem_sold");
 		this.camount = rs.getString("camount");
 		this.login = rs.getString("login");
+		this.paytype = rs.getString("paytype");
 	             String tcustname="";
                                 if (customer!=null) {
                                 tcustname = customer.replaceAll("'","''");
@@ -64,7 +66,7 @@ public class SyncTimeSheets
        
 
 		//System.out.println("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login) Values ('" + tdate + "','" +callslip+ "','"+ tcustname + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ amount +"','"+amount_collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ camount +"','"+ctype+"', '"+login+"')\n");
-		stmtu.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login) Values ('" + tdate + "','" +callslip+ "','"+ tcustname + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ amount +"','"+amount_collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ camount +"','"+ctype+"', '"+login+"')");
+		stmtu.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype) Values ('" + tdate + "','" +callslip+ "','"+ tcustname + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ amount +"','"+amount_collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ camount +"','"+ctype+"', '"+login+"', '"+paytype+"')");
 
 		stmt2.executeUpdate("update time_sheet set servsync=2 where tsid='"+tsid+"';");
 		}

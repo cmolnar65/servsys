@@ -5571,7 +5571,22 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.04";
+			vnumber = "2.05";
+		if (dbvnumber.equalsIgnoreCase("2.04")) {
+			Statement stmtu2 = con.createStatement();
+			int result204=stmtu2.executeUpdate("DROP TABLE IF EXISTS paytype;");
+			int result204a=stmtu2.executeUpdate("alter table time_sheet add paytype text after login;");
+			int result2040 = stmtu2.executeUpdate("create table paytype (paytype text)");
+			int result2041 = stmtu2.executeUpdate("insert into paytype (paytype) value ('Cash');");
+			int result2041a = stmtu2.executeUpdate("insert into paytype (paytype) value ('Check');");
+			int result2041b = stmtu2.executeUpdate("insert into paytype (paytype) value ('Visa');");
+			int result2041c = stmtu2.executeUpdate("insert into paytype (paytype) value ('Master_Card');");
+			int result2041d = stmtu2.executeUpdate("insert into paytype (paytype) value ('Discover');");
+			int result2041e = stmtu2.executeUpdate("insert into paytype (paytype) value ('American_Express');");
+			int result2041f = stmtu2.executeUpdate("insert into paytype (paytype) value ('Other_Credit');");
+			int result2041g = stmtu2.executeUpdate("insert into paytype (paytype) value ('Purchase_Order');");
+			int result2042 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.03")) {
 			Statement stmtu2 = con.createStatement();
 			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
@@ -5592,10 +5607,6 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result9 = stmtu.executeUpdate("alter table svc_charges add frcode int(11) after servsync;");
 			int result3 = stmtu.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
 							}
-		else if (!dbvnumber.equalsIgnoreCase("2.04")&&!dbvnumber.equalsIgnoreCase("2.01")&&!dbvnumber.equalsIgnoreCase("2.02")&&!dbvnumber.equalsIgnoreCase("2.03")) {
-			Statement stmt = con.createStatement();
-			int result = stmt.executeUpdate("UPDATE version set vnumber='2.01';");
-			}
 
                 v = UniVersion.getAllItems(con);
                 for (int i = 0 ; i < v.size(); i++)
@@ -5648,7 +5659,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-01-03";
+			vdate="2006-01-07";
 
                         return vdate;                       
         }
@@ -8913,6 +8924,7 @@ out.println("</CENTER>");
 			String citem_sold=null;
 			String camount=null;
 			String ctype=null;
+			String paytype=null;
 
 		int counter=0;
                 for (int i = 0 ; i < v.size(); i++)
@@ -8932,6 +8944,7 @@ out.println("</CENTER>");
 			citem_sold = t.CItemSold();
 			camount = t.CAmount();
 			ctype=t.CType();
+			paytype=t.TPayType();
 		}
 
 
@@ -8974,6 +8987,17 @@ out.println("</tr>");
 out.println("<tr><td>Amount Collected   :</td>");
 out.println("<td><input type=\"text\" name=\"collected\" value=\""+amount_collected  +"\">");
 out.println("</tr>");
+out.println("<tr><td>How Paid   :</td>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"paytype\">");
+                Vector vp = SupPaytype.getAllItems(con);
+		out.println("<option value=\""+paytype+"\">"+paytype+"</option>");
+		out.println("<option value=\"-\">-</option>");
+                for (int i = 0 ; i < vp.size(); i++)
+                {
+                SupPaytype t = (SupPaytype) vp.elementAt(i);
+		out.println("<option value="+t.getAnswer()+">"+t.getAnswer()+"</option>");
+		}
+		out.println("</select></td></tr>");
 out.println("<tr><td>Commision        :</td>");
 out.println("<td><input type=\"text\" name=\"commision\" value=\""+ commision +"\"></td></tr>");
 out.println("<tr><td>Call Type        :</td>");
@@ -9014,41 +9038,39 @@ out.println("<table><tr><td>");
 out.println("<table>");
 out.println("<tr><td>Date</td>");
 out.println("<td><input type=\"text\" name=\"listdate\" value=\""+timesheetdate+"\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Call Slip        :");
+out.println("<tr><td>Call Slip        :</td>");
 out.println("<td><input type=\"text\" name=\"callslip\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Customer         :");
+out.println("<tr><td>Customer         :</td>");
 out.println("<td><input type=\"text\" name=\"customer\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Dispatched       :");
+out.println("<tr><td>Dispatched       :</td>");
 out.println("<td><input type=\"text\" name=\"dispatch_time\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Time In          :");
+out.println("<tr><td>Time In          :</td>");
 out.println("<td><input type=\"text\" name=\"time_in\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Time Out         :");
+out.println("<tr><td>Time Out         :</td>");
 out.println("<td><input type=\"text\" name=\"time_out\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Non-Commission Item Sold         :");
+out.println("<tr><td>Non-Commission Item Sold         :</td>");
 out.println("<td><input type=\"text\" name=\"isold\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Non-Commission Amount Sold        :");
+out.println("<tr><td>Non-Commission Amount Sold        :</td>");
 out.println("<td><input type=\"text\" name=\"asold\" value=\"0\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Commission Item Sold         :");
+out.println("<tr><td>Commission Item Sold         :</td>");
 out.println("<td><input type=\"text\" name=\"cisold\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Commission Amount Sold        :");
+out.println("<tr><td>Commission Amount Sold        :</td>");
 out.println("<td><input type=\"text\" name=\"casold\" value=\"0\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Amount Collected   :");
+out.println("<tr><td>Amount Collected   :</td>");
 out.println("<td><input type=\"text\" name=\"collected\" value=\"0\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Commision        :");
+out.println("<tr><td>How Paid   :</td>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"paytype\">");
+                Vector vp = SupPaytype.getAllItems(con);
+		out.println("<option value=\"-\">-</option>");
+                for (int i = 0 ; i < vp.size(); i++)
+                {
+                SupPaytype t = (SupPaytype) vp.elementAt(i);
+		out.println("<option value="+t.getAnswer()+">"+t.getAnswer()+"</option>");
+		}
+		out.println("</select></td></tr>");
+out.println("<tr><td>Commision        :</td>");
 out.println("<td><input type=\"text\" name=\"commision\" value=\"0\"></td></tr>");
-out.println("</p>");
-out.println("<tr><td>Call Type        :");
+out.println("<tr><td>Call Type        :</td>");
 out.println("<td><input type=\"text\" name=\"ctype\" value=\"-\"></td></tr>");
 out.println("<input type=\"hidden\" name=\"timeadd\" value=1>");
 out.println("</table></td>");
@@ -9114,12 +9136,13 @@ private void doUpdateTimeEntry(HttpServletRequest req, HttpServletResponse res, 
                 String cisold = req.getParameter("cisold");
                 String casold = req.getParameter("casold");
                 String ctype = req.getParameter("ctype");
+                String paytype = req.getParameter("paytype");
         if (callslip == null || callslip.length() < 1)
                     {
                     out.println("Callslip field blank please use back key and try again");
                     return;
                      } else {
-                UniTimeSheet.UpdateItem(con, tsid, doFormatDateDb(getDateDb(listdate)), callslip, customer, dispatch_time, time_in, time_out, isold, asold, collected, commision, cisold, casold, ctype, username);
+                UniTimeSheet.UpdateItem(con, tsid, doFormatDateDb(getDateDb(listdate)), callslip, customer, dispatch_time, time_in, time_out, isold, asold, collected, commision, cisold, casold, ctype, username, paytype);
                 out.println("Your item has been updated in the database<br>");
 		//doShowTimeSheet(req, res, out, session, username);
 		con.close();
@@ -9143,12 +9166,13 @@ private void doSaveTimeEntry(HttpServletRequest req, HttpServletResponse res, Pr
                 String cisold = req.getParameter("cisold");
                 String casold = req.getParameter("casold");
                 String ctype = req.getParameter("ctype");
+                String paytype = req.getParameter("paytype");
         if (callslip == null || callslip.length() < 1)
                     {
                     out.println("Callslip field blank please use back key and try again");
                     return;
                      } else {
-                UniTimeSheet.addTimeSheetItem(con, doFormatDateDb(getDateDb(listdate)), callslip, customer, dispatch_time, time_in, time_out, isold, asold, collected, commision, cisold, casold, ctype, username);
+                UniTimeSheet.addTimeSheetItem(con, doFormatDateDb(getDateDb(listdate)), callslip, customer, dispatch_time, time_in, time_out, isold, asold, collected, commision, cisold, casold, ctype, username, paytype);
                 out.println("Your item has been added to the database<br>");
 		
 		//res.sendRedirect(""+classdir+"UniCash?action=showtimesheet");
@@ -10084,9 +10108,10 @@ mbody=combinestring(mbody,"The following recommendations are made by our service
 		String CItemSold = ts.CItemSold();
 		String CAmount = ts.CAmount();
 		String ItemSold = ts.ItemSold();
+		String paytype = ts.TPayType();
 
 	mbody=combinestring(mbody,"<br>Dispatched Time: "+DispatchTime+"<br>Time In: "+TimeIn+"<br>Time Out: "+TimeOut+"<br><br>");	
-	mbody=combinestring(mbody,"Item Sold: "+ItemSold+"<br>Amount Sold: "+Amount+"<br>Commision Item Sold: "+CItemSold+"<br>Commision Amount Sold: "+CAmount+"<br>Amount Collected: "+AmountCollected+"<br>Commision: "+Commision+"<br>");
+	mbody=combinestring(mbody,"Item Sold: "+ItemSold+"<br>Amount Sold: "+Amount+"<br>Commision Item Sold: "+CItemSold+"<br>Commision Amount Sold: "+CAmount+"<br>Amount Collected: "+AmountCollected+"<br>Commision: "+Commision+"<br>Paid With: "+paytype+"<br>");
 		}
 
 
@@ -11541,9 +11566,10 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 		String CItemSold = ts.CItemSold();
 		String CAmount = ts.CAmount();
 		String ItemSold = ts.ItemSold();
+		String paytype = ts.TPayType();
 
 	mbody=combinestring(mbody,"<br>Dispatched Time: "+DispatchTime+"<br>Time In: "+TimeIn+"<br>Time Out: "+TimeOut+"<br><br>");	
-	mbody=combinestring(mbody,"Item Sold: "+ItemSold+"<br>Amount Sold: "+Amount+"<br>Commision Item Sold: "+CItemSold+"<br>Commision Amount Sold: "+CAmount+"<br>Amount Collected: "+AmountCollected+"<br>Commision: "+Commision+"<br>");
+	mbody=combinestring(mbody,"Item Sold: "+ItemSold+"<br>Amount Sold: "+Amount+"<br>Commision Item Sold: "+CItemSold+"<br>Commision Amount Sold: "+CAmount+"<br>Amount Collected: "+AmountCollected+"<br>Commision: "+Commision+"<br>Paid With: "+paytype+"<br>");
 
 		}
 
@@ -12258,7 +12284,7 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 		day_start_time=null;
 		day_end_time=null;
 		int counter1=0;
-                mbody = combinestring(mbody,"<table border=1><th>Callslip</th><th>Customer</th><th>Dispatched</th><th>Time In</th><th>Time Out</th><th>Job Time</th><th>Travel Time</th><th>NC Item Sold</th><th>NC Amount</th><th>Com Item Sold</th><th>Com Amount</th><th>Amount Collected</th><th>Commision</th><th>Code</th>");
+                mbody = combinestring(mbody,"<table border=1><th>Callslip</th><th>Customer</th><th>Dispatched</th><th>Time In</th><th>Time Out</th><th>Job Time</th><th>Travel Time</th><th>NC Item Sold</th><th>NC Amount</th><th>Com Item Sold</th><th>Com Amount</th><th>Amount Collected</th><th>Paid By<th><th>Commision</th><th>Code</th>");
 	if (v.size()!=0) {
                 for (int i = 0 ; i < v.size(); i++)
                 {
@@ -12277,6 +12303,7 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 			String commision = t.Commision();
 			String tdate = t.TDate();
 			String ctype = t.CType();
+			String paytype = t.TPayType();
 			counter++;
 			
 			double iamount = Double.parseDouble(amount);
@@ -12317,7 +12344,7 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 			day_commission=day_commission+icommission;
 			day_collected=day_collected+iamount_collected;
 
-                mbody = combinestring(mbody,"<tr><td>"+callslip+"</td><td>"+customer+"</td><td>"+formatATimeString(dispatch)+"</td><td>"+formatATimeString(jstart)+"</td><td>"+formatATimeString(jend)+"</td><td>"+formatTimeString(job_time)+"</td><td>"+formatTimeString(travel_time)+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+commision+"</td><td>"+ctype+"</td><tr>");
+                mbody = combinestring(mbody,"<tr><td>"+callslip+"</td><td>"+customer+"</td><td>"+formatATimeString(dispatch)+"</td><td>"+formatATimeString(jstart)+"</td><td>"+formatATimeString(jend)+"</td><td>"+formatTimeString(job_time)+"</td><td>"+formatTimeString(travel_time)+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+paytype+"</td><td>"+commision+"</td><td>"+ctype+"</td><tr>");
 		counter1++;
 		day_end_time=time_out;
 		}
@@ -14240,7 +14267,7 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 		out.println(timesheetdate+"<br>");
 
 		out.println("<table border=1 width=100%>");
-		out.println("<th>Call Slip</th><th>Customer</th><th>Dispatched</th><th>Time In</th><th>Time Out</th><th>NC<br>Item Sold</th><th>NC<br>Amount</th><th>Com<br>Item Sold</th><th>Com<br>Amount</th><th>Amount Collected</th><th>Commision</th><th>Code</th><th>Delete</th>");
+		out.println("<th>Call Slip</th><th>Customer</th><th>Dispatched</th><th>Time In</th><th>Time Out</th><th>NC<br>Item Sold</th><th>NC<br>Amount</th><th>Com<br>Item Sold</th><th>Com<br>Amount</th><th>Amount Collected</th><th>Paid<br>With</th><th>Commision</th><th>Code</th><th>Delete</th>");
 
 
                 Vector v;
@@ -14263,6 +14290,7 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 			String commision = t.Commision();
 			String tdate = t.TDate();
 			String ctype = t.CType();
+			String paytype = t.TPayType();
 			int servsync = t.getServSync();
 
 			counter++;
@@ -14276,9 +14304,9 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 			counter=0;	
 				}
 		if (servsync==0) {
-		out.println("<td><a href="+classdir+"UniCash?action=edittimeentry&tsid="+tsid+"&tdate="+tdate+"&callslip="+callslip+"&customer="+customer+"&time_in="+time_in+"&time_out="+time_out+"&item_sold="+item_sold+"&amount="+amount+"&amount_collected="+amount_collected+"&commision="+commision+"&action=timeupdate&tsid="+tsid+"&dispatch_time="+dispatch_time+">"+callslip+"</a></td><td>"+customer+"</td><td>"+dispatch_time+"</td><td>"+time_in+"</td><td>"+time_out+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+commision+"</td><td>"+ctype+"</td><td><a href="+classdir+"UniCash?action=deletesingletime&tsid="+tsid+"&listdate="+timesheetdate+">Delete</a></td></tr>");
+		out.println("<td><a href="+classdir+"UniCash?action=edittimeentry&tsid="+tsid+"&tdate="+tdate+"&callslip="+callslip+"&customer="+customer+"&time_in="+time_in+"&time_out="+time_out+"&item_sold="+item_sold+"&amount="+amount+"&amount_collected="+amount_collected+"&paytype="+paytype+"&commision="+commision+"&action=timeupdate&tsid="+tsid+"&dispatch_time="+dispatch_time+">"+callslip+"</a></td><td>"+customer+"</td><td>"+dispatch_time+"</td><td>"+time_in+"</td><td>"+time_out+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+paytype+"</td><td>"+commision+"</td><td>"+ctype+"</td><td><a href="+classdir+"UniCash?action=deletesingletime&tsid="+tsid+"&listdate="+timesheetdate+">Delete</a></td></tr>");
 		} else {
-		out.println("<td><a href="+classdir+"UniCash?action=edittimeentry&tsid="+tsid+"&tdate="+tdate+"&callslip="+callslip+"&customer="+customer+"&time_in="+time_in+"&time_out="+time_out+"&item_sold="+item_sold+"&amount="+amount+"&amount_collected="+amount_collected+"&commision="+commision+"&action=timeupdate&tsid="+tsid+"&dispatch_time="+dispatch_time+">"+callslip+"</a></td><td>"+customer+"</td><td>"+dispatch_time+"</td><td>"+time_in+"</td><td>"+time_out+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+commision+"</td><td>"+ctype+"</td><td>-</td></tr>");
+		out.println("<td><a href="+classdir+"UniCash?action=edittimeentry&tsid="+tsid+"&tdate="+tdate+"&callslip="+callslip+"&customer="+customer+"&time_in="+time_in+"&time_out="+time_out+"&item_sold="+item_sold+"&amount="+amount+"&amount_collected="+amount_collected+"&commision="+commision+"&action=timeupdate&tsid="+tsid+"&dispatch_time="+dispatch_time+">"+callslip+"</a></td><td>"+customer+"</td><td>"+dispatch_time+"</td><td>"+time_in+"</td><td>"+time_out+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+paytype+"</td><td>"+commision+"</td><td>"+ctype+"</td><td>-</td></tr>");
 			}
                 }
 
