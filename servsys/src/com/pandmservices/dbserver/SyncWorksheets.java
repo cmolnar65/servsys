@@ -146,11 +146,11 @@ int recordset=stmtu.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, 
         // Set ServSync Flag
         /////////////////////////////////////////////
 
-        stmt2.executeUpdate("Update worksheet set servsync='1' where wsrec='"+wsrec+"';");
+        stmt2.executeUpdate("Update worksheet set servsync='2' where wsrec='"+wsrec+"';");
         //stmt2.executeUpdate("Update quote_parts set servsync='1' where quotenum='"+quotenum+"';");
 
 		}
-        stmt2.executeUpdate("Update worksheet set servsync='1' where wsrec='"+wsrec+"';");
+        stmt2.executeUpdate("Update worksheet set servsync='2' where wsrec='"+wsrec+"';");
 		
 
 	}

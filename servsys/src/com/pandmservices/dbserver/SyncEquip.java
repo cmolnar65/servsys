@@ -131,7 +131,7 @@ if (serialnum!=null) {
 /////////////////////////////////////////////
 }
 		}
-		stmt2.executeUpdate("update equipment set servsync=1 Where enum=" +id+ ";");
+		stmt2.executeUpdate("update equipment set servsync=2 Where enum=" +id+ ";");
 		}
 	}
 

@@ -297,7 +297,7 @@ public class SyncPagreement
 			}
 
 		
-	stmt2.executeUpdate("Update pagreement set servsync='1' where contnum='"+this.contnum+"';");
+	stmt2.executeUpdate("Update pagreement set servsync='2' where contnum='"+this.contnum+"';");
 			
 	}
 	}

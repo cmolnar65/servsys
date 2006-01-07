@@ -5577,23 +5577,23 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result204=stmtu2.executeUpdate("DROP TABLE IF EXISTS paytype;");
 			int result204a=stmtu2.executeUpdate("alter table time_sheet add paytype text after login;");
 			int result2040 = stmtu2.executeUpdate("create table paytype (paytype text)");
-			int result2041 = stmtu2.executeUpdate("insert into paytype (paytype) value ('Cash');");
-			int result2041a = stmtu2.executeUpdate("insert into paytype (paytype) value ('Check');");
-			int result2041b = stmtu2.executeUpdate("insert into paytype (paytype) value ('Visa');");
-			int result2041c = stmtu2.executeUpdate("insert into paytype (paytype) value ('Master_Card');");
-			int result2041d = stmtu2.executeUpdate("insert into paytype (paytype) value ('Discover');");
-			int result2041e = stmtu2.executeUpdate("insert into paytype (paytype) value ('American_Express');");
-			int result2041f = stmtu2.executeUpdate("insert into paytype (paytype) value ('Other_Credit');");
-			int result2041g = stmtu2.executeUpdate("insert into paytype (paytype) value ('Purchase_Order');");
+			int result2041 = stmtu2.executeUpdate("insert into paytype (paytype) values ('Cash');");
+			int result2041a = stmtu2.executeUpdate("insert into paytype (paytype) values ('Check');");
+			int result2041b = stmtu2.executeUpdate("insert into paytype (paytype) values ('Visa');");
+			int result2041c = stmtu2.executeUpdate("insert into paytype (paytype) values ('Master_Card');");
+			int result2041d = stmtu2.executeUpdate("insert into paytype (paytype) values ('Discover');");
+			int result2041e = stmtu2.executeUpdate("insert into paytype (paytype) values ('American_Express');");
+			int result2041f = stmtu2.executeUpdate("insert into paytype (paytype) values ('Other_Credit');");
+			int result2041g = stmtu2.executeUpdate("insert into paytype (paytype) values ('Purchase_Order');");
 			int result2042 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
 		}
 		if (dbvnumber.equalsIgnoreCase("2.03")) {
 			Statement stmtu2 = con.createStatement();
-			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='2.04';");
 		}
 		if (dbvnumber.equalsIgnoreCase("2.02")) {
 			Statement stmtu2 = con.createStatement();
-			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='2.03';");
 		}
 		if (dbvnumber.equalsIgnoreCase("2.01")) {
 			Statement stmtu = con.createStatement();
@@ -5605,7 +5605,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result7 = stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
 			int result8 = stmtu.executeUpdate("create table formlist (formnum int(11) not null auto_increment, formname text, formdescription text, PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum))");
 			int result9 = stmtu.executeUpdate("alter table svc_charges add frcode int(11) after servsync;");
-			int result3 = stmtu.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result3 = stmtu.executeUpdate("UPDATE version set vnumber='2.02';");
 							}
 
                 v = UniVersion.getAllItems(con);
@@ -9547,7 +9547,7 @@ throws Exception
 	out.println("<h3>YOU MUST HAVE AN ACTIVE INTERNET OR NETWORK CONNECT PRIOR TO GOING FURTHER</h3><br>");
 	out.println("</head>");
 	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=sendall\" name=\"addcat\">");
-	out.println("<h4>This button sends all daily reports - do not use rest of form</h4>");
+	out.println("<h4>This button sends all daily reports - do not use if you transmit calls as you go.</h4>");
 	out.println("<p>Date :");
 	out.println("<input type=\"date\" name=\"listdate\" value=\""+s+"\">");
 	out.println("</p>");
@@ -9557,6 +9557,7 @@ throws Exception
 	out.println("</form><br><hr noshade size=1 width=100% color=cccccc>");        
             
 	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=senddailytime\" name=\"addcat\">");
+	out.println("<h4>If you are on Wireless Card (Service Department) Use this button</h4>");
 	out.println("<p>Time Sheet Date :");
 	out.println("<input type=\"date\" name=\"listdate\" value=\""+s+"\">");
 	out.println("</p>");

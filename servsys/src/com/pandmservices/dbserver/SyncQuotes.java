@@ -139,10 +139,10 @@ String ID=null;
         // Set ServSync Flag
         /////////////////////////////////////////////
 
-        stmt2.executeUpdate("Update quote_parts set servsync='1' where quotenum='"+quotenum+"';");
+        stmt2.executeUpdate("Update quote_parts set servsync='2' where quotenum='"+quotenum+"';");
 		}
 		
-        stmt2.executeUpdate("Update quotes set servsync='1' where quotenum='"+quotenum+"';");
+        stmt2.executeUpdate("Update quotes set servsync='2' where quotenum='"+quotenum+"';");
 
 	}
 	}
