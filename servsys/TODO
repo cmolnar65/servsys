@@ -19,7 +19,8 @@
 =================================================================
 RELEASE 2.05
 ==================================================================
-
+- Added send complete function to software. Send complete from user will send all of TODAY's records and complete a call.
+  User MUST enter a timesheet entry first.
 - Fix closed error on send single callslip when worksheets are present as well.
 - Fixed major problems with transmit of callslip. This will require all users to update and then it will
   sync all missing callslips to the server.

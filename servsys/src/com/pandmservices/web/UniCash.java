@@ -897,6 +897,10 @@ out.println("</CENTER>");
 	                        {
                                 doArrived(req, res, out, session,sall, username);
 				}
+                       else if (action.equalsIgnoreCase("sendcomplete"))
+	                        {
+                                doSendComplete(req, res, out, session,sall, username);
+				}
                        else if (action.equalsIgnoreCase("sendalmostdone"))
 	                        {
                                 doAlmostDone(req, res, out, session,sall, username);
@@ -9628,6 +9632,518 @@ throws Exception
 	}
 
 
+
+  private String doSendSingleInspectionsC(int crecnum, int custnum, String username)
+                throws Exception
+        {
+        String brand=null;
+        String modelnum=null;
+        String serialnum=null;
+        String filter=null;
+        String enotes=null;
+        String etype=null;
+            String mbody = "";
+	    int csrec = crecnum;
+                String callslip = null;
+                String idate = null;
+                int equip1 = 0;
+                int equip2 = 0;
+                int equip3 = 0;
+                int equip4 = 0;
+                String mbearing = null;
+                String mblades = null;
+                String ecoil = null;
+                String dline = null;
+                String dpan = null;
+                String ielect = null;
+                String mcap = null;
+                String hstrips = null;
+                String gpreassures = null;
+                String ignition = null;
+                String burners = null;
+                String limits = null;
+                String flame = null;
+                String dinducer = null;
+                String humidifier = null;
+                String atemp = null;
+                String tempsplit = null;
+                String crlaa = null;
+                String crlar = null;
+                String ccapr = null;
+                String ccapa = null;
+                String frlaa = null;
+                String frlar = null;
+		String fcapr = null;
+                String fcapa = null;
+                String fbearing = null;
+                String coilcond = null;
+                String cleancoil = null;
+                String contactor = null;
+                String scap = null;
+                String ctimedelay = null;
+                String oelectrical = null;
+                String comppad = null;
+                String recommendations = null;
+                String services = null;
+                String dueamount = null;
+                String paidamount = null;
+                String notes = null;
+                String lpres = null;
+                String hpres = null;
+                String startco = null;
+                String runco = null;
+                String stacktemp = null;
+                String ventpipe = null;
+                String oleaks = null;
+                String ochimney = null;
+                String opump = null;
+                String ocontrols = null;
+                String otstat = null;
+                String oprimesafety = null;
+                String osafetime = null;
+                String oigntrans = null;
+                String olubemotors = null;
+		String ofulemix = null;
+                String onozzle = null;
+                String ogross = null;
+                String onet = null;
+                String osmoke = null;
+                String oco2 = null;
+                String oo2 = null;
+                String oco = null;
+                String oexcessair = null;
+                String obreachdraft = null;
+                String ofiredraft = null;
+                String oeffic = null;
+                String orating = null;
+                String opower = null;
+                String otank = null;
+                String otcond = null;
+                String odheat = null;
+                String ocombustion = null;
+                String oelectrodes = null;
+                String obrush = null;
+                String ofilters = null;
+	String g_filter = null;
+	String g_electrical = null;
+	String g_looppres=null;
+	String g_cleancoil=null;
+	String g_cleandrain=null;
+	String g_pansensor=null;
+	String g_cleancomp=null;
+	String g_cleanunit=null;
+	String g_oilblower=null;
+	String g_cleanpump=null;
+	String g_tsplit=null;
+	String g_pampr=null;
+	String g_pampa=null;
+	String g_compar=null;
+	String g_compaa=null;
+	String g_bampr=null;
+	String g_bampa=null;
+	String g_pdrop=null;
+
+	String sductsize = null;
+	String rductsize = null;
+	String r_temp = null;
+	String s_temp = null;
+	String rw_temp = null;
+	String mcfm=null;
+	String out_temp=null;
+	int servsync=0;
+		String cname=null;
+		String address1=null;
+		String address2=null;
+		String city=null;
+		String state=null;
+		String zip=null;
+		String liqtemp=null;
+		String sucttemp=null;
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+                Vector v;
+		v = UniInspection.getIndItems(con,custnum, csrec);
+
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniInspection t = (UniInspection) v.elementAt(i);
+			crecnum=t.getCrecnum();
+			custnum=t.getCustnum();
+               		callslip=t.getCallslip();
+                	idate=t.getIdate();
+                	equip1=t.getEquip1();
+                	equip2=t.getEquip2();
+                	equip3=t.getEquip3();
+                	equip4=t.getEquip4();
+                	mbearing=t.getMbearing();
+                	mblades=t.getMblades();
+                	ecoil=t.getEcoil();
+                	dline=t.getDline();
+                	dpan=t.getDpan();
+                	ielect=t.getIelect();
+                	mcap=t.getMcap();
+                	hstrips=t.getHstrips();
+                	filter=t.getFilter();
+                	gpreassures=t.getGpreassures();
+                	ignition=t.getIgnition();
+                	burners=t.getBurners();
+                	limits=t.getLimits();
+                	flame=t.getFlame();
+                	dinducer=t.getDinducer();
+                	humidifier=t.getHumidifier();
+                	atemp=t.getAtemp();
+                	tempsplit=t.getTempsplit();
+                	crlaa=t.getCrlaa();
+                	crlar=t.getCrlar();
+                	ccapr=t.getCcapr();
+                	ccapa=t.getCcapa();
+                	frlaa=t.getFrlaa();
+                	frlar=t.getFrlar();
+			fcapr=t.getFcapr();
+                	fcapa=t.getFcapa();
+                	fbearing=t.getFbearing();
+                	coilcond=t.getCoilcond();
+                	cleancoil=t.getCleancoil();
+                	contactor=t.getContactor();
+                	scap=t.getScap();
+                	ctimedelay=t.getCtimedelay();
+                	oelectrical=t.getOelectrical();
+                	comppad=t.getComppad();
+                	recommendations=t.getRecommendations();
+                	services=t.getServices();
+                	dueamount=t.getDueamount();
+                	paidamount=t.getPaidamount();
+                	notes=t.getNotes();
+                	lpres=t.getLpres();
+                	hpres=t.getHpres();
+                	startco=t.getStartco();
+                	runco=t.getRunco();
+                	stacktemp=t.getStacktemp();
+                	ventpipe=t.getVentpipe();
+                	oleaks=t.getOleaks();
+                	ochimney=t.getOchimney();
+                	opump=t.getOpump();
+                	ocontrols=t.getOcontrols();
+                	otstat=t.getOtstat();
+                	oprimesafety=t.getOprimesafety();
+                	osafetime=t.getOsafetime();
+                	oigntrans=t.getOigntrans();
+                	olubemotors=t.getOlubemotors();
+			ofulemix=t.getOfulemix();
+                	onozzle=t.getOnozzle();
+                	ogross=t.getOgross();
+                	onet=t.getOnet();
+                	osmoke=t.getOsmoke();
+                	oco2=t.getOco2();
+                	oo2=t.getOo2();
+                	oco=t.getOco();
+                	oexcessair=t.getOexcessair();
+                	obreachdraft=t.getObreachdraft();
+                	ofiredraft=t.getOfiredraft();
+                	oeffic=t.getOeffic();
+                	orating=t.getOrating();
+                	opower=t.getOpower();
+                	otank=t.getOtank();
+                	otcond=t.getOtcond();
+                	odheat=t.getOdheat();
+                	ocombustion=t.getOcombustion();
+                	oelectrodes=t.getOelectrodes();
+                	obrush=t.getObrush();
+                	ofilters=t.getOfilters();
+		g_filter=t.getGFilter();
+		g_electrical=t.getGElectrical();
+		g_looppres=t.getGLooppres();
+		g_cleancoil=t.getGCleanCoil();
+		g_cleandrain=t.getGCleanDrain();
+		g_pansensor=t.getGPanSensor();
+		g_cleancomp=t.getGCleanComp();
+		g_cleanunit=t.getGCleanUnit();
+		g_oilblower=t.getGOilBlower();
+		g_cleanpump=t.getGCleanPump();
+		g_tsplit=t.getGTsplit();
+		g_pampr=t.getGPampr();
+		g_pampa=t.getGPampa();
+		g_compar=t.getGCompar();
+		g_compaa=t.getGCompaa();
+		g_bampr=t.getGBampr();
+		g_bampa=t.getGBampa();
+		g_pdrop=t.getGPdrop();
+		rductsize = t.getRDuctSize();
+		sductsize = t.getSDuctSize();
+		r_temp = t.getRTemp();
+		rw_temp = t.getRWTemp();
+		s_temp = t.getSTemp();
+		mcfm=t.getMCfm();
+		out_temp=t.getOutTemp();
+		servsync=t.getServSync();
+
+ 		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
+		 while(rs.next())
+                {
+		cname=rs.getString("cname");
+		address1=rs.getString("address1");
+		address2=rs.getString("address2");
+		city =rs.getString("city");
+		state=rs.getString("state");
+		zip=rs.getString("zip");
+		}	
+
+////////////////////////////////////////////////////
+//Print Inspection Data 
+///////////////////////////////////////////////////	
+mbody=combinestring(mbody,"<br>------------------------------<br>Callslip: "+callslip+"<br>");
+mbody=combinestring(mbody,"Customer: "+cname+"<br>");
+mbody=combinestring(mbody,"Address1: "+address1+"<br>");
+mbody=combinestring(mbody,"City: "+city+"<br>");
+mbody=combinestring(mbody,"State: "+state+"<br>");
+mbody=combinestring(mbody,"Zip: "+zip+"<br>");
+
+
+	///////////////////////////////////////////////////
+	//Print Equipment Data
+	///////////////////////////////////////////////////
+ 	stmt = con.createStatement();
+	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"' or enum='"+equip3+"' or enum='"+equip4+"';");
+	mbody=combinestring(mbody,"<br>Equipment Information:<br>-----------------<br>");
+	mbody=combinestring(mbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
+
+		 while(rs.next())
+                {
+		brand = rs.getString("brand");
+                modelnum = rs.getString("modelnum");
+                serialnum = rs.getString("serialnum");
+                filter = rs.getString("filter");
+                enotes = rs.getString("notes");
+		etype = rs.getString("etype");
+if (etype==null) { 
+                etype = "-";
+                }
+	mbody=combinestring(mbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
+	}
+
+	mbody=combinestring(mbody,"</table>");
+
+	///////////////////////////////////////////////////
+	//Print Inventory Data
+	///////////////////////////////////////////////////
+		mbody=combinestring(mbody,"<br><br>Parts Used<br>--------------------------<br>");
+	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th>");
+Vector ci;
+ci = InvUse.getAllCallslipItems(con, callslip, idate);
+for (int cc = 0 ; cc < ci.size(); cc++)
+{
+	InvUse ti = (InvUse) ci.elementAt(cc);
+	String keycode = ti.getKeyCode();
+	String itemname = ti.getItemName();
+	String pquant = ti.getQuantity();
+	String iidate = doFormatDate(getDate(ti.getTDate()));
+	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td></tr>");
+	}
+	mbody=combinestring(mbody,"</table>");
+
+////////////////////////////////////////////////////
+//Print Services
+///////////////////////////////////////////////////	
+if (services.length()>1) {
+mbody=combinestring(mbody,"<br>"+services+"<br>");
+}
+
+////////////////////////////////////////////////////
+//Print Air Handler Data 
+///////////////////////////////////////////////////	
+if ((!mbearing.equalsIgnoreCase("-"))||!(mblades.equalsIgnoreCase("-"))||(!ecoil.equalsIgnoreCase("-")))
+        {
+mbody=combinestring(mbody,"<br>Checked Air Handler -  Motor Bearings: "+mbearing+", Motor Blades: "+mblades+", Evaperator Coil: "+ecoil+", Drain Line: "+dline+", Drain Pan: "+dpan+", Electrical: "+ielect+", Blower Capacitor: "+mcap+", Filter: "+filter+", Humidifier: "+humidifier+".<br>");
+	}
+
+////////////////////////////////////////////////////
+//Print Air Conditioning Data 
+///////////////////////////////////////////////////	
+
+if ((!atemp.equalsIgnoreCase("-"))||!(crlar.equalsIgnoreCase("-"))||(!lpres.equalsIgnoreCase("-")))
+        {
+	mbody=combinestring(mbody,"Checked outside unit (condensor) - Approach Temp: "+atemp+", ");
+	mbody=combinestring(mbody,"Liquid Line Temp: "+liqtemp+", ");
+	mbody=combinestring(mbody,"Suction Line Temp: "+sucttemp +", ");
+	mbody=combinestring(mbody,"Temperature Split(Supply vs return air): "+tempsplit+", ");
+	mbody=combinestring(mbody,"Compressor Rated Amps: "+crlar +", ");
+	mbody=combinestring(mbody,"Compressor Actual Amps: "+crlaa +", ");
+	mbody=combinestring(mbody,"Compressor Capacitor Rating: "+ccapr +", ");
+	mbody=combinestring(mbody,"Compressor Capacitor Actual: "+ccapa +", ");
+	mbody=combinestring(mbody,"Fan Amps Rated: "+frlar +", ");
+	mbody=combinestring(mbody,"Fan Amps Actual: "+frlaa +", ");
+	mbody=combinestring(mbody,"Fan Capacitor Rating: "+fcapr +", ");
+	mbody=combinestring(mbody,"Fan Capacitor Actual: "+fcapa +", ");
+	mbody=combinestring(mbody,"Coil Condition: "+coilcond +", ");
+	mbody=combinestring(mbody,"Cleaned Coil: "+cleancoil +", ");
+	mbody=combinestring(mbody,"Start Capacitor: "+scap +", ");
+	mbody=combinestring(mbody,"Time Delay: "+ctimedelay +", ");
+	mbody=combinestring(mbody,"Electrical: "+oelectrical +", ");
+	mbody=combinestring(mbody,"Condensor Pad: "+comppad +", ");
+	mbody=combinestring(mbody,"Contactor: "+contactor +", ");
+	mbody=combinestring(mbody,"Fan Bearings: "+fbearing +", ");
+	mbody=combinestring(mbody,"Low Side Pressure: "+lpres +", ");
+	mbody=combinestring(mbody,"High Side Pressure: "+hpres +",<br> ");
+}
+
+////////////////////////////////////////////////////
+//Print Gas Heat Data 
+///////////////////////////////////////////////////	
+if ((!hstrips.equalsIgnoreCase("-"))||!(burners.equalsIgnoreCase("-"))||(!flame.equalsIgnoreCase("-")))
+        {
+mbody=combinestring(mbody,"<br>Checked heating system - Heat Strips: "+hstrips+", Gas Pressure: "+gpreassures+", Ignition: "+ignition+", Burners: "+burners+", Limits: "+limits+", Flame: "+flame+", Draft Inducer: "+dinducer+", Stack Temp: "+stacktemp+", Start Carbon Monoxide: "+startco+", Run Carbon Monoxide: "+runco+", Vent Pipe: "+ventpipe+"<br>");
+}
+
+////////////////////////////////////////////////////
+//Print Oil Heat Data 
+///////////////////////////////////////////////////	
+
+if ((!opump.equalsIgnoreCase("-"))||(!oprimesafety.equalsIgnoreCase("-"))||(!osafetime.equalsIgnoreCase("-"))||(!oco2.equalsIgnoreCase("-"))||(!ofulemix.equalsIgnoreCase("-")))
+        {
+	mbody=combinestring(mbody,"Oil Leaks: "+oleaks+", ");  
+	mbody=combinestring(mbody,"Chimney and Flue: "+ochimney+", ");
+	mbody=combinestring(mbody,"Pump Pressure: "+opump+", ");
+	mbody=combinestring(mbody,"Controls: "+ocontrols+", ");
+	mbody=combinestring(mbody,"Thermostat: "+otstat+", ");
+	mbody=combinestring(mbody,"Primary Control Safety: "+oprimesafety+", ");
+	mbody=combinestring(mbody,"Safety Timing: "+osafetime+", ");
+	mbody=combinestring(mbody,"Ignition Transformer: "+oigntrans+", ");
+	mbody=combinestring(mbody,"Lubricate Motors: "+olubemotors+", ");
+	mbody=combinestring(mbody,"Fuel/Air Mix: "+ofulemix+", ");
+	mbody=combinestring(mbody,"Nozzle Size: "+onozzle+", ");
+	mbody=combinestring(mbody,"Gross Stack Temp: "+ogross+", ");
+	mbody=combinestring(mbody,"Net Stack Temp: "+onet+", ");
+	mbody=combinestring(mbody,"Smoke: "+osmoke+", ");
+	mbody=combinestring(mbody,"Carbon Dioxide: "+oco2+", ");
+	mbody=combinestring(mbody,"Oxygen Content: "+oo2+", ");
+	mbody=combinestring(mbody,"Carbon Monoxide: "+oco+", ");
+	mbody=combinestring(mbody,"Excess Air: "+oexcessair+", ");
+	mbody=combinestring(mbody,"Breech Draft: "+obreachdraft+", ");
+	mbody=combinestring(mbody,"Overfire Draft: "+ofiredraft+", ");
+	mbody=combinestring(mbody,"Efficiency: "+oeffic+", ");
+	mbody=combinestring(mbody,"Rating (Excellent, Good, Fair, Poor): "+orating+", ");
+	mbody=combinestring(mbody,"Chimney/Power Vent: "+opower+", ");
+	mbody=combinestring(mbody,"Tank Size: "+otank+", ");
+	mbody=combinestring(mbody,"Tank Condition: "+otcond+", ");
+	mbody=combinestring(mbody,"Domestic Hot Water: "+odheat+", ");
+	mbody=combinestring(mbody,"Combustion Chamber: "+ocombustion+", ");
+	mbody=combinestring(mbody,"Electrodes: "+oelectrodes+", ");
+	mbody=combinestring(mbody,"Boiler/Furnace Brush/Vacuum: "+obrush+", ");
+	mbody=combinestring(mbody,"Oil Filters: "+ofilters+", <br>");
+	}
+
+/////////////////////////////////////////////////////////
+// Print Geothermal section
+////////////////////////////////////////////////////////
+
+if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_electrical.equalsIgnoreCase("-")))
+        {
+	mbody=combinestring(mbody,"Geothermal Section<br>");
+	mbody=combinestring(mbody,"Filters: "+g_filter+", <br>");
+	mbody=combinestring(mbody,"Electrical: "+g_electrical+", <br>");
+	mbody=combinestring(mbody,"Loop Pressure: "+g_looppres+", <br>");
+	mbody=combinestring(mbody,"Cleaned Coil: "+g_cleancoil+", <br>");
+	mbody=combinestring(mbody,"Cleaned Drainline: "+g_cleandrain+", <br>");
+	mbody=combinestring(mbody,"Check Pan Sensor: "+g_pansensor+", <br>");
+	mbody=combinestring(mbody,"Clean Compartments: "+g_cleancomp+", <br>");
+	mbody=combinestring(mbody,"Clean Unit: "+g_cleanunit+", <br>");
+	mbody=combinestring(mbody,"Oil/Check Blower: "+g_oilblower+", <br>");
+	mbody=combinestring(mbody,"Clean Condensate Pump: "+g_cleanpump+", <br>");
+	mbody=combinestring(mbody,"Temp Split: "+g_tsplit+", <br>");
+	mbody=combinestring(mbody,"Pressure Drop: "+g_pdrop+", <br>");
+	mbody=combinestring(mbody,"Pump Amps Rated: "+g_pampr+", <br>");
+	mbody=combinestring(mbody,"Pump Amps Acutal: "+g_pampa+", <br>");
+	mbody=combinestring(mbody,"Compressor Amps Rated: "+g_compar+", <br>");
+	mbody=combinestring(mbody,"Compressor Amps Actual: "+g_compaa+", <br>");
+	mbody=combinestring(mbody,"Blower Amps Rated: "+g_bampr+", <br>");
+	mbody=combinestring(mbody,"Blower Amps Actual: "+g_bampa+", <br>");
+}
+////////////////////////////////////////////////////
+//Print Recommendations 
+///////////////////////////////////////////////////	
+if (recommendations.length()>1) {
+mbody=combinestring(mbody,"The following recommendations are made by our service technician: "+recommendations+"<br>");
+}
+
+	////////////////////////////////////////////////////
+	//Print Notes
+	///////////////////////////////////////////////////
+	if (notes.length()>1) {
+	mbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
+	}
+////////////////////////////////////////////////////////
+// Here is where we add timesheet information
+////////////////////////////////////////////////////////
+
+	mbody=combinestring(mbody,"<br>------------------------------<br>Times:<br>");
+        Vector tsd;
+        tsd = UniTimeSheet.getAllCallslipItems(con,idate,callslip, username);
+		
+                for (int h = 0 ; h < tsd.size(); h++)
+                {
+		UniTimeSheet ts = (UniTimeSheet) tsd.elementAt(h);
+		String TimeIn = ts.TimeIn();
+		String TimeOut = ts.TimeOut();
+		String DispatchTime = ts.DispatchTime();
+		String Amount = ts.Amount();
+		String AmountCollected = ts.AmountCollected();
+		String Commision = ts.Commision();
+		String CItemSold = ts.CItemSold();
+		String CAmount = ts.CAmount();
+		String ItemSold = ts.ItemSold();
+		String paytype = ts.TPayType();
+
+	mbody=combinestring(mbody,"<br>Dispatched Time: "+DispatchTime+"<br>Time In: "+TimeIn+"<br>Time Out: "+TimeOut+"<br><br>");	
+	mbody=combinestring(mbody,"Item Sold: "+ItemSold+"<br>Amount Sold: "+Amount+"<br>Commision Item Sold: "+CItemSold+"<br>Commision Amount Sold: "+CAmount+"<br>Amount Collected: "+AmountCollected+"<br>Commision: "+Commision+"<br>Paid With: "+paytype+"<br>");
+		}
+
+
+int recnum;
+double quant=0.00;
+String descript="";
+double price=0.00;
+double total=0.00;
+double totalcharge=0.00;
+int frcode=0;
+////////////////////////////////////////////////////
+// Add Charges 
+///////////////////////////////////////////////////
+
+	mbody=combinestring(mbody,"<br>------------------------------<br>Charges:<br>");
+        Vector u;
+        u = UniSvcCharges.getAllItems(con,callslip);
+		
+                for (int h = 0 ; h < u.size(); h++)
+                {
+                UniSvcCharges q = (UniSvcCharges) u.elementAt(h);
+		recnum=q.getRecnum();
+		callslip=q.getCallslip();
+		quant=q.getQuant();
+		descript=q.getDescript();
+		price=q.getPrice();
+		frcode=q.getFrcode();
+		total=q.getTotal();
+		totalcharge=totalcharge+total;
+                mbody=combinestring(mbody,"Code: "+frcode+"  Quantity: "+quant+"   Service: "+descript+"  Price: "+NumberFormat.getCurrencyInstance().format(price)+"  Total: "+NumberFormat.getCurrencyInstance().format(total)+"<br>");
+		}
+////////////////////////////////////////////////////
+// End of the Inspection Getting Loop
+///////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////
+// Here is where we end the http headers
+////////////////////////////////////////////////////////
+	emailserver = doGetSmtpServer(username);
+	emailsendaddress=doGetIns_Email(username);
+	techemailaddress=doGetTech_Email(username);	
+      String smtpuser = doGetSmtpUser(username);
+      String smtppassword = doGetSmtpPassword(username);
+        doMailSend(emailserver, emailsendaddress, techemailaddress, "Inspection: "+callslip+" - "+cname+" - "+idate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+		}
+	return mbody;
+	}
+
   private void doSendSingleInspections(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
                 throws Exception
         {
@@ -10160,20 +10676,8 @@ int frcode=0;
         doMailSend(emailserver, emailsendaddress, techemailaddress, "Inspection: "+callslip+" - "+cname+" - "+idate+" - "+ tech_name , mbody, smtpuser, smtppassword);
 	mbody="";
 		}
-
-/////////////////////////////////////////////////////////
-// Here is where we end the http headers
-// BLOCKED THIS OFF TO PUT EACH SLIP INDEPENDENTLY
-////////////////////////////////////////////////////////
-//		out.println(mbody);
-//		//String newstring = mbody.replaceAll("<br>","\n");
-//	emailserver = doGetSmtpServer(username);
-//	emailsendaddress=doGetIns_Email(username);
-//	techemailaddress=doGetTech_Email(username);	
-//      doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Maint Reports - "+listdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
 		out.println("</html>");
 		doSyncInspection(req, res, out, session, username);
-
 	}
 
   private void doSendInspections(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
@@ -11294,6 +11798,142 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 		con.close();
 	}
 
+  private void doSendComplete(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
+                throws Exception
+        {
+	Format formatter;	
+	Calendar now = Calendar.getInstance();
+	Date date = new Date(); 
+	formatter = new SimpleDateFormat("yyyy-MM-dd");
+	String today = formatter.format(date);
+	int custnum=0;
+      String smtpuser = doGetSmtpUser(username);
+      String smtppassword = doGetSmtpPassword(username);
+	String cname=null;
+	String address1=null;
+	String address2=null;
+	String city =null;
+	String state=null;
+	String zip=null;
+            String mbody = "";
+            String tcustnum = req.getParameter("custnum");
+	custnum = Integer.parseInt(tcustnum);
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+		Statement stmt = con.createStatement();
+        	ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
+                 while(rs.next())
+                {
+        	cname=rs.getString("cname");
+       		address1=rs.getString("address1");
+               address2=rs.getString("address2");
+                city =rs.getString("city");
+                state=rs.getString("state");
+                zip=rs.getString("zip");
+        	}
+
+	mbody=combinestring(mbody,"<br>Technician is sending a COMPLETE at:<br>");
+	mbody=combinestring(mbody,"<br><hr noshade size=1 width=100% color=cccccc>");
+	mbody=combinestring(mbody,"<hr noshade size=1 width=100% color=cccccc><br>");
+	mbody=combinestring(mbody,"Customer: "+cname+"<br>");
+	mbody=combinestring(mbody,"Address1: "+address1+"<br>");
+	mbody=combinestring(mbody,"City: "+city+"<br>");
+	mbody=combinestring(mbody,"State: "+state+"<br>");
+	mbody=combinestring(mbody,"Zip: "+zip+"<br>");
+                out.println(mbody);
+        emailserver = doGetSmtpServer(username);
+        emailsendaddress=doGetSvc_Email(username);
+        techemailaddress=doGetTech_Email(username);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, ""+tech_name+" has completed: "+cname+"" , mbody, smtpuser, smtppassword);
+		mbody="";
+
+		// 
+		// Here is where we get all callslips to send
+		// 
+
+        	rs = stmt.executeQuery("SELECT * FROM callslip where custnum="+custnum+" and cdate='"+today+"';");
+		int sizec=rs.getFetchSize();
+                 while(rs.next())
+                {
+		sizec++;
+		String callslip=rs.getString("crecnum");
+		mbody=doSendSingleCallSlipsC(callslip, custnum, username);
+		out.println(mbody);
+		}
+		out.println("callslips="+sizec+"<br>");
+
+		//
+		// Here is where we get all inspections to send
+		//
+
+        	rs = stmt.executeQuery("SELECT * FROM inspection where custnum="+custnum+" and idate='"+today+"';");
+		int sizei=rs.getFetchSize();
+                 while(rs.next())
+                {
+		int callslip=rs.getInt("crecnum");
+		mbody=doSendSingleInspectionsC(callslip, custnum, username);
+		sizei++;
+		out.println(mbody);
+		}
+		out.println("inspections="+sizei+"<br>");
+
+
+		//
+		// Here is where we get all Preventative Agreements to send
+		//
+
+        	rs = stmt.executeQuery("SELECT * FROM pagreement where custnum="+custnum+" and agrdate='"+today+"';");
+		int sizep=rs.getFetchSize();
+                 while(rs.next())
+                {	
+			int contnum=rs.getInt("contnum");
+			mbody=doSendPrevagreementC(contnum, custnum, username);
+			sizep++;
+			out.println(mbody);
+		}
+		out.println("pagreement="+sizep+"<br>");
+
+
+		//
+		// Here is where we get all Worksheets to send
+		//
+
+        	rs = stmt.executeQuery("SELECT * FROM  worksheet where crec="+custnum+" and wsdate='"+today+"';");
+		int sizew=rs.getFetchSize();
+                 while(rs.next())
+                {
+			int wsrec=rs.getInt("wsrec");
+			sizew++;
+			mbody=doSendWorksheetC(wsrec, custnum, username);
+			out.println(mbody);
+		}
+		out.println("worksheets="+sizew+"<br>");
+
+
+		//
+		// Here is where we get all Proposals to send
+		//
+
+        	rs = stmt.executeQuery("SELECT * FROM  quotes where crecnum="+custnum+" and qdate='"+today+"';");
+		int sizeq=rs.getFetchSize();
+                 while(rs.next())
+                {
+		sizeq++;
+		int qnumber=rs.getInt("quotenum");
+		String proposal=doSendSingleProposalsC(qnumber, custnum, username);
+		out.println(proposal);
+		}
+		out.println("proposals="+sizeq+"<br>");
+
+
+
+
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+	out.println("</html>");
+	}
+
+
   private void doArrived(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
                 throws Exception
         {
@@ -11342,6 +11982,241 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 	out.println("</html>");
 	}
 
+
+  private String doSendSingleCallSlipsC(String callslip, int custnum, String username)
+                throws Exception
+        {
+         int eenum=0;
+        int ecustnum=0;
+      String smtpuser = doGetSmtpUser(username);
+      String smtppassword = doGetSmtpPassword(username);
+	String tcsrec=null;
+        String brand=null;
+        String modelnum=null;
+        String serialnum=null;
+        String filter=null;
+        String notes=null;
+        String enotes=null;
+	String cdate=null;
+	int equip1=0;
+	int equip2=0;
+	int equip3=0;
+	int equip4=0;
+	String reason=null;
+	String services=null;
+	String recommendations=null;
+	String rscheduled=null;
+	String charges=null;
+	String collected=null;
+	int followup=0;
+	String descript;
+	String ccallslip;
+	double quant;
+	double price;
+	double total;
+	double totalcharge=0.00;
+	int recnum;
+	String cname=null;
+	String address1=null;
+	String address2=null;
+	String city =null;
+	String state=null;
+	String zip=null;
+	String homephone=null;
+	String altphone=null;
+	String cust_notes=null;
+	String etype="";
+            String mbody = "";
+	    int csrec=Integer.parseInt(callslip);
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+
+/////////////////////////////////////////////////////////
+// Here is where we get all the Callslips  for the day
+////////////////////////////////////////////////////////
+
+                Vector v;
+                v = UniCallslip.getIndItems(con,custnum, csrec);
+
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniCallslip t = (UniCallslip) v.elementAt(i);
+
+		custnum=t.getCustnum();
+		callslip=t.getCallslip();
+		cdate=t.getCdate();
+		equip1=t.getEquip1();
+		equip2=t.getEquip2();
+		equip3=t.getEquip3();
+		equip4=t.getEquip4();
+		reason=t.getReason();
+		services=t.getServices();
+		recommendations=t.getRecommendations();
+		rscheduled=t.getRscheduled();
+		charges=t.getCharges();
+		collected=t.getCollected();
+		notes=t.getNotes();
+		followup=t.getFollowup();
+
+		Statement stmt = con.createStatement();
+        	ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
+                 while(rs.next())
+                {
+        	cname=rs.getString("cname");
+       		address1=rs.getString("address1");
+               address2=rs.getString("address2");
+                city =rs.getString("city");
+                state=rs.getString("state");
+                zip=rs.getString("zip");
+        	}
+
+	mbody=combinestring(mbody,"<br><hr noshade size=1 width=100% color=cccccc>");
+	mbody=combinestring(mbody,"<hr noshade size=1 width=100% color=cccccc><br>Callslip: "+callslip+"<br>");
+	mbody=combinestring(mbody,"Customer: "+cname+"<br>");
+	mbody=combinestring(mbody,"Address1: "+address1+"<br>");
+	mbody=combinestring(mbody,"City: "+city+"<br>");
+	mbody=combinestring(mbody,"State: "+state+"<br>");
+	mbody=combinestring(mbody,"Zip: "+zip+"<br>");
+
+ 	stmt = con.createStatement();
+	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"'  or enum='"+equip3+"' or enum='"+equip4+"';");
+	mbody=combinestring(mbody,"<br>Equipment Information:<br>-----------------<br>");
+	mbody=combinestring(mbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
+
+		 while(rs.next())
+                {
+		brand = rs.getString("brand");
+                modelnum = rs.getString("modelnum");
+                serialnum = rs.getString("serialnum");
+                filter = rs.getString("filter");
+                enotes = rs.getString("notes");
+		etype = rs.getString("etype");
+if (etype==null) { 
+                etype = "-";
+                }
+	mbody=combinestring(mbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
+	}
+
+	mbody=combinestring(mbody,"</table>");
+	mbody=combinestring(mbody,"<br><br>Parts Used<br>--------------------------<br>");
+	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th>");
+Vector ci;
+ci = InvUse.getAllCallslipItems(con, callslip, cdate);
+for (int cc = 0 ; cc < ci.size(); cc++)
+{
+	InvUse ti = (InvUse) ci.elementAt(cc);
+	String keycode = ti.getKeyCode();
+	String itemname = ti.getItemName();
+	String pquant = ti.getQuantity();
+	String iidate = doFormatDate(getDate(ti.getTDate()));
+	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td></tr>");
+			}
+	mbody=combinestring(mbody,"</table>");
+
+
+/////////////////////////////////////
+//Completion Codes Here
+////////////////////////////////////
+
+        Vector r = UniSvcCompl.getAllItems(con,callslip);
+	if ((r.size()>0) )
+		{
+	mbody=combinestring(mbody,"<br><table border=0 width=100% align=\"center\"><font size=1><tr><td><h4>Resolution</h4></td></tr>");
+        mbody=combinestring(mbody,"<tr><td><table border=1 width=100% align=\"center\"><font size=1>");
+        mbody=combinestring(mbody,"<th>Code</th><th>Resolution</th>");
+		
+                for (int g = 0 ; g < r.size(); g++)
+                {
+                UniSvcCompl c = (UniSvcCompl) r.elementAt(i);
+		int corecnum=c.getRecnum();
+		int codenum=c.getCodeNum();
+		String complcode=c.getComplCode();
+		String compltext=c.getComplText();
+		mbody=combinestring(mbody,"<tr><td>"+complcode+"</td><td>"+compltext+"</td><tr>");
+		}
+	mbody=combinestring(mbody,"</table></td></tr></table>");
+		}
+
+		
+	
+	////////////////////////////////////////////////////
+	//Print Services
+	///////////////////////////////////////////////////
+	if (services.length()>1) {
+	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	}
+
+
+	////////////////////////////////////////////////////
+	//Print Recommendations
+	///////////////////////////////////////////////////
+	if (recommendations.length()>1) {
+	mbody=combinestring(mbody,"<br>The following recommendations where made by the service technician:<br>"+recommendations+"<br>");
+	}
+
+
+	////////////////////////////////////////////////////
+	//Print Notes
+	///////////////////////////////////////////////////
+	if (notes.length()>1) {
+	mbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
+	}
+
+////////////////////////////////////////////////////////
+// Here is where we add timesheet information
+////////////////////////////////////////////////////////
+
+	mbody=combinestring(mbody,"<br>------------------------------<br>Times:<br>");
+        Vector tsd;
+        tsd = UniTimeSheet.getAllCallslipItems(con,cdate,callslip, username);
+		
+                for (int h = 0 ; h < tsd.size(); h++)
+                {
+		UniTimeSheet ts = (UniTimeSheet) tsd.elementAt(h);
+		String TimeIn = ts.TimeIn();
+		String TimeOut = ts.TimeOut();
+		String DispatchTime = ts.DispatchTime();
+		String Amount = ts.Amount();
+		String AmountCollected = ts.AmountCollected();
+		String Commision = ts.Commision();
+		String CItemSold = ts.CItemSold();
+		String CAmount = ts.CAmount();
+		String ItemSold = ts.ItemSold();
+		String paytype = ts.TPayType();
+
+	mbody=combinestring(mbody,"<br>Dispatched Time: "+DispatchTime+"<br>Time In: "+TimeIn+"<br>Time Out: "+TimeOut+"<br><br>");	
+	mbody=combinestring(mbody,"Item Sold: "+ItemSold+"<br>Amount Sold: "+Amount+"<br>Commision Item Sold: "+CItemSold+"<br>Commision Amount Sold: "+CAmount+"<br>Amount Collected: "+AmountCollected+"<br>Commision: "+Commision+"<br>Paid With: "+paytype+"<br>");
+
+		}
+	int frcode=0;
+	mbody=combinestring(mbody,"<br>------------------------------<br>Charges:<br>");
+        Vector u;
+        u = UniSvcCharges.getAllItems(con,callslip);
+		
+                for (int h = 0 ; h < u.size(); h++)
+                {
+                UniSvcCharges q = (UniSvcCharges) u.elementAt(h);
+		recnum=q.getRecnum();
+		frcode=q.getFrcode();
+		callslip=q.getCallslip();
+		quant=q.getQuant();
+		descript=q.getDescript();
+		price=q.getPrice();
+		total=q.getTotal();
+		totalcharge=totalcharge+total;
+                mbody=combinestring(mbody,"Code: "+frcode+" Quantity: "+quant+"   Service: "+descript+"  Price: "+NumberFormat.getCurrencyInstance().format(price)+"  Total: "+NumberFormat.getCurrencyInstance().format(total)+"<br>");
+		}
+        emailserver = doGetSmtpServer(username);
+        emailsendaddress=doGetSvc_Email(username);
+        techemailaddress=doGetTech_Email(username);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+		//mbody="";
+		}
+		return mbody;
+	}
+
+//END SINGLE CALLSLIP
 
   private void doSendSingleCallSlips(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
                 throws Exception
@@ -16252,7 +17127,7 @@ if (action.equalsIgnoreCase("showcustdetail_ide"))
 		out.println("<tr><td><a href="+classdir+"UniCash?action=sendarrive&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Arrived</a><br></td></tr>");
 		out.println("<tr><td><a href="+classdir+"UniCash?action=sendextratime&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Need Extra Time</a><br></td></tr>");
 		out.println("<tr><td><a href="+classdir+"UniCash?action=sendalmostdone&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Doing Paperwork</a><br></td></tr>");
-		//out.println("<tr><td><a href="+classdir+"UniCash?action=sendcomplete&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Complete</a><br></td></tr>");
+		out.println("<tr><td><a href="+classdir+"UniCash?action=sendcomplete&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Complete</a><br></td></tr>");
 		out.println("<tr><td> </td></tr>");
 		out.println("<tr><td>MUST HAVE INTERNET<br>CONNECT FOR THESE</td></tr>");
 		out.println("</table>");
@@ -20956,6 +21831,186 @@ mbody=null;
 		con.close();
 		}
 
+private String doSendWorksheetC(int wsrec, int custnum, String username)
+                throws Exception
+                        {
+		String cname=null;
+		String address1=null;
+		String address2=null;
+		String city =null;
+		String state=null;
+		String zip=null;
+		String homephone=null;
+		String altphone=null;
+		String cust_notes=null;
+		String mbody=null;	
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+       	 	int crecnum = custnum;
+       		int wsnum = wsrec;
+                int counter=0;
+                int ecustnum=0;
+                String wsdate  = null;
+                String wsdescription  = null;
+		int laborday = 16;
+		int totcrewdays = 0;	
+		int qpartnum=0;
+		String itemname=null;
+		String mannum=null;
+		int itemquant=0;
+		int itemnum=0;
+		double totinvestment=0.00;
+		int totlaborhours=0;
+		int totshophours=0;
+		double totlabor=0.00;
+		double subtotlabor=0.00;
+		int itemrec=0;
+		String item=null;
+		String keycode="";
+		int quantity=0;
+		double cost=0.00;
+		int laborhours=0;
+		int shophours=0;
+		double laborcost=0;
+		double awsmult=0.00;
+		String wsmult="";
+		String investment=null;
+		double qtotal=0.00;
+	
+                Vector vv;
+                vv = UniWorksheet.getIndItem(con,crecnum,wsnum);
+		counter=0;
+                for (int i = 0 ; i < vv.size(); i++)
+                {
+                UniWorksheet tt = (UniWorksheet) vv.elementAt(i);
+		wsdate=doFormatDate(getDate(tt.getWsDate()));
+		wsdescription=tt.getWsDesc();
+		wsmult=tt.getWsMult();
+		}
+
+ 		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
+		 while(rs.next())
+        	        {
+			cname=rs.getString("cname");
+			address1=rs.getString("address1");
+			address2=rs.getString("address2");
+			city =rs.getString("city");
+			state=rs.getString("state");
+			zip=rs.getString("zip");
+			homephone=rs.getString("homephone");
+			altphone=rs.getString("altphone");
+			cust_notes=rs.getString("cust_notes");
+			}
+
+	if (Double.parseDouble(wsmult)!=0.00) {
+       		 awsmult = Double.parseDouble(wsmult);
+		}
+	else {
+		awsmult = doGetMarkUpDiv();
+		}
+	mbody="";
+	mbody=combinestring(mbody,"<html><basefont size=2>");
+	mbody=combinestring(mbody,"<html><basefont size=2>");
+	mbody=combinestring(mbody,"<html><head><title>Quote Worksheet</title></head>");
+	mbody=combinestring(mbody,"<h2 align=CENTER>WorkSheet</h2>");
+	mbody=combinestring(mbody,"<table size=100% border=1><tr><td width=\"50%\">");
+	mbody=combinestring(mbody,"<table size=100%>");
+	mbody=combinestring(mbody,"<tr><td>"+cname+" </td></tr> ");
+	mbody=combinestring(mbody,"<tr><td>"+address1+"</td></tr><tr><td>"+ address2+"</tr></td><tr><td>"+city+", "+state+"  "+zip+"</td></tr>");
+	mbody=combinestring(mbody,"</table>");
+	mbody=combinestring(mbody,"</td><td>");
+	mbody=combinestring(mbody,"<table size=100%>");
+	mbody=combinestring(mbody,"<tr><td>Date:</td><td>");
+	mbody=combinestring(mbody,wsdate+"</td>");
+	mbody=combinestring(mbody,"</tr>");
+	mbody=combinestring(mbody,"<tr><td>Summary:</td><td>");
+	mbody=combinestring(mbody,wsdescription +"</td>");
+	mbody=combinestring(mbody,"</tr>");
+	mbody=combinestring(mbody,"</table>");
+	mbody=combinestring(mbody,"</tr>");
+	mbody=combinestring(mbody,"</table>");
+	mbody=combinestring(mbody,"<br><br><br><table border=\"1\" width=\"100%\">");
+	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
+		Vector vp;
+                vp = UniWsItems.getAllItems(con,wsnum);
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                UniWsItems tp = (UniWsItems) vp.elementAt(j);
+		wsrec = tp.getWsRec();
+		itemrec = tp.getItemRec();
+		item = tp.getWsItem();
+		keycode = tp.getWsKeyCode();
+		quantity = tp.getWsQuant();
+		cost = tp.getWsCost();
+		laborhours = tp.getWsLaborHours();
+		shophours = tp.getWsShopHours();
+		laborcost = tp.getWsLaborCost();
+		double subtot=cost*quantity;
+		subtotlabor=(shophours+laborhours)*laborcost;
+		totinvestment=totinvestment+subtot;
+		totlabor = totlabor+subtotlabor;
+		totlaborhours = totlaborhours+laborhours;
+		totshophours = totshophours+shophours;
+		mbody=combinestring(mbody,"<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td></tr>");
+		}
+
+		double partmarkup = totinvestment * doGetPartMult();
+		double adjtotlabor = (totlaborhours+totshophours) * doGetLabMult();
+		double fsellprice = ((laborcost*adjtotlabor)+partmarkup)/awsmult;
+		double lsellprice = (totlabor*doGetGpToLabor())+totlabor+partmarkup;
+		totcrewdays = totlaborhours / laborday;
+
+	mbody=combinestring(mbody,"</table><br><h4>Summary Section</h4>");
+	mbody=combinestring(mbody,"<table width=\"75%\" border=1>");
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Total Part Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(totinvestment)+"");
+	mbody=combinestring(mbody,"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Parts x "+doGetPartMult()+"</td><td>"+ NumberFormat.getCurrencyInstance().format(partmarkup)+"");
+	mbody=combinestring(mbody,"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Transfer to Warranty</td><td>"+ NumberFormat.getCurrencyInstance().format(partmarkup-totinvestment)+"");
+	mbody=combinestring(mbody,"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Total Field Labor Hours</td><td>"+ totlaborhours+"");
+	mbody=combinestring(mbody,"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Total Shop Hours</td><td>"+ totshophours+"");
+	mbody=combinestring(mbody,"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Adjusted Labor Hours (x"+doGetLabMult()+")</td><td>"+ adjtotlabor+"");
+	mbody=combinestring(mbody,"</td></tr>");
+
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"Total Labor Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(adjtotlabor*laborcost)+"");
+	mbody=combinestring(mbody,"</td></tr>");
+
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"<b>Total Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(adjtotlabor*laborcost+partmarkup)+"</b>");
+	mbody=combinestring(mbody,"</td></tr>");
+
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"<b>Total Cost / "+awsmult+"</td><td>"+ NumberFormat.getCurrencyInstance().format(fsellprice)+"</b>");
+	mbody=combinestring(mbody,"</td></tr>");
+
+
+	mbody=combinestring(mbody,"<tr><td>");
+	mbody=combinestring(mbody,"<b>Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(fsellprice)+"</b>");
+	mbody=combinestring(mbody,"</td></tr>");
+	mbody=combinestring(mbody,"</table><br>");
+
+
+        String emailserver = doGetSmtpServer(username);
+        String emailsendaddress=doGetProp_Email(username);
+        String techemailaddress=doGetTech_Email(username);
+      String smtpuser = doGetSmtpUser(username);
+      String smtppassword = doGetSmtpPassword(username);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Worksheet For: "+cname+" - "+wsdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+		return mbody;
+			}
+
 private void doSendWorksheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
@@ -23713,6 +24768,161 @@ private void doEditPrevagreement(HttpServletRequest req, HttpServletResponse res
 		con.close();
 	}
 
+private String doSendSingleProposalsC(int qnumber, int custrec, String username)
+                throws Exception
+                        {
+		int tcustnum = 0;
+		String tcontnum = null;
+            String mbody = "";
+               int eenum=0;
+                int ecustnum=0;
+                String brand=null;
+                String modelnum=null;
+                String serialnum=null;
+                String filter=null;
+                String enotes=null;
+                String type=null;
+
+                int enum1 =0;
+                int enum2 = 0;
+                int enum3 = 0;
+                int enum4 = 0;
+                int enum5 = 0;
+                int enum6 = 0;
+                int enum7 = 0;
+                int enum8 = 0;
+                int enum9 = 0;
+                String aservice  = null;
+                String startdate = null;
+                String enddate = null;
+                String term = null;
+                String cost = null;
+                String notes = null;
+                String agrdate = null;
+                int vperyear = 0;
+
+		String cname=null;
+		String address1=null;
+		String address2=null;
+		String city =null;
+		String state=null;
+		String zip=null;
+		String homephone=null;
+		String altphone=null;
+		String cust_notes=null;
+		
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+        	String emailserver = null;
+        	String emailsendaddress= null;
+        	String techemailaddress= null;
+
+                String qdescription  = null;
+                String qpayterms  = null;
+		int propnum = 0;
+                String qnotes  = null;
+                String qadditionalserv  = null;
+		int qpartnum=0;
+		String itemname=null;
+		String mannum=null;
+		int itemquant=0;
+		int itemnum=0;
+		int counter = 0;
+		double totinvestment=0.00;
+		String investment=null;
+		String qdate=null;
+		double qtotal=0.00;
+	int csrec = qnumber;
+	int custnum = custrec;
+                Vector vv;
+                vv = UniQuotes.getIndItem(con,custnum, csrec);
+		counter=0;
+                for (int i = 0 ; i < vv.size(); i++)
+                {
+                UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		qdate=tt.getQDate();
+		propnum = tt.getQuoteNum();
+		qdescription=tt.getQDescription();
+		qnotes=tt.getQNotes();
+		tcustnum=tt.getCrecNum();
+		qpayterms=tt.getQPayterms();
+		qadditionalserv=tt.getQAdditionalServ();
+
+ 		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
+		 while(rs.next())
+        	        {
+			cname=rs.getString("cname");
+			address1=rs.getString("address1");
+			address2=rs.getString("address2");
+			city =rs.getString("city");
+			state=rs.getString("state");
+			zip=rs.getString("zip");
+			homephone=rs.getString("homephone");
+			altphone=rs.getString("altphone");
+			cust_notes=rs.getString("cust_notes");
+			}
+
+	mbody="";	
+	mbody=combinestring(mbody,"<html><basefont size=2>");
+	mbody=combinestring(mbody,"<html><head><title>Proposal</title></head>");
+	mbody=combinestring(mbody,"<h2 align=CENTER>Proposal</h2>");
+	mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
+	mbody=combinestring(mbody,"<td>This proposal is issued to:</td><td>"+cname+" </td></tr> ");
+	mbody=combinestring(mbody,"<tr><td></td><td>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
+	mbody=combinestring(mbody,"<tr><td></td><td></td></tr>");
+	mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+doFormatDate(getDate(qdate))+" </td></tr> ");
+	mbody=combinestring(mbody,"</table></p> ");
+	mbody=combinestring(mbody,"<p><font size=3>Thank you for the oppurtunity to quote on "+qdescription+".<br>");
+	mbody=combinestring(mbody,"<br>This work will consist of:<br>");
+	mbody=combinestring(mbody,"<ul>");
+	
+                Vector vp;
+                vp = UniQuoteParts.getAllItems(con,propnum);
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+		qpartnum=tp.getQPartnum();
+		itemname=tp.getItemName();
+		mannum=tp.getManNum();
+		itemquant=tp.getItemQuant();
+		investment=tp.getInvestment();
+		qtotal=tp.getQuoteTotal();
+		double subtot=Double.parseDouble(tp.getInvestment())*itemquant;
+		totinvestment=totinvestment+subtot;
+	mbody=combinestring(mbody,"<li>"+itemquant+" - "+itemname+"; "+mannum+"</li>");
+	
+		}
+		
+	
+	mbody=combinestring(mbody,"</ul>");
+
+	mbody=combinestring(mbody,"<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
+	mbody=combinestring(mbody,"<br><br>");
+
+	mbody=combinestring(mbody,"Payment to be made as follows:<br>");
+	mbody=combinestring(mbody,"<p align=center>"+qpayterms+"</p><br>");
+	mbody=combinestring(mbody,"All material is guaranteed to be as specified.  All work completed within Massachusetts code specification. Please be aware that any hidden work which may be discovered or changed work orders will alter the cost of this project. All agreements contingent upon strikes, accidents or delays beyond our control.  Owner to carry fire, tornado and other necessary insurance.  Our workers are fully covered by Workmen's Compensation Insurance.  "+doGetCompanyName()+" wishes to thank you for your time and consideration on this project.  You may be assured of quality, professionalism and complete satisfaction with our work.<br><br>");
+	mbody=combinestring(mbody,"<p align=center>Authorized Signature ___________________________________________________________________________<br><b>Note: This proposal may be withdrawn by us if not accepted within 10 days.</b></p>");
+
+	mbody=combinestring(mbody,"<br><br><p align=center><b>Acceptance of Proposal</b></p>");
+	mbody=combinestring(mbody,"The above prices, specifications and conditions are satisfactory and are hereby accepted.  You are authorized to do the work as specified.  Payment will be made as outlined above.  Cancellation of this proposal will result in a 10% retainer.<br><br>");
+	mbody=combinestring(mbody,"</p><table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
+	mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
+	mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
+	// END OF SINGLE QUOTE HERE
+        emailserver = doGetSmtpServer(username);
+        emailsendaddress=doGetProp_Email(username);
+        techemailaddress=doGetTech_Email(username);
+      String smtpuser = doGetSmtpUser(username);
+      String smtppassword = doGetSmtpPassword(username);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Proposal For: "+cname+" - "+qdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+		}
+		return mbody;
+    }
+
+
 private void doSendSingleProposals(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
                 throws Exception
                         {
@@ -24403,6 +25613,212 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		con.close();
     }
 
+
+private String  doSendPrevagreementC(int contnum, int custnum, String username)
+                throws Exception
+                        {
+		String mbody="";
+      		String smtpuser = doGetSmtpUser(username);
+      		String smtppassword = doGetSmtpPassword(username);
+               int eenum=0;
+                int ecustnum=0;
+                String brand=null;
+                String modelnum=null;
+                String serialnum=null;
+                String filter=null;
+                String enotes=null;
+                String type=null;
+                int enum1 =0;
+                int enum2 = 0;
+                int enum3 = 0;
+                int enum4 = 0;
+                int enum5 = 0;
+                int enum6 = 0;
+                int enum7 = 0;
+                int enum8 = 0;
+                int enum9 = 0;
+                int enum10 =0;
+                String aservice  = null;
+                String startdate = null;
+                String enddate = null;
+                String term = null;
+                String cost = null;
+                String notes = null;
+                String agrdate = null;
+                int vperyear = 0;
+		String visit1=null;
+		String visit2=null;
+		String visit3=null;
+		String visit4=null;
+		String visit5=null;
+		String visit6=null;
+		String cname=null;
+		String address1=null;
+		String address2=null;
+		String city =null;
+		String state=null;
+		String zip=null;
+		String homephone=null;
+		String altphone=null;
+		String cust_notes=null;
+		
+		String tech_init = doGetTechInfo_init(username);
+		String tech_name = doGetTechInfo_name(username);
+		String tech_truck = doGetTechInfo_truck(username);
+
+ 		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
+
+		 while(rs.next())
+        	        {
+			cname=rs.getString("cname");
+			address1=rs.getString("address1");
+			address2=rs.getString("address2");
+			city =rs.getString("city");
+			state=rs.getString("state");
+			zip=rs.getString("zip");
+			homephone=rs.getString("homephone");
+			altphone=rs.getString("altphone");
+			cust_notes=rs.getString("cust_notes");
+			}
+
+ 	stmt = con.createStatement();
+	rs = stmt.executeQuery("SELECT * FROM pagreement where contnum="+contnum+"");
+
+		 while(rs.next())
+                {
+		enum1=rs.getInt("enum1");
+		enum2=rs.getInt("enum2");
+		enum3=rs.getInt("enum3");
+		enum4=rs.getInt("enum4");
+		enum5=rs.getInt("enum5");
+		enum6=rs.getInt("enum6");
+		enum7=rs.getInt("enum7");
+		enum8=rs.getInt("enum8");
+		enum9=rs.getInt("enum9");
+		enum10=rs.getInt("enum10");
+		aservice=rs.getString("aservice");
+		visit1=rs.getString("visit1");
+		visit2=rs.getString("visit2");
+		visit3=rs.getString("visit3");
+		visit4=rs.getString("visit4");
+		visit5=rs.getString("visit5");
+		visit6=rs.getString("visit6");
+		startdate=doFormatDate(getDate(rs.getString("startdate")));
+		enddate=doFormatDate(getDate(rs.getString("enddate")));
+		term=rs.getString("term");
+		cost=rs.getString("cost");
+		notes=rs.getString("notes");
+		agrdate=doFormatDate(getDate(rs.getString("agrdate")));
+		vperyear=rs.getInt("vperyear");
+		}
+	int vfreq=12/vperyear;
+	int totvisits=Integer.parseInt(term)*vperyear;
+	 mbody=combinestring(mbody,"<html><basefont size=1>");
+	 mbody=combinestring(mbody,"<html><head><title>Preventative Agreement</title></head>");
+	 mbody=combinestring(mbody,"<h2 align=CENTER>Planned Service Agreement</h2>");
+	 mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
+	 mbody=combinestring(mbody,"<td>This agreement is issued to:</td><td>"+cname+" </td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+agrdate+" </td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>Covering equipment located at:</td><td><br>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
+	 mbody=combinestring(mbody,"</table></p> ");
+
+	 mbody=combinestring(mbody,"<table border=1 width=95% font=\"-2\">");
+         mbody=combinestring(mbody,"<th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Type</th><th>Notes</th>");
+
+ 	stmt = con.createStatement();
+	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+enum1+"' or enum='"+enum2+"' or enum='"+enum3+"' or enum='"+enum4+"' or enum='"+enum5+"' or enum='"+enum6+"' or enum='"+enum7+"' or enum='"+enum8+"' or enum='"+enum9+"' or enum='"+enum10+"';");
+
+		 while(rs.next())
+                {
+		brand = rs.getString("brand");
+                modelnum = rs.getString("modelnum");
+                serialnum = rs.getString("serialnum");
+                filter = rs.getString("filter");
+                notes = rs.getString("notes");
+                type = rs.getString("etype");
+	 mbody=combinestring(mbody,"<tr><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+type+"</td><td>"+notes+"</tr>");
+		}
+
+	 mbody=combinestring(mbody," ");
+	 mbody=combinestring(mbody," ");
+	 mbody=combinestring(mbody,"</table> ");
+	 mbody=combinestring(mbody,"<P ALIGN=LEFT FONT=\"-1\"><h3 ALIGN=LEFT>TERMS OF THIS AGREEMENT:</h3> ");
+	if ((visit1!=null)&&(visit1.length()!=0)&&!visit1.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement starting with the "+visit1+" visit. The inspection ");
+					} else {
+	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement. The inspection ");
+					}
+	 mbody=combinestring(mbody," and maintenance services to be performed during the heating and/or cooling seasons by <b>"+doGetCompanyName()+"</b> by one of our qualified technicians. Maintenance dates may vary depending on weather and scheduling.<br><br>");
+	 mbody=combinestring(mbody,"Customer agrees to have an adult homeowner or authorized representative on-site during each maintenance visit. The approximate time for our maintenance visit is (residential between 45 minutes and 1 hour per unit)/(commercial 2-3 hours). Customer agrees to operate the specified equipment per our instructions. ");
+	 mbody=combinestring(mbody,"It is important for the customer to notify us in the event of any unusual operating conditions such as fumes, noise, etc. Customer agrees to permit only our Maintenance / Service Technicians to work on the specified equipment.");
+	 mbody=combinestring(mbody,"<h3>CONDITIONS:</h3>");
+	 mbody=combinestring(mbody,"1. Service parts not covered under warranty will be charged at regular rates less <b>20% preferential customer discount</b>.<br> ");
+	 mbody=combinestring(mbody,"2. Maintenance workmanship is guaranteed for thirty (30) days from the date of inspection. All parts and equipment are warranted per manufacturer's specifications.<br> ");
+	 mbody=combinestring(mbody,"3. Repair services requested by the customer will be provided during normal working hours (8:00am - 4:30pm) - at our current service rate less preferential customer discount noted above.<br> ");
+	 mbody=combinestring(mbody,"4. Request for emergency service after normal working hours will be charged at our current service rate less preferential customer discount.<br>");
+	 mbody=combinestring(mbody,"5. This agreement is non-refundable and may be assigned.");
+	 mbody=combinestring(mbody,"<h3>ADDITIONAL BENEFITS:</h3>");
+	 mbody=combinestring(mbody,"1. Automatic professional cleaning and maintenance.<br> ");
+	 mbody=combinestring(mbody,"2. Priority customer repair service.<br> ");
+	 mbody=combinestring(mbody,"3. Discount on all parts.<br> ");
+	 mbody=combinestring(mbody,"4. Up to date information on safety and energy saving accessories.<br> ");
+	 mbody=combinestring(mbody,"5. Increased efficiency of your unit.<br> ");
+	 mbody=combinestring(mbody,"6. Written evaluation of your equipment.<br> ");
+	 mbody=combinestring(mbody,"7. Extended life of your equipment.<br> ");
+	 mbody=combinestring(mbody,"8. Agreement is transferable to different owner.<br> ");
+	 mbody=combinestring(mbody,"9. Protection of price increases.");
+	 mbody=combinestring(mbody,"<h3>TERMS AND CONDITIONS</h3>");
+	 mbody=combinestring(mbody,"1. This planned service agreement contains the entire understanding between "+doGetCompanyName()+" (The Company) and the Customer. Any modifications, amendments or changes must be in writing and signed by both parties.<br> ");
+	 mbody=combinestring(mbody,"2. The Company shall not be liable for damage, loss or delays resulting from fire, explosion, flooding, the elements, labor troubles or any other cause beyond our control.<br> ");
+	 mbody=combinestring(mbody,"3. The Company shall not be responsible for the identification, detection, abatement, encapsulation, storage, removal or transportation of any regulated or hazardous substances. Regulated or hazardous substances may include, but are not limited to asbestos, certain refrigerants, and refrigerant oils.  ");
+	 mbody=combinestring(mbody,"If any such products or materials are encountered during the course of work, the company can discontinue work until regulated or hazardous materials have been removed or hazard or liability is eliminated.<br> ");
+	 mbody=combinestring(mbody,"4. No maintenance appointments will be scheduled before 8:00 A.M. or beginning after 3:30 P.M. - Monday through Friday. Hours or days may be changed at the discretion of The Company without notice.");
+	 mbody=combinestring(mbody,"<h3><u>DEFINITIONS:</u></h3> ");
+	 mbody=combinestring(mbody,"<b>Priority Service:</b> We will not accept non-service agreement customer emergencies before we will respond to Planned Service Agreement customer emergencies.<br> ");
+	 mbody=combinestring(mbody,"<br><b>Professionally Cleaned:</b> Due to time and cost, not every component of the system is cleaned or checked during a normal maintenance call. We maintain those items that the HVAC industry and the manufacturer typically accepts as part of routine scheduled maintenance. We do not check every electrical and mechanical component on your system unless a problem leads us to do so. e.g. cleaning of the evaporator coil is done at additional cost if necessary. This coil should only have to be cleaned every third or fourth year if a high efficiency air cleaner is used, more frequently if the standard fiberglass filter is used.<br> ");
+	 mbody=combinestring(mbody,"<br><b>Emergency Service:</b> Any situation where the Customer is in immediate danger due to a safety issue, i.e. gas leak, gas smell, threat of carbon monoxide, water leak or is without heat and there is a potential danger of frozen pipes and property damage. <u>Typically being without air conditioning is not considered an emergency</u>, unless there is a health related issue.<br><br><br> ");
+	
+		if (aservice.length()>1) {
+		 mbody=combinestring(mbody,"<br><h4>Additional Notes:</h4><br>"+aservice+"<br>");
+		 mbody=combinestring(mbody,"</td></tr>");
+		}
+	 mbody=combinestring(mbody,"<h3>PRICE OF THIS AGREEMENT: <b>"+cost+"</b></h3> ");
+	 mbody=combinestring(mbody,"<br><br> ");
+	 mbody=combinestring(mbody,"<table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
+	 mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
+
+	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<br><br> ");
+	 mbody=combinestring(mbody,"<center><h3>Schedule of Visits</h3></center>");
+	 mbody=combinestring(mbody,"<table width=\"50%\" align=left border=\"1\">");
+	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 1:</td><td>"+visit1+"</td></tr> ");
+			}
+	if ((visit2!=null)&&!visit2.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 2:</td><td>"+visit2+"</td></tr> ");
+			}
+	if ((visit3!=null)&&!visit3.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 3:</td><td>"+visit3+"</td></tr> ");
+			}
+	if ((visit4!=null)&&!visit4.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 4:</td><td>"+visit4+"</td></tr> ");
+			}
+	if ((visit5!=null)&&!visit5.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 5:</td><td>"+visit5+"</td></tr> ");
+			}
+	if ((visit6!=null)&&!visit6.equalsIgnoreCase("-")) {
+	 mbody=combinestring(mbody,"<tr><td>Visit 6:</td><td>"+visit6+"</td></tr> ");
+			}
+	 mbody=combinestring(mbody,"</table><br></table><br></p>");
+			}
+        emailserver = doGetSmtpServer(username);
+        emailsendaddress=doGetSvc_Email(username);
+        techemailaddress=doGetTech_Email(username);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Agreement: "+cname+" - "+agrdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	return mbody;
+    }
 
 private void doSendPrevagreement(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
