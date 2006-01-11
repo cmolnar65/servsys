@@ -29,6 +29,7 @@ public class UniCallslip
 	private String sitenum=null;
 	private String crectype=null;
 	private String techid=null;
+	private String parts=null;
 
         public UniCallslip (Connection c, int crecnum)
 		throws SQLException, TodoException
@@ -61,6 +62,7 @@ public class UniCallslip
 		this.custsite=rs.getString("custsite");
 		this.sitenum=rs.getString("sitenum");
 		this.servsync=rs.getInt("servsync");
+		this.parts=rs.getString("parts");
 	}
 
 	public static Vector getAllItems(Connection c, int custnum)
@@ -181,22 +183,22 @@ public class UniCallslip
 		return V;
 	}
 
-	public static void UpdateItem(Connection con, int crecnum, int custnum, String callslip, String cdate, String equip1, String equip2, String equip3, String equip4, String reason, String services, String recommendations, String rscheduled, String charges, String collected, String notes, int followup, String custsite, String sitenum, String crectype, String techid)
+	public static void UpdateItem(Connection con, int crecnum, int custnum, String callslip, String cdate, String equip1, String equip2, String equip3, String equip4, String reason, String services, String recommendations, String rscheduled, String charges, String collected, String notes, int followup, String custsite, String sitenum, String crectype, String techid, String parts)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
 			String tservices = services.replaceAll("'","''");
 			String trecommendations = recommendations.replaceAll("'","''");
-      		stmt.executeUpdate("Update callslip Set custnum='" +custnum+ "', callslip='"+callslip +"',cdate ='"+cdate +"',equip1 ='"+equip1 +"',equip2 ='"+equip2 +"',equip3 ='"+equip3 +"',equip4 ='"+equip4 +"', reason ='"+reason +"',services ='"+tservices +"',recommendations ='"+trecommendations +"',rscheduled ='"+rscheduled +"',charges ='"+charges +"',collected ='"+collected +"',notes ='"+notes +"', followup='"+followup +"', custsite='"+custsite+"', sitenum='"+sitenum+"', crectype='"+crectype+"', techid='"+techid+"', servsync=9 Where crecnum =" + crecnum + ";");
+      		stmt.executeUpdate("Update callslip Set custnum='" +custnum+ "', callslip='"+callslip +"',cdate ='"+cdate +"',equip1 ='"+equip1 +"',equip2 ='"+equip2 +"',equip3 ='"+equip3 +"',equip4 ='"+equip4 +"', reason ='"+reason +"',services ='"+tservices +"',recommendations ='"+trecommendations +"',rscheduled ='"+rscheduled +"',charges ='"+charges +"',collected ='"+collected +"',notes ='"+notes +"', followup='"+followup +"', custsite='"+custsite+"', sitenum='"+sitenum+"', crectype='"+crectype+"', techid='"+techid+"', servsync=9, parts='"+parts+"' Where crecnum =" + crecnum + ";");
       	}
 
-public static void AddItem(Connection con, int custnum, String callslip, String cdate, String equip1, String equip2, String equip3, String equip4,String reason, String services, String recommendations, String rscheduled, String charges, String collected, String notes, int followup, String custsite, String sitenum, String crectype, String techid)
+public static void AddItem(Connection con, int custnum, String callslip, String cdate, String equip1, String equip2, String equip3, String equip4,String reason, String services, String recommendations, String rscheduled, String charges, String collected, String notes, int followup, String custsite, String sitenum, String crectype, String techid, String parts)
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
 			String tservices = services.replaceAll("'","''");
 			String trecommendations = recommendations.replaceAll("'","''");
-	                stmt.executeUpdate("INSERT INTO callslip (custnum, callslip, cdate, equip1, equip2, equip3, equip4,reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, techid, servsync) Values ('" + custnum + "','" + callslip + "','"+cdate+"','"+equip1+"','"+equip2+"','"+equip3+"','"+equip4+"','"+reason+"','"+tservices+"','"+trecommendations+"','"+rscheduled+"','"+charges+"','"+collected+"', '"+notes+"','"+followup+"', '"+custsite+"','"+sitenum+"', '"+crectype+"','"+techid+"', 0)");
+	                stmt.executeUpdate("INSERT INTO callslip (custnum, callslip, cdate, equip1, equip2, equip3, equip4,reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, techid, servsync, parts) Values ('" + custnum + "','" + callslip + "','"+cdate+"','"+equip1+"','"+equip2+"','"+equip3+"','"+equip4+"','"+reason+"','"+tservices+"','"+trecommendations+"','"+rscheduled+"','"+charges+"','"+collected+"', '"+notes+"','"+followup+"', '"+custsite+"','"+sitenum+"', '"+crectype+"','"+techid+"', 0, '"+parts+"')");
 		        }
 
         public int getCrecnum() { return crecnum; }
@@ -220,4 +222,5 @@ public static void AddItem(Connection con, int custnum, String callslip, String 
 	public String getCollected() { return collected; }
 	public String getNotes() { return notes; }
 	public String getTechID() { return techid; }
+	public String getParts() { return parts; }
 }

@@ -1,4 +1,5 @@
 - Need to figure out a way for master worksheets to update when pricing updates.
+- need to send export of flat rates as a CSV file rather than an html file
 55. Identify email of callslips into system -
 54. Read email from server - 
 136. Load calc entry form -
@@ -9,12 +10,20 @@
 167. Add server update admin on software expire date -
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
-- add serial number to software.
 - add encryption to drop dead date.
 - if running on master server allow update of server dates.
 - Update callslip from server to laptop if requested.
 - Update inspection from server to laptop if requested.
 - Update equipment from server to laptop if requested.
+
+=================================================================
+RELEASE 2.06
+==================================================================
+- add serial number to software. (Don't do - not needed for GPL)
+- Changed code to allow update of Flat Rates regardless of last updated date.
+- Added Parts column to the callslip and inspection databases. This will create a parts
+  request when the email is sent. Still need to work out Inspection email generation.
+
 
 =================================================================
 RELEASE 2.05

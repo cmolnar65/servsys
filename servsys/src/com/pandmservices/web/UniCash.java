@@ -2657,31 +2657,7 @@ private void doUpdateFlatRateTable(HttpServletRequest req, HttpServletResponse r
 		out.println("Local Date: "+localdate+"<br>");	
 		out.println("Remote Date: "+remotedate+"<br>");	
 
-		if (doFormatDateComp(getDate(remotedate))>doFormatDateComp(getDate(localdate)))
-			{
 			out.println("Flat Rate Database Needs Updated<br>");
-	/*		int result=stmt.executeUpdate("DROP TABLE IF EXISTS flat_rate;");
-			int result2=stmt.executeUpdate("CREATE TABLE flat_rate (recnum int(11) NOT NULL auto_increment,service text,tm_primary decimal(10,2),keycode text, jtime decimal(10,2), jcode text, specitem int(11) NOT NULL default '0' ,PRIMARY KEY (recnum),UNIQUE recnum (recnum),KEY recnum_2 (recnum));");
-
-                Vector v;
-                v = UniFlatRate.getAllItems(conu);
-                int counter=0;
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                        UniFlatRate t = (UniFlatRate) v.elementAt(i);
-			String service=t.getService();
-			int recnum=t.getRecNum();
-			String tm_primary=t.getTmPrimary();
-			String jcode=t.getJCode();
-			String jtime=""+t.getJTime();
-			String keycode=t.getKeycode();
-			int specitem=t.getSpecItem();
-			counter++;
-
-                UniFlatRate.AddItem(con, service, tm_primary, jtime, jcode, keycode, specitem);
-*/
-
-
 			int result5 = stmt.executeUpdate("DROP TABLE IF EXISTS flat_rate_table;");
 			int result6 = stmt.executeUpdate("CREATE TABLE flat_rate_table (code int(11) NOT NULL auto_increment, part text, category text, keycode text, hours decimal(10,2) default '0.00', partcost decimal(10,2) default 0.00, custnotes text, nodiscount text, specitem int(11), PRIMARY KEY  (code), UNIQUE KEY code (code));");
                 int counter=0;
@@ -2702,20 +2678,14 @@ private void doUpdateFlatRateTable(HttpServletRequest req, HttpServletResponse r
 			counter++;
 
 		FlatRateTable.AddItem(con, code, category, part, keycode, hours, partcost, custnotes, nodiscount, specitem);
-		//out.println("Code: "+code+"  Category: "+category+"  Part: "+part+" Keycode: "+keycode+"  Hours:"+ hours+"  Part Cost: "+partcost+"  Custnotes:  "+custnotes+"<br>");
-		int result = stmt.executeUpdate("UPDATE flat_rate_date set dateupdated='"+s+"';");
 		}
+		int result = stmt.executeUpdate("UPDATE flat_rate_date set dateupdated='"+s+"';");
 		out.println("Records Written: "+counter+"<br>");
 		rs = stmt.executeQuery("SELECT * FROM flat_rate_date");
 		while(rs.next())
 			{
 			String nlocaldate=rs.getString("dateupdated");
 			out.println("New Local Date: "+ nlocaldate +"<br>");
-			}
-			}
-		else if (doFormatDateComp(getDate(remotedate))<=doFormatDateComp(getDate(localdate)))
-			{
-			out.println("Flat Rate Database up to date<br><br>");
 			}
 		
 		out.println("<a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
@@ -5575,7 +5545,13 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.05";
+			vnumber = "2.06";
+		if (dbvnumber.equalsIgnoreCase("2.05")) {
+			Statement stmtu2 = con.createStatement();
+			int result205a=stmtu2.executeUpdate("alter table callslip add parts text after servsync;");
+			int result205b=stmtu2.executeUpdate("alter table inspection add parts text after servsync;");
+			int result205c = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+							}
 		if (dbvnumber.equalsIgnoreCase("2.04")) {
 			Statement stmtu2 = con.createStatement();
 			int result204=stmtu2.executeUpdate("DROP TABLE IF EXISTS paytype;");
@@ -5663,7 +5639,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-01-07";
+			vdate="2006-01-08";
 
                         return vdate;                       
         }
@@ -9758,6 +9734,7 @@ throws Exception
 		String state=null;
 		String zip=null;
 		String liqtemp=null;
+		String parts=null;
 		String sucttemp=null;
 		String tech_init = doGetTechInfo_init(username);
 		String tech_name = doGetTechInfo_name(username);
@@ -9877,6 +9854,7 @@ throws Exception
 		mcfm=t.getMCfm();
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
+		parts=t.getParts();
 
  		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
@@ -9948,6 +9926,14 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 ///////////////////////////////////////////////////	
 if (services.length()>1) {
 mbody=combinestring(mbody,"<br>"+services+"<br>");
+}
+
+
+////////////////////////////////////////////////////
+//Print parts
+///////////////////////////////////////////////////	
+if (parts.length()>1) {
+mbody=combinestring(mbody,"<br>Parts Needed:<br>"+parts+"<br>");
 }
 
 ////////////////////////////////////////////////////
@@ -10258,6 +10244,7 @@ int frcode=0;
 	String g_bampr=null;
 	String g_bampa=null;
 	String g_pdrop=null;
+	String parts=null;
 
 	String sductsize = null;
 	String rductsize = null;
@@ -10406,6 +10393,7 @@ int frcode=0;
 		mcfm=t.getMCfm();
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
+		parts=t.getParts();
 
 ////////////////////////////////////////////////////
 //Get Customer Data 
@@ -10480,6 +10468,14 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 ///////////////////////////////////////////////////	
 if (services.length()>1) {
 mbody=combinestring(mbody,"<br>"+services+"<br>");
+}
+
+
+////////////////////////////////////////////////////
+//Print Parts
+///////////////////////////////////////////////////	
+if (parts.length()>1) {
+mbody=combinestring(mbody,"<br>Parts Needed:<br>"+parts+"<br>");
 }
 
 ////////////////////////////////////////////////////
@@ -10806,6 +10802,7 @@ double totalcharge=0.00;
 	String mcfm=null;
 	String out_temp=null;
 	int servsync=0;
+	String parts=null;
 
 
 		String cname=null;
@@ -10883,6 +10880,7 @@ double totalcharge=0.00;
                 	dueamount=t.getDueamount();
                 	paidamount=t.getPaidamount();
                 	notes=t.getNotes();
+			parts=t.getParts();
                 	lpres=t.getLpres();
                 	hpres=t.getHpres();
                 	startco=t.getStartco();
@@ -11138,6 +11136,14 @@ if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_
 if (recommendations.length()>1) {
 mbody=combinestring(mbody,"The following recommendations are made by our service technician: "+recommendations+"<br>");
 }
+
+
+	////////////////////////////////////////////////////
+	//Print Parts
+	///////////////////////////////////////////////////
+	if (parts.length()>1) {
+	mbody=combinestring(mbody,"<br>---------------------------<br>Parts Needed:<br>"+parts+"<br>");
+	}
 
 
 	////////////////////////////////////////////////////
@@ -11437,6 +11443,7 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
 	String rscheduled=null;
 	String charges=null;
 	String collected=null;
+	String parts=null;
 	int followup=0;
 	String descript;
 	String ccallslip;
@@ -11456,6 +11463,7 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
 	String cust_notes=null;
 	String etype="";
             String mbody = "";
+	    String pmbody = "";
             String listdate = req.getParameter("listdate");
 
 		String tech_init = doGetTechInfo_init(username);
@@ -11491,6 +11499,7 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
 		charges=t.getCharges();
 		collected=t.getCollected();
 		notes=t.getNotes();
+		parts=t.getParts();
 		followup=t.getFollowup();
 
 		Statement stmt = con.createStatement();
@@ -11514,6 +11523,13 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
 	mbody=combinestring(mbody,"City: "+city+"<br>");
 	mbody=combinestring(mbody,"State: "+state+"<br>");
 	mbody=combinestring(mbody,"Zip: "+zip+"<br>");
+	pmbody=combinestring(mbody,"<br><hr noshade size=1 width=100% color=cccccc>");
+	pmbody=combinestring(mbody,"<hr noshade size=1 width=100% color=cccccc><br>Callslip: "+callslip+"<br>");
+	pmbody=combinestring(mbody,"Customer: "+cname+"<br>");
+	pmbody=combinestring(mbody,"Address1: "+address1+"<br>");
+	pmbody=combinestring(mbody,"City: "+city+"<br>");
+	pmbody=combinestring(mbody,"State: "+state+"<br>");
+	pmbody=combinestring(mbody,"Zip: "+zip+"<br>");
 
 	///////////////////////////////////////////////////
 	//Print Equipment Data
@@ -11523,6 +11539,8 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
 	mbody=combinestring(mbody,"<br>Equipment Information:<br>-----------------<br>");
 	mbody=combinestring(mbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
 
+	pmbody=combinestring(mbody,"<br>Equipment Information:<br>-----------------<br>");
+	pmbody=combinestring(mbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
 		 while(rs.next())
                 {
 		brand = rs.getString("brand");
@@ -11535,9 +11553,11 @@ if (etype==null) {
                 etype = "-";
                 }
 	mbody=combinestring(mbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
+	pmbody=combinestring(mbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
 	}
 
 	mbody=combinestring(mbody,"</table>");
+	pmbody=combinestring(mbody,"</table>");
 
 
 	///////////////////////////////////////////////////
@@ -11589,6 +11609,16 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	///////////////////////////////////////////////////
 	if (services.length()>1) {
 	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	pmbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	}
+
+
+	////////////////////////////////////////////////////
+	//Print parts
+	///////////////////////////////////////////////////
+	if (parts.length()>1) {
+	mbody=combinestring(mbody,"<br>The following parts are needed:<br>"+parts+"<br>");
+	pmbody=combinestring(mbody,"<br>The following parts are needed:<br>"+parts+"<br>");
 	}
 
 
@@ -11605,6 +11635,7 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	///////////////////////////////////////////////////
 	if (notes.length()>1) {
 	mbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
+	pmbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
 	}
 
 ////////////////////////////////////////////////////////
@@ -11658,7 +11689,11 @@ for (int cc = 0 ; cc < ci.size(); cc++)
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+listdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	if (parts.length()>1) {
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+listdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
+			}
 		mbody="";
+		pmbody="";
 		}
 ////////////////////////////////////////////////////////
 // Here is where we end the http headers
@@ -12025,8 +12060,10 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 	String homephone=null;
 	String altphone=null;
 	String cust_notes=null;
+	String parts=null;
 	String etype="";
             String mbody = "";
+	    String pmbody="";
 	    int csrec=Integer.parseInt(callslip);
 		String tech_init = doGetTechInfo_init(username);
 		String tech_name = doGetTechInfo_name(username);
@@ -12058,6 +12095,7 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 		collected=t.getCollected();
 		notes=t.getNotes();
 		followup=t.getFollowup();
+		parts=t.getParts();
 
 		Statement stmt = con.createStatement();
         	ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
@@ -12079,10 +12117,20 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 	mbody=combinestring(mbody,"State: "+state+"<br>");
 	mbody=combinestring(mbody,"Zip: "+zip+"<br>");
 
+	pmbody=combinestring(pmbody,"<br><hr noshade size=1 width=100% color=cccccc>");
+	pmbody=combinestring(pmbody,"<hr noshade size=1 width=100% color=cccccc><br>Callslip: "+callslip+"<br>");
+	pmbody=combinestring(pmbody,"Customer: "+cname+"<br>");
+	pmbody=combinestring(pmbody,"Address1: "+address1+"<br>");
+	pmbody=combinestring(pmbody,"City: "+city+"<br>");
+	pmbody=combinestring(pmbody,"State: "+state+"<br>");
+	pmbody=combinestring(pmbody,"Zip: "+zip+"<br>");
+
  	stmt = con.createStatement();
 	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"'  or enum='"+equip3+"' or enum='"+equip4+"';");
 	mbody=combinestring(mbody,"<br>Equipment Information:<br>-----------------<br>");
 	mbody=combinestring(mbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
+	pmbody=combinestring(pmbody,"<br>Equipment Information:<br>-----------------<br>");
+	pmbody=combinestring(pmbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
 
 		 while(rs.next())
                 {
@@ -12096,9 +12144,11 @@ if (etype==null) {
                 etype = "-";
                 }
 	mbody=combinestring(mbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
+	pmbody=combinestring(pmbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
 	}
 
 	mbody=combinestring(mbody,"</table>");
+	pmbody=combinestring(pmbody,"</table>");
 	mbody=combinestring(mbody,"<br><br>Parts Used<br>--------------------------<br>");
 	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th>");
 Vector ci;
@@ -12145,6 +12195,16 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	///////////////////////////////////////////////////
 	if (services.length()>1) {
 	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	pmbody=combinestring(pmbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	}
+
+	
+	////////////////////////////////////////////////////
+	//Print Services
+	///////////////////////////////////////////////////
+	if (parts.length()>1) {
+	mbody=combinestring(mbody,"<br>Parts Needed:<br><br>------------------<br>"+parts+"<br>");
+	pmbody=combinestring(pmbody,"<br>Parts Needed:<br><br>------------------<br>"+parts+"<br>");
 	}
 
 
@@ -12211,6 +12271,9 @@ for (int cc = 0 ; cc < ci.size(); cc++)
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	if (parts.length()>1) {
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
+		}
 		//mbody="";
 		}
 		return mbody;
@@ -12247,6 +12310,7 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String collected=null;
 	int followup=0;
 	String descript;
+	String parts=null;
 	String ccallslip;
 	double quant;
 	double price;
@@ -12264,6 +12328,7 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String cust_notes=null;
 	String etype="";
             String mbody = "";
+	    String pmbody  = "";
             tcsrec = req.getParameter("csrec");
             String tcustnum = req.getParameter("custnum");
 	int csrec = Integer.parseInt(tcsrec);
@@ -12303,6 +12368,7 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 		collected=t.getCollected();
 		notes=t.getNotes();
 		followup=t.getFollowup();
+		parts=t.getParts();
 
 		Statement stmt = con.createStatement();
         	ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
@@ -12330,6 +12396,14 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	mbody=combinestring(mbody,"State: "+state+"<br>");
 	mbody=combinestring(mbody,"Zip: "+zip+"<br>");
 
+	pmbody=combinestring(pmbody,"<br><hr noshade size=1 width=100% color=cccccc>");
+	pmbody=combinestring(pmbody,"<hr noshade size=1 width=100% color=cccccc><br>Callslip: "+callslip+"<br>");
+	pmbody=combinestring(pmbody,"Customer: "+cname+"<br>");
+	pmbody=combinestring(pmbody,"Address1: "+address1+"<br>");
+	pmbody=combinestring(pmbody,"City: "+city+"<br>");
+	pmbody=combinestring(pmbody,"State: "+state+"<br>");
+	pmbody=combinestring(pmbody,"Zip: "+zip+"<br>");
+
 	///////////////////////////////////////////////////
 	//Print Equipment Data
 	///////////////////////////////////////////////////
@@ -12337,6 +12411,8 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"'  or enum='"+equip3+"' or enum='"+equip4+"';");
 	mbody=combinestring(mbody,"<br>Equipment Information:<br>-----------------<br>");
 	mbody=combinestring(mbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
+	pmbody=combinestring(pmbody,"<br>Equipment Information:<br>-----------------<br>");
+	pmbody=combinestring(pmbody,"<table border=1 width=\"100%\"><th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
 
 		 while(rs.next())
                 {
@@ -12350,9 +12426,11 @@ if (etype==null) {
                 etype = "-";
                 }
 	mbody=combinestring(mbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
+	pmbody=combinestring(pmbody,"<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+enotes+"</td></tr>");
 	}
 
 	mbody=combinestring(mbody,"</table>");
+	pmbody=combinestring(pmbody,"</table>");
 
 
 	///////////////////////////////////////////////////
@@ -12404,6 +12482,16 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	///////////////////////////////////////////////////
 	if (services.length()>1) {
 	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	pmbody=combinestring(pmbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	}
+
+	
+	////////////////////////////////////////////////////
+	//Print parts
+	///////////////////////////////////////////////////
+	if (parts.length()>1) {
+	mbody=combinestring(mbody,"<br>Parts Needed:<br><br>------------------<br>"+parts+"<br>");
+	pmbody=combinestring(pmbody,"<br>Parts Needed:<br><br>------------------<br>"+parts+"<br>");
 	}
 
 
@@ -12480,7 +12568,11 @@ for (int cc = 0 ; cc < ci.size(); cc++)
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	if (parts.length()>1) {
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
+		}
 		mbody="";
+		pmbody="";
 		}
 	out.println("</html>");
 ////////////////////////////////////////////////////////
@@ -12990,6 +13082,7 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 	String sequip2="";
 	String sequip3="";
 	String sequip4="";
+	String parts="";
 		
 /////////////////////////////////////////////////////////
 // Here is where we get all the Callslips  for the day
@@ -13026,6 +13119,7 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 		techid=t.getTechID();
 		crectype=t.getCrecType();
 		ocrecnum=t.getCrecnum();
+		parts=t.getParts();
 // OK we have the local callslip
 // Now check server for customer - we need record number
 
@@ -13082,7 +13176,7 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 
 
 // now put the new callslip onto the server
-		UniCallslip.AddItem(conu, Integer.parseInt(remotecrecnum), callslip, cdate, sequip1, sequip2, sequip3, sequip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsitenum, sitenum, crectype, techid);
+		UniCallslip.AddItem(conu, Integer.parseInt(remotecrecnum), callslip, cdate, sequip1, sequip2, sequip3, sequip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsitenum, sitenum, crectype, techid, parts);
 // now set the servsync to ON for this record
 		UniCallslip.getServSync(con, ocrecnum);
 // now get the record that was just added
@@ -17539,6 +17633,7 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 	double price;
 	double total;
 	int recnum;
+	String parts=null;
 
  	Statement stmt = con.createStatement();
 	ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecnum+"' ORDER BY cdate;");
@@ -17560,6 +17655,7 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 		//collected=rs.getString("collected");
 		crectype=rs.getString("crectype");
 		notes=rs.getString("notes");
+		parts=rs.getString("parts");
 		followup=rs.getInt("followup");
 		if (followup==1)
 			{
@@ -17602,6 +17698,9 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("</td></tr>");
 	out.println("<tr><td>Repair Scheduled</td><td>");
 	out.println("<textarea name=\"rscheduled\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+rscheduled +"</textarea>");
+	out.println("</td></tr>");
+	out.println("<tr><td>Parts Needed</td><td>");
+	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+parts+"</textarea>");
 	out.println("</td></tr>");
 	out.println("<tr><td>Notes</td><td>");
 	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+notes +"</textarea>");
@@ -18331,6 +18430,7 @@ String etype="";
 String custsite=null;
 String cemail=null;
 String sitenum=null;
+String parts=null;
 	
 String tech_init = doGetTechInfo_init(username);
 String tech_name = doGetTechInfo_name(username);
@@ -18357,6 +18457,7 @@ ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecn
 	charges=rs.getString("charges");
 	collected=rs.getString("collected");
 	notes=rs.getString("notes");
+	parts = rs.getString("parts");
 	followup=rs.getInt("followup");
 }
 out.println("<br><font size=2>");
@@ -18487,6 +18588,10 @@ if ((services!=null)||(recommendations!=null)||(rscheduled!=null)) {
 		out.println("<tr><td><h4>Repair Scheduled</h4></td></tr><tr><td>"+rscheduled+"");
 		out.println("</td></tr>");
 		}
+		if (parts.length()>1) {
+		out.println("<tr><td><h4>Parts Needed</h4></td></tr><tr><td>"+parts+"");
+		out.println("</td></tr>");
+			}
 	out.println("</font>");
 	out.println("</table>");
 	out.println("");
@@ -18619,6 +18724,7 @@ private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, 
 	String sitenum=null;
 	String cemail=null;
 	String etype = "";
+	String parts=null;
 
                 String callslip = null;
                 String idate = null;
@@ -18827,6 +18933,7 @@ private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, 
                 osafetime=t.getOsafetime();
                 oigntrans=t.getOigntrans();
                 olubemotors=t.getOlubemotors();
+		parts=t.getParts();
 		ofulemix=t.getOfulemix();
                 onozzle=t.getOnozzle();
                 ogross=t.getOgross();
@@ -19154,12 +19261,16 @@ if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_
 /////////////////////////////////////////////////////////
 // Print Comments and Notes section
 ////////////////////////////////////////////////////////
-if (services.length()>1||recommendations.length()>1) {
+if (services.length()>1||recommendations.length()>1||parts.length()>1) {
 out.println("<br>");
 out.println("<table size=95% width=\"95%\" align=center border=1>");
 out.println("<font size=1>");
 if (services.length()>1) {
 out.println("<tr><td><b>Services</td></tr><tr><td>"+services);
+out.println("</td></tr>");
+}
+if (parts.length()>1) {
+out.println("<tr><td><b>Parts Needed</td></tr><tr><td>"+parts);
 out.println("</td></tr>");
 }
 
@@ -19407,6 +19518,7 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 	String ahage=null;
 	String conage=null;
 	int servsync=0;
+	String parts=null;
 //////////////////////////////////////////////////////
 // Get Origional Call Information
 //////////////////////////////////////////////////////
@@ -19543,6 +19655,7 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 		mcfm=t.getMCfm();
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
+		parts=t.getParts();
 		}
 
 
@@ -19734,6 +19847,9 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 	out.println("<tr><td>Recommendations</td><td>");
 	out.println("<textarea name=\"recommendations\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+recommendations+"</textarea>");
 	out.println("</td></tr>");
+	out.println("<tr><td>Parts Needed</td><td>");
+	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+parts+"</textarea>");
+	out.println("</td></tr>");
 	out.println("<tr><td>Notes</td><td>");
 	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+notes+"</textarea>");
 	out.println("</td></tr>");
@@ -19858,6 +19974,7 @@ private void doUpdateCallslip(HttpServletRequest req, HttpServletResponse res, P
                 String services= req.getParameter("services");
                 String cdate= req.getParameter("cdate");
                 String recommendations= req.getParameter("recommendations");
+		String parts=req.getParameter("parts");
                 String rscheduled= req.getParameter("rscheduled");
                 String charges= req.getParameter("charges");
                 String collected= req.getParameter("collected");
@@ -19888,7 +20005,7 @@ private void doUpdateCallslip(HttpServletRequest req, HttpServletResponse res, P
 			SiteNum=t.getSiteNum();
 		}
 			
-                UniCallslip.UpdateItem(con, crecnum,custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2,equip3, equip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username);
+                UniCallslip.UpdateItem(con, crecnum,custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2,equip3, equip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username, parts);
 		con.close();
 			if (action.equalsIgnoreCase("rupdatecallslip"))
 	                        {
@@ -20116,6 +20233,7 @@ private void doSaveCallslip(HttpServletRequest req, HttpServletResponse res, Pri
        		//int followup = Integer.parseInt(tfollowup);
 		String tservices = services.replaceAll("\n","<br>");	
 		String trecommendations = recommendations.replaceAll("\n","<br>");	
+		String parts=req.getParameter("parts");
 
 	String oa1= req.getParameter("oa1");
 	String oa2= req.getParameter("oa2");
@@ -20179,7 +20297,7 @@ private void doSaveCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 		}
 			
 
-                UniCallslip.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2,equip3, equip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username);
+                UniCallslip.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2,equip3, equip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username,parts);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
@@ -20320,6 +20438,7 @@ private void doUpdateInspection(HttpServletRequest req, HttpServletResponse res,
 	String mcfm=req.getParameter("mcfm");
 	String out_temp=req.getParameter("out_temp");
 	String action=req.getParameter("action");
+	String parts=req.getParameter("parts");
 	int servsync=0;
 		if (tfollowup != null) {
        		followup = 1;
@@ -20338,7 +20457,7 @@ private void doUpdateInspection(HttpServletRequest req, HttpServletResponse res,
 			SiteNum=t.getSiteNum();
 		}
 			
-               UniInspection.UpdateItem(con, crecnum, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2,equip3,equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_return, spres_supply, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp , CustNum, SiteNum, expansion, ahage, conage, username, servsync);
+               UniInspection.UpdateItem(con, crecnum, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2,equip3,equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_return, spres_supply, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp , CustNum, SiteNum, expansion, ahage, conage, username, servsync, parts);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
 			if (action.equalsIgnoreCase("updateinspection"))
@@ -20490,6 +20609,7 @@ private void doSaveInspection(HttpServletRequest req, HttpServletResponse res, P
 	String expansion=req.getParameter("expansion");
 	String ahage=req.getParameter("ahage");
 	String conage=req.getParameter("conage");
+	String parts=req.getParameter("parts");
 	int servsync=0;
 
 		String CustNum=null;
@@ -20504,7 +20624,7 @@ private void doSaveInspection(HttpServletRequest req, HttpServletResponse res, P
 		}
 			
 
-               UniInspection.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, sucttemp, liqtemp, r_temp, s_temp, rw_temp, mcfm, out_temp, CustNum, SiteNum , expansion, ahage, conage, username, servsync);
+               UniInspection.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, sucttemp, liqtemp, r_temp, s_temp, rw_temp, mcfm, out_temp, CustNum, SiteNum , expansion, ahage, conage, username, servsync, parts);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
@@ -23755,7 +23875,7 @@ String s = formatter.format(date);
 				mbody=combinestring(mbody,"<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
 				
 			}
-			        ResultSet rs = stmt.executeQuery("select count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where login='"+lusername+"' and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"';");
+			        ResultSet rs = stmt.executeQuery("select count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel, ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where login='"+lusername+"' and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"';");
                 while(rs.next())
                 {
                         String tamount =rs.getString("amount");
@@ -27483,6 +27603,9 @@ private void doAddInspection(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("<tr><td>Recommendations</td><td>");
 	out.println("<textarea name=\"recommendations\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
 	out.println("</td></tr>");
+	out.println("<tr><td>Parts Needed</td><td>");
+	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
+	out.println("</td></tr>");
 	out.println("<tr><td>Notes</td><td>");
 	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
 	out.println("</td></tr>");
@@ -29237,6 +29360,9 @@ private void doAddCallslip(HttpServletRequest req, HttpServletResponse res, Prin
 	out.println("</td></tr>");
 	out.println("<tr><td>Repair Scheduled</td><td>");
 	out.println("<textarea name=\"rscheduled\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
+	out.println("</td></tr>");
+	out.println("<tr><td>Parts Needed</td><td>");
+	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
 	out.println("</td></tr>");
 	out.println("<tr><td>Notes</td><td>");
 	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
