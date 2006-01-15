@@ -463,6 +463,10 @@ out.println("</CENTER>");
 	                        {
                                 doUpdateTechInfo(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("updaterespsform"))
+	                        {
+                                doUpdateResPsForm(req, res, out, session, username);
+				}
                         else if (action.equalsIgnoreCase("updatecompinfo"))
 	                        {
                                 doUpdateCompInfo(req, res, out, session, username);
@@ -707,6 +711,17 @@ out.println("</CENTER>");
 	                        {
 	//ADMIN FUNCTION
                                 doEditTechInfo(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("edrespsform"))
+	                        {
+	//ADMIN FUNCTION
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+                                doEditResPsForm(req, res, out, session, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
 				}
                         else if (action.equalsIgnoreCase("editcompinfo"))
 	                        {
@@ -2001,6 +2016,7 @@ out.println("</CENTER>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=confightgloadcatlist target=phpmain>Heating Loads</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=zerotruckstock target=_blank>Zero Truck Stock</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=configforms target=_blank>Forms</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=edrespsform target=phpmain>Residential Planned Service Form</a><br>");
 	}
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=reports target=nav>Reports</a><br>");
 	if (menu.equalsIgnoreCase("reports")) {
@@ -3697,6 +3713,16 @@ private void doUpdateCompInfo(HttpServletRequest req, HttpServletResponse res, P
             }
 
 
+private void doUpdateResPsForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String psform  = req.getParameter("psform");
+                ResPsForm.UpdateItem(con, psform);
+                out.println("Your form has been updated in the database<br>");
+                res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
+		con.close();
+            }
+
 private void SaveTechInfo(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
@@ -4388,6 +4414,37 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("Company Address  :");
 	out.println("</td><td>");
 	out.println("<input type=\"text\" name=\"compaddress\" size=\"40\" value=\""+compaddress +"\">");
+	out.println("</td></tr></table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+	}
+//ADMIN FUNCTION
+//
+private void doEditResPsForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+		String psform=null;
+                Vector v;
+                v = ResPsForm.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	ResPsForm t = (ResPsForm) v.elementAt(i);
+			psform=t.getResPsForm();
+		}
+
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Edit Residential Planned Service Form</title>");
+	out.println("</head>");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updaterespsform\" name=\"updateform\">");
+	out.println("<table><tr><td>");
+	out.println("PS Form</td></tr><tr><td>");
+	out.println("<textarea name=\"psform\" cols=\"70\" rows=\"50\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+psform+"</textarea>");
+		
 	out.println("</td></tr></table>");
 	out.println("<p> <CENTER>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
@@ -5545,7 +5602,14 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.06";
+			vnumber = "2.07";
+		if (dbvnumber.equalsIgnoreCase("2.06")) {
+			Statement stmtu2 = con.createStatement();
+			int result206=stmtu2.executeUpdate("DROP TABLE IF EXISTS prform;");
+			int result206a = stmtu2.executeUpdate("create table prform (pagreement text)");
+			int result206ab = stmtu2.executeUpdate("insert into prform (pagreement) values ('blank');");
+			int result205b = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+							}
 		if (dbvnumber.equalsIgnoreCase("2.05")) {
 			Statement stmtu2 = con.createStatement();
 			int result205a=stmtu2.executeUpdate("alter table callslip add parts text after servsync;");
