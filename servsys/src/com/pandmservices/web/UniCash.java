@@ -99,7 +99,7 @@ public class UniCash extends HttpServlet
 			pass = (String) config.getInitParameter("db.password");
 			phpdir = (String) config.getInitParameter("web.phpdir");
 			Class.forName(driver);
-			con = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database, user, pass);
+			con = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database+"?autoReconnect=true", user, pass);
 			String action = req.getParameter("action");
 			PrintWriter out= res.getWriter();
 			String username=null;
@@ -154,7 +154,7 @@ private void doOpenConnection()
 			String user = (String) config.getInitParameter("db.username");
 			pass = (String) config.getInitParameter("db.password");
 			phpdir = (String) config.getInitParameter("web.phpdir");
-		con = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database, user, pass);
+		con = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database+"?autoReconnect=true", user, pass);
 		}
 		catch (Exception e)
 		{
@@ -2181,7 +2181,7 @@ String thismainserver=doGetThisMainServer();
 			String pass = (String) config.getInitParameter("db.password");
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database, user, pass);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database+"?autoReconnect=true", user, pass);
 		doOpenConnection();
 		Statement stmt = conu.createStatement();
 	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where tdate>'2005-09-30' group by ctype;");
@@ -2289,7 +2289,7 @@ private void doUploadInvCats(HttpServletRequest req, HttpServletResponse res, Pr
 			if (thismainserver.equalsIgnoreCase("no")) {
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			Statement stmtu = conu.createStatement();
 			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS inv_cats;");
 			int result2=stmtu.executeUpdate("CREATE TABLE inv_cats ( catnum int(11) NOT NULL auto_increment,category text NOT NULL,description text,keyprefix text,PRIMARY KEY  (catnum),UNIQUE KEY catnum (catnum),KEY catnum_2 (catnum)) ENGINE=MyISAM DEFAULT CHARSET=latin1");
@@ -2321,7 +2321,7 @@ private void doUpdateInvKeyCodeTable(HttpServletRequest req, HttpServletResponse
 			if (thismainserver.equalsIgnoreCase("no")) {
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM inv_keycodes_date");
@@ -2425,7 +2425,7 @@ private void doUploadFlatRateTable(HttpServletRequest req, HttpServletResponse r
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = conu.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM flat_rate_date");
@@ -2508,7 +2508,7 @@ private void doSyncCustTable(HttpServletRequest req, HttpServletResponse res, Pr
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 
 	out.println("Backing Up Local Machine To Server - May Take a while<br>Any problems check internet connection!<br>");
@@ -2558,7 +2558,7 @@ private void doSyncInspection(HttpServletRequest req, HttpServletResponse res, P
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 
 	out.println("Backing Up Local Machine To Server - May Take a while<br>Any problems check internet connection!<br>");
@@ -2596,7 +2596,7 @@ private void doSyncCallslips(HttpServletRequest req, HttpServletResponse res, Pr
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 
 	out.println("Backing Up Local Machine To Server - May Take a while<br>Any problems check internet connection!<br>");
@@ -2606,16 +2606,16 @@ private void doSyncCallslips(HttpServletRequest req, HttpServletResponse res, Pr
         SyncCustomer sc = new SyncCustomer(con,conu);
 				doOpenConnection();
 	out.println("Customer Sync Complete<br>");
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 	SyncEquip se = new SyncEquip(con,conu);
 	out.println("Equipment Sync Complete<br>");
 				doOpenConnection();
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 	SyncInvUse siu = new SyncInvUse(con,conu);
 	out.println("Inventory Use Sync Complete<br>");
 	SyncSvcCharges ssc = new SyncSvcCharges(con,conu);
 				doOpenConnection();
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 	out.println("Service Charges Sync Complete<br>");
 	SyncCallslip scs = new SyncCallslip(con,conu);
 	out.println("Service Callslips Sync Complete<br>");
@@ -2639,7 +2639,7 @@ private void doUpdateFlatRateTable(HttpServletRequest req, HttpServletResponse r
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM flat_rate_date");
@@ -2712,7 +2712,7 @@ private void doUpdateExpireDate(HttpServletRequest req, HttpServletResponse res,
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			
 			printHeader(req, res, out, username);
 			localdate=doGetExpireDate();
@@ -2760,7 +2760,7 @@ private void doUpdateMasterWorkSheets(HttpServletRequest req, HttpServletRespons
 		String dbname=doMainDbName();
 		String protocol = (String) config.getInitParameter("db.protocol");
 		String subProtocol = (String) config.getInitParameter("db.subprotocol");
-		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 
 // Check Connectivity
 			Statement stmtu = con2.createStatement();
@@ -2834,7 +2834,7 @@ private void doUpdateDocs(HttpServletRequest req, HttpServletResponse res, Print
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmtr = conu.createStatement();
 			Statement stmt = con.createStatement();
@@ -2932,7 +2932,7 @@ private void doUploadFlatRateConfig(HttpServletRequest req, HttpServletResponse 
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 
 			labperhour = doLabPerHour();
 			psdiscount = doPsDiscount();
@@ -2982,7 +2982,7 @@ private void doUploadDocs(HttpServletRequest req, HttpServletResponse res, Print
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = conu.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM packages_date");
@@ -3059,7 +3059,7 @@ private void doUploadPackages(HttpServletRequest req, HttpServletResponse res, P
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = conu.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM packages_date");
@@ -3149,7 +3149,7 @@ private void doUpdateUserInfo(HttpServletRequest req, HttpServletResponse res, P
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM packages_date");
@@ -3263,7 +3263,7 @@ private void doUploadUserInfo(HttpServletRequest req, HttpServletResponse res, P
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = conu.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM packages_date");
@@ -3375,7 +3375,7 @@ private void doUpdatePackages(HttpServletRequest req, HttpServletResponse res, P
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM packages_date");
@@ -3468,7 +3468,7 @@ private void doPhoneListToServ(HttpServletRequest req, HttpServletResponse res, 
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM phone_list_date");
@@ -3539,7 +3539,7 @@ private void doUpdatePhoneList(HttpServletRequest req, HttpServletResponse res, 
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM phone_list_date");
@@ -3619,7 +3619,7 @@ private void doUpdatePsPrices(HttpServletRequest req, HttpServletResponse res, P
 			String remotedate=null;
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			printHeader(req, res, out, username);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM prevprices_date");
@@ -3841,7 +3841,7 @@ private void doDownloadFrConfig(HttpServletRequest req, HttpServletResponse res,
 			String thismainserver=doGetThisMainServer();
 			String protocol = (String) config.getInitParameter("db.protocol");
 			String subProtocol = (String) config.getInitParameter("db.subprotocol");
-			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 
 			double labperhour = 0.00;
 			double psdiscount = 0.00;
@@ -5299,7 +5299,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 	String dbpass=doGetDbPassword();
 	String dbuser=doGetDbUser();
 	String dupdated=null;
-	condb = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpass);
+	condb = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpass);
 
                 Vector v;
                 v = UniFlatDate.getAllItems(condb);
@@ -5551,6 +5551,9 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result205a=stmtu2.executeUpdate("alter table callslip add parts text after servsync;");
 			int result205b=stmtu2.executeUpdate("alter table inspection add parts text after servsync;");
 			int result205c = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result205d = stmtu2.executeUpdate("UPDATE callslip set parts='-';");
+			int result205e = stmtu2.executeUpdate("UPDATE inspection set parts='-';");
+
 							}
 		if (dbvnumber.equalsIgnoreCase("2.04")) {
 			Statement stmtu2 = con.createStatement();
@@ -6153,7 +6156,7 @@ private void doDownloadTimeCat(HttpServletRequest req, HttpServletResponse res, 
 	String remotedate=null;
 	String protocol = (String) config.getInitParameter("db.protocol");
 	String subProtocol = (String) config.getInitParameter("db.subprotocol");
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			Statement stmtu = con.createStatement();
 			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS time_cats;");
 			int result2=stmtu.executeUpdate("CREATE TABLE time_cats ( catnum int(11) not null auto_increment, category text not null, code text, primary key (catnum), unique key catnum (catnum), key catnum_2 (catnum));");
@@ -6187,7 +6190,7 @@ private void doUploadTimeCat(HttpServletRequest req, HttpServletResponse res, Pr
 	String remotedate=null;
 	String protocol = (String) config.getInitParameter("db.protocol");
 	String subProtocol = (String) config.getInitParameter("db.subprotocol");
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 			Statement stmtu = conu.createStatement();
 			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS time_cats;");
 			int result2=stmtu.executeUpdate("CREATE TABLE time_cats ( catnum int(11) not null auto_increment, category text not null, code text, PRIMARY KEY  (catnum),UNIQUE KEY catnum (catnum),KEY catnum_2 (catnum));");
@@ -6218,7 +6221,7 @@ private void doSyncDbServer(HttpServletRequest req, HttpServletResponse res, Pri
 		String remotedate=null;
 		String protocol = (String) config.getInitParameter("db.protocol");
 		String subProtocol = (String) config.getInitParameter("db.subprotocol");
-		conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+		conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 		UniDbServer.SyncTable(conu, con,"No");
 		con.close();
 		conu.close();
@@ -11688,9 +11691,10 @@ for (int cc = 0 ; cc < ci.size(); cc++)
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
+	String stockemail=doGetStock_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+listdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
 	if (parts.length()>1) {
-	doMailSend(emailserver, emailsendaddress, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+listdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
+	doMailSend(emailserver, stockemail, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+listdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
 			}
 		mbody="";
 		pmbody="";
@@ -12270,9 +12274,10 @@ for (int cc = 0 ; cc < ci.size(); cc++)
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
+	String stockemail=doGetStock_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
 	if (parts.length()>1) {
-	doMailSend(emailserver, emailsendaddress, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
+	doMailSend(emailserver, stockemail, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
 		}
 		//mbody="";
 		}
@@ -12567,9 +12572,10 @@ for (int cc = 0 ; cc < ci.size(); cc++)
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
+	String stockemail=doGetStock_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service Call: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
 	if (parts.length()>1) {
-	doMailSend(emailserver, emailsendaddress, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
+	doMailSend(emailserver, stockemail, techemailaddress, "Parts Needed: "+callslip+" - "+cname+" - "+cdate+" - "+ tech_name , pmbody, smtpuser, smtppassword);
 		}
 		mbody="";
 		pmbody="";
@@ -12713,7 +12719,7 @@ private void doUploadEquipment(HttpServletRequest req, HttpServletResponse res, 
 	String remotedate=null;
 	String protocol = (String) config.getInitParameter("db.protocol");
 	String subProtocol = (String) config.getInitParameter("db.subprotocol");
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 	printHeader(req, res, out, username);
 	Statement stmtr = conu.createStatement();
 	
@@ -12864,7 +12870,7 @@ private void doUploadPreventative(HttpServletRequest req, HttpServletResponse re
 	String remotedate=null;
 	String protocol = (String) config.getInitParameter("db.protocol");
 	String subProtocol = (String) config.getInitParameter("db.subprotocol");
-	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 	printHeader(req, res, out, username);
 	Statement stmtr = conu.createStatement();
 	
@@ -21145,7 +21151,7 @@ private void doDeleteMasterWsRecY(HttpServletRequest req, HttpServletResponse re
 		String dbname=doMainDbName();
 		String protocol = (String) config.getInitParameter("db.protocol");
 		String subProtocol = (String) config.getInitParameter("db.subprotocol");
-		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 		String custstart = req.getParameter("servicestart");
 		String custstop = req.getParameter("serviceend");
 		String twsrec = req.getParameter("wsnum");
@@ -23128,7 +23134,7 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
 		String dbname=doMainDbName();
 		String protocol = (String) config.getInitParameter("db.protocol");
 		String subProtocol = (String) config.getInitParameter("db.subprotocol");
-		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 		String twsnum = req.getParameter("wsnum");
  		int wsnum = Integer.parseInt(twsnum);
 		String tcusnum = req.getParameter("custnum");
@@ -26295,8 +26301,6 @@ private void doPrintPrevagreement(HttpServletRequest req, HttpServletResponse re
 	out.println(" ");
 	out.println("</table> ");
 	out.println("<P ALIGN=LEFT FONT=\"-1\"><h3 ALIGN=LEFT>TERMS OF THIS AGREEMENT:</h3> ");
-
-//	out.println("We agree to provide inspection and maintenance services as specified on both pages of this agreement for a period of <b>"+term+"</b> Year(s) from the date of this agreement. The inspection ");
 	if ((visit1!=null)&&(visit1.length()!=0)&&!visit1.equalsIgnoreCase("-")) {
 	out.println("We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement starting with the "+visit1+" visit. The inspection ");
 					} else {
@@ -26337,7 +26341,6 @@ private void doPrintPrevagreement(HttpServletRequest req, HttpServletResponse re
 		out.println("</td></tr>");
 		}
 	out.println("<h3>PRICE OF THIS AGREEMENT: <b>"+cost+"</b></h3> ");
-	//out.println("<h3>THIS AGREEMENT BEGINS ON: "+startdate+" AND ENDS ON: "+enddate+"</h3> ");
 	out.println("<br><br> ");
 	out.println("<table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
 	out.println("<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");

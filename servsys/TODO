@@ -19,11 +19,11 @@
 =================================================================
 RELEASE 2.06
 ==================================================================
+- Started to change jdbc driver to "AutoReconnect=on" to solve connection problems.
 - add serial number to software. (Don't do - not needed for GPL)
 - Changed code to allow update of Flat Rates regardless of last updated date.
 - Added Parts column to the callslip and inspection databases. This will create a parts
   request when the email is sent. Still need to work out Inspection email generation.
-
 
 =================================================================
 RELEASE 2.05

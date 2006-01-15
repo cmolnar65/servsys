@@ -95,12 +95,6 @@ public class PrintPagreement
 		this.custnum=rs.getInt("custnum");
 
 
-
-
-
-
-
-
 	}
 
 
