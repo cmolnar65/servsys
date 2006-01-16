@@ -9405,7 +9405,7 @@ public String doFormatDate(Date visited)
 		}
 
 
-private int doFormatDateComp(Date visited)
+public int doFormatDateComp(Date visited)
 		throws Exception
 		{
 	Date tdate;
@@ -25810,203 +25810,31 @@ private String  doSendPrevagreementC(int contnum, int custnum, String username)
 		String mbody="";
       		String smtpuser = doGetSmtpUser(username);
       		String smtppassword = doGetSmtpPassword(username);
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                int enum10 =0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-		String visit1=null;
-		String visit2=null;
-		String visit3=null;
-		String visit4=null;
-		String visit5=null;
-		String visit6=null;
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
+		String cname="";
 		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
+		Vector c;
+		c =  UniCustomer.getIndItem(con, custnum);
+		int counterc=0;
+		for (int i=0; i< c.size(); i++)
+		{
+			UniCustomer tc = (UniCustomer) c.elementAt(i);
+			cname = tc.getCustomerName();
+		}
 
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
-
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
- 	stmt = con.createStatement();
-	rs = stmt.executeQuery("SELECT * FROM pagreement where contnum="+contnum+"");
-
-		 while(rs.next())
+                Vector v;
+                v = PrintPagreement.getIndItem(con, custnum, contnum, username );
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
                 {
-		enum1=rs.getInt("enum1");
-		enum2=rs.getInt("enum2");
-		enum3=rs.getInt("enum3");
-		enum4=rs.getInt("enum4");
-		enum5=rs.getInt("enum5");
-		enum6=rs.getInt("enum6");
-		enum7=rs.getInt("enum7");
-		enum8=rs.getInt("enum8");
-		enum9=rs.getInt("enum9");
-		enum10=rs.getInt("enum10");
-		aservice=rs.getString("aservice");
-		visit1=rs.getString("visit1");
-		visit2=rs.getString("visit2");
-		visit3=rs.getString("visit3");
-		visit4=rs.getString("visit4");
-		visit5=rs.getString("visit5");
-		visit6=rs.getString("visit6");
-		startdate=doFormatDate(getDate(rs.getString("startdate")));
-		enddate=doFormatDate(getDate(rs.getString("enddate")));
-		term=rs.getString("term");
-		cost=rs.getString("cost");
-		notes=rs.getString("notes");
-		agrdate=doFormatDate(getDate(rs.getString("agrdate")));
-		vperyear=rs.getInt("vperyear");
-		}
-	int vfreq=12/vperyear;
-	int totvisits=Integer.parseInt(term)*vperyear;
-	 mbody=combinestring(mbody,"<html><basefont size=1>");
-	 mbody=combinestring(mbody,"<html><head><title>Preventative Agreement</title></head>");
-	 mbody=combinestring(mbody,"<h2 align=CENTER>Planned Service Agreement</h2>");
-	 mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
-	 mbody=combinestring(mbody,"<td>This agreement is issued to:</td><td>"+cname+" </td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+agrdate+" </td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>Covering equipment located at:</td><td><br>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
-	 mbody=combinestring(mbody,"</table></p> ");
-
-	 mbody=combinestring(mbody,"<table border=1 width=95% font=\"-2\">");
-         mbody=combinestring(mbody,"<th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Type</th><th>Notes</th>");
-
- 	stmt = con.createStatement();
-	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+enum1+"' or enum='"+enum2+"' or enum='"+enum3+"' or enum='"+enum4+"' or enum='"+enum5+"' or enum='"+enum6+"' or enum='"+enum7+"' or enum='"+enum8+"' or enum='"+enum9+"' or enum='"+enum10+"';");
-
-		 while(rs.next())
-                {
-		brand = rs.getString("brand");
-                modelnum = rs.getString("modelnum");
-                serialnum = rs.getString("serialnum");
-                filter = rs.getString("filter");
-                notes = rs.getString("notes");
-                type = rs.getString("etype");
-	 mbody=combinestring(mbody,"<tr><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+type+"</td><td>"+notes+"</tr>");
+                       	PrintPagreement t = (PrintPagreement) v.elementAt(i);
+			mbody= t.getAgreement();
 		}
 
-	 mbody=combinestring(mbody," ");
-	 mbody=combinestring(mbody," ");
-	 mbody=combinestring(mbody,"</table> ");
-	 mbody=combinestring(mbody,"<P ALIGN=LEFT FONT=\"-1\"><h3 ALIGN=LEFT>TERMS OF THIS AGREEMENT:</h3> ");
-	if ((visit1!=null)&&(visit1.length()!=0)&&!visit1.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement starting with the "+visit1+" visit. The inspection ");
-					} else {
-	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement. The inspection ");
-					}
-	 mbody=combinestring(mbody," and maintenance services to be performed during the heating and/or cooling seasons by <b>"+doGetCompanyName()+"</b> by one of our qualified technicians. Maintenance dates may vary depending on weather and scheduling.<br><br>");
-	 mbody=combinestring(mbody,"Customer agrees to have an adult homeowner or authorized representative on-site during each maintenance visit. The approximate time for our maintenance visit is (residential between 45 minutes and 1 hour per unit)/(commercial 2-3 hours). Customer agrees to operate the specified equipment per our instructions. ");
-	 mbody=combinestring(mbody,"It is important for the customer to notify us in the event of any unusual operating conditions such as fumes, noise, etc. Customer agrees to permit only our Maintenance / Service Technicians to work on the specified equipment.");
-	 mbody=combinestring(mbody,"<h3>CONDITIONS:</h3>");
-	 mbody=combinestring(mbody,"1. Service parts not covered under warranty will be charged at regular rates less <b>20% preferential customer discount</b>.<br> ");
-	 mbody=combinestring(mbody,"2. Maintenance workmanship is guaranteed for thirty (30) days from the date of inspection. All parts and equipment are warranted per manufacturer's specifications.<br> ");
-	 mbody=combinestring(mbody,"3. Repair services requested by the customer will be provided during normal working hours (8:00am - 4:30pm) - at our current service rate less preferential customer discount noted above.<br> ");
-	 mbody=combinestring(mbody,"4. Request for emergency service after normal working hours will be charged at our current service rate less preferential customer discount.<br>");
-	 mbody=combinestring(mbody,"5. This agreement is non-refundable and may be assigned.");
-	 mbody=combinestring(mbody,"<h3>ADDITIONAL BENEFITS:</h3>");
-	 mbody=combinestring(mbody,"1. Automatic professional cleaning and maintenance.<br> ");
-	 mbody=combinestring(mbody,"2. Priority customer repair service.<br> ");
-	 mbody=combinestring(mbody,"3. Discount on all parts.<br> ");
-	 mbody=combinestring(mbody,"4. Up to date information on safety and energy saving accessories.<br> ");
-	 mbody=combinestring(mbody,"5. Increased efficiency of your unit.<br> ");
-	 mbody=combinestring(mbody,"6. Written evaluation of your equipment.<br> ");
-	 mbody=combinestring(mbody,"7. Extended life of your equipment.<br> ");
-	 mbody=combinestring(mbody,"8. Agreement is transferable to different owner.<br> ");
-	 mbody=combinestring(mbody,"9. Protection of price increases.");
-	 mbody=combinestring(mbody,"<h3>TERMS AND CONDITIONS</h3>");
-	 mbody=combinestring(mbody,"1. This planned service agreement contains the entire understanding between "+doGetCompanyName()+" (The Company) and the Customer. Any modifications, amendments or changes must be in writing and signed by both parties.<br> ");
-	 mbody=combinestring(mbody,"2. The Company shall not be liable for damage, loss or delays resulting from fire, explosion, flooding, the elements, labor troubles or any other cause beyond our control.<br> ");
-	 mbody=combinestring(mbody,"3. The Company shall not be responsible for the identification, detection, abatement, encapsulation, storage, removal or transportation of any regulated or hazardous substances. Regulated or hazardous substances may include, but are not limited to asbestos, certain refrigerants, and refrigerant oils.  ");
-	 mbody=combinestring(mbody,"If any such products or materials are encountered during the course of work, the company can discontinue work until regulated or hazardous materials have been removed or hazard or liability is eliminated.<br> ");
-	 mbody=combinestring(mbody,"4. No maintenance appointments will be scheduled before 8:00 A.M. or beginning after 3:30 P.M. - Monday through Friday. Hours or days may be changed at the discretion of The Company without notice.");
-	 mbody=combinestring(mbody,"<h3><u>DEFINITIONS:</u></h3> ");
-	 mbody=combinestring(mbody,"<b>Priority Service:</b> We will not accept non-service agreement customer emergencies before we will respond to Planned Service Agreement customer emergencies.<br> ");
-	 mbody=combinestring(mbody,"<br><b>Professionally Cleaned:</b> Due to time and cost, not every component of the system is cleaned or checked during a normal maintenance call. We maintain those items that the HVAC industry and the manufacturer typically accepts as part of routine scheduled maintenance. We do not check every electrical and mechanical component on your system unless a problem leads us to do so. e.g. cleaning of the evaporator coil is done at additional cost if necessary. This coil should only have to be cleaned every third or fourth year if a high efficiency air cleaner is used, more frequently if the standard fiberglass filter is used.<br> ");
-	 mbody=combinestring(mbody,"<br><b>Emergency Service:</b> Any situation where the Customer is in immediate danger due to a safety issue, i.e. gas leak, gas smell, threat of carbon monoxide, water leak or is without heat and there is a potential danger of frozen pipes and property damage. <u>Typically being without air conditioning is not considered an emergency</u>, unless there is a health related issue.<br><br><br> ");
-	
-		if (aservice.length()>1) {
-		 mbody=combinestring(mbody,"<br><h4>Additional Notes:</h4><br>"+aservice+"<br>");
-		 mbody=combinestring(mbody,"</td></tr>");
-		}
-	 mbody=combinestring(mbody,"<h3>PRICE OF THIS AGREEMENT: <b>"+cost+"</b></h3> ");
-	 mbody=combinestring(mbody,"<br><br> ");
-	 mbody=combinestring(mbody,"<table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
-
-	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<br><br> ");
-	 mbody=combinestring(mbody,"<center><h3>Schedule of Visits</h3></center>");
-	 mbody=combinestring(mbody,"<table width=\"50%\" align=left border=\"1\">");
-	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 1:</td><td>"+visit1+"</td></tr> ");
-			}
-	if ((visit2!=null)&&!visit2.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 2:</td><td>"+visit2+"</td></tr> ");
-			}
-	if ((visit3!=null)&&!visit3.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 3:</td><td>"+visit3+"</td></tr> ");
-			}
-	if ((visit4!=null)&&!visit4.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 4:</td><td>"+visit4+"</td></tr> ");
-			}
-	if ((visit5!=null)&&!visit5.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 5:</td><td>"+visit5+"</td></tr> ");
-			}
-	if ((visit6!=null)&&!visit6.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 6:</td><td>"+visit6+"</td></tr> ");
-			}
-	 mbody=combinestring(mbody,"</table><br></table><br></p>");
-			}
+	String tech_name = doGetTechInfo_name(username);
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
-	doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Agreement: "+cname+" - "+agrdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Agreement: "+cname+" - "+ tech_name , mbody, smtpuser, smtppassword);
 	return mbody;
     }
 
@@ -26020,211 +25848,33 @@ private void doSendPrevagreement(HttpServletRequest req, HttpServletResponse res
 		String tcontnum = req.getParameter("contnum");
 		String custstart = req.getParameter("custstart");
 		String custstop = req.getParameter("custstop");
+		String cname="";
 	int custnum = Integer.parseInt(tcustnum);
        		 int contnum = Integer.parseInt(tcontnum);
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
-
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                int enum10 =0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-		String visit1=null;
-		String visit2=null;
-		String visit3=null;
-		String visit4=null;
-		String visit5=null;
-		String visit6=null;
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
+                Vector v;
+                v = PrintPagreement.getIndItem(con, custnum, contnum, username );
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	PrintPagreement t = (PrintPagreement) v.elementAt(i);
+			mbody= t.getAgreement();
+		}
 		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
-
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
- 	stmt = con.createStatement();
-	rs = stmt.executeQuery("SELECT * FROM pagreement where contnum="+contnum+"");
-
-		 while(rs.next())
-                {
-		enum1=rs.getInt("enum1");
-		enum2=rs.getInt("enum2");
-		enum3=rs.getInt("enum3");
-		enum4=rs.getInt("enum4");
-		enum5=rs.getInt("enum5");
-		enum6=rs.getInt("enum6");
-		enum7=rs.getInt("enum7");
-		enum8=rs.getInt("enum8");
-		enum9=rs.getInt("enum9");
-		enum10=rs.getInt("enum10");
-		aservice=rs.getString("aservice");
-		visit1=rs.getString("visit1");
-		visit2=rs.getString("visit2");
-		visit3=rs.getString("visit3");
-		visit4=rs.getString("visit4");
-		visit5=rs.getString("visit5");
-		visit6=rs.getString("visit6");
-		startdate=doFormatDate(getDate(rs.getString("startdate")));
-		enddate=doFormatDate(getDate(rs.getString("enddate")));
-		term=rs.getString("term");
-		cost=rs.getString("cost");
-		notes=rs.getString("notes");
-		agrdate=doFormatDate(getDate(rs.getString("agrdate")));
-		vperyear=rs.getInt("vperyear");
-		}
-	int vfreq=12/vperyear;
-	int totvisits=Integer.parseInt(term)*vperyear;
-	 mbody=combinestring(mbody,"<html><basefont size=1>");
-	 mbody=combinestring(mbody,"<html><head><title>Preventative Agreement</title></head>");
-	doMHeader(req, res, out, session, username); 
-	 mbody=combinestring(mbody,"<h2 align=CENTER>Planned Service Agreement</h2>");
-	 mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
-	 mbody=combinestring(mbody,"<td>This agreement is issued to:</td><td>"+cname+" </td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+agrdate+" </td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>Covering equipment located at:</td><td><br>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
-	 mbody=combinestring(mbody,"</table></p> ");
-
-	 mbody=combinestring(mbody,"<table border=1 width=95% font=\"-2\">");
-         mbody=combinestring(mbody,"<th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Type</th><th>Notes</th>");
-
- 	stmt = con.createStatement();
-	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+enum1+"' or enum='"+enum2+"' or enum='"+enum3+"' or enum='"+enum4+"' or enum='"+enum5+"' or enum='"+enum6+"' or enum='"+enum7+"' or enum='"+enum8+"' or enum='"+enum9+"' or enum='"+enum10+"';");
-
-		 while(rs.next())
-                {
-		brand = rs.getString("brand");
-                modelnum = rs.getString("modelnum");
-                serialnum = rs.getString("serialnum");
-                filter = rs.getString("filter");
-                notes = rs.getString("notes");
-                type = rs.getString("etype");
-	 mbody=combinestring(mbody,"<tr><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+type+"</td><td>"+notes+"</tr>");
+		Vector c;
+		c =  UniCustomer.getIndItem(con, custnum);
+		int counterc=0;
+		for (int i=0; i< c.size(); i++)
+		{
+			UniCustomer tc = (UniCustomer) c.elementAt(i);
+			cname = tc.getCustomerName();
 		}
 
-	 mbody=combinestring(mbody," ");
-	 mbody=combinestring(mbody," ");
-	 mbody=combinestring(mbody,"</table> ");
-	 mbody=combinestring(mbody,"<P ALIGN=LEFT FONT=\"-1\"><h3 ALIGN=LEFT>TERMS OF THIS AGREEMENT:</h3> ");
-
-//	 mbody=combinestring(mbody,"We agree to provide inspection and maintenance services as specified on both pages of this agreement for a period of <b>"+term+"</b> Year(s) from the date of this agreement. The inspection ");
-	if ((visit1!=null)&&(visit1.length()!=0)&&!visit1.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement starting with the "+visit1+" visit. The inspection ");
-					} else {
-	 mbody=combinestring(mbody,"We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement. The inspection ");
-					}
-	 mbody=combinestring(mbody," and maintenance services to be performed during the heating and/or cooling seasons by <b>"+doGetCompanyName()+"</b> by one of our qualified technicians. Maintenance dates may vary depending on weather and scheduling.<br><br>");
-	 mbody=combinestring(mbody,"Customer agrees to have an adult homeowner or authorized representative on-site during each maintenance visit. The approximate time for our maintenance visit is (residential between 45 minutes and 1 hour per unit)/(commercial 2-3 hours). Customer agrees to operate the specified equipment per our instructions. ");
-	 mbody=combinestring(mbody,"It is important for the customer to notify us in the event of any unusual operating conditions such as fumes, noise, etc. Customer agrees to permit only our Maintenance / Service Technicians to work on the specified equipment.");
-	 mbody=combinestring(mbody,"<h3>CONDITIONS:</h3>");
-	 mbody=combinestring(mbody,"1. Service parts not covered under warranty will be charged at regular rates less <b>20% preferential customer discount</b>.<br> ");
-	 mbody=combinestring(mbody,"2. Maintenance workmanship is guaranteed for thirty (30) days from the date of inspection. All parts and equipment are warranted per manufacturer's specifications.<br> ");
-	 mbody=combinestring(mbody,"3. Repair services requested by the customer will be provided during normal working hours (8:00am - 4:30pm) - at our current service rate less preferential customer discount noted above.<br> ");
-	 mbody=combinestring(mbody,"4. Request for emergency service after normal working hours will be charged at our current service rate less preferential customer discount.<br>");
-	 mbody=combinestring(mbody,"5. This agreement is non-refundable and may be assigned.");
-	 mbody=combinestring(mbody,"<h3>ADDITIONAL BENEFITS:</h3>");
-	 mbody=combinestring(mbody,"1. Automatic professional cleaning and maintenance.<br> ");
-	 mbody=combinestring(mbody,"2. Priority customer repair service.<br> ");
-	 mbody=combinestring(mbody,"3. Discount on all parts.<br> ");
-	 mbody=combinestring(mbody,"4. Up to date information on safety and energy saving accessories.<br> ");
-	 mbody=combinestring(mbody,"5. Increased efficiency of your unit.<br> ");
-	 mbody=combinestring(mbody,"6. Written evaluation of your equipment.<br> ");
-	 mbody=combinestring(mbody,"7. Extended life of your equipment.<br> ");
-	 mbody=combinestring(mbody,"8. Agreement is transferable to different owner.<br> ");
-	 mbody=combinestring(mbody,"9. Protection of price increases.");
-	 mbody=combinestring(mbody,"<h3>TERMS AND CONDITIONS</h3>");
-	 mbody=combinestring(mbody,"1. This planned service agreement contains the entire understanding between "+doGetCompanyName()+" (The Company) and the Customer. Any modifications, amendments or changes must be in writing and signed by both parties.<br> ");
-	 mbody=combinestring(mbody,"2. The Company shall not be liable for damage, loss or delays resulting from fire, explosion, flooding, the elements, labor troubles or any other cause beyond our control.<br> ");
-	 mbody=combinestring(mbody,"3. The Company shall not be responsible for the identification, detection, abatement, encapsulation, storage, removal or transportation of any regulated or hazardous substances. Regulated or hazardous substances may include, but are not limited to asbestos, certain refrigerants, and refrigerant oils.  ");
-	 mbody=combinestring(mbody,"If any such products or materials are encountered during the course of work, the company can discontinue work until regulated or hazardous materials have been removed or hazard or liability is eliminated.<br> ");
-	 mbody=combinestring(mbody,"4. No maintenance appointments will be scheduled before 8:00 A.M. or beginning after 3:30 P.M. - Monday through Friday. Hours or days may be changed at the discretion of The Company without notice.");
-	 mbody=combinestring(mbody,"<h3><u>DEFINITIONS:</u></h3> ");
-	 mbody=combinestring(mbody,"<b>Priority Service:</b> We will not accept non-service agreement customer emergencies before we will respond to Planned Service Agreement customer emergencies.<br> ");
-	 mbody=combinestring(mbody,"<br><b>Professionally Cleaned:</b> Due to time and cost, not every component of the system is cleaned or checked during a normal maintenance call. We maintain those items that the HVAC industry and the manufacturer typically accepts as part of routine scheduled maintenance. We do not check every electrical and mechanical component on your system unless a problem leads us to do so. e.g. cleaning of the evaporator coil is done at additional cost if necessary. This coil should only have to be cleaned every third or fourth year if a high efficiency air cleaner is used, more frequently if the standard fiberglass filter is used.<br> ");
-	 mbody=combinestring(mbody,"<br><b>Emergency Service:</b> Any situation where the Customer is in immediate danger due to a safety issue, i.e. gas leak, gas smell, threat of carbon monoxide, water leak or is without heat and there is a potential danger of frozen pipes and property damage. <u>Typically being without air conditioning is not considered an emergency</u>, unless there is a health related issue.<br><br><br> ");
-	
-		if (aservice.length()>1) {
-		 mbody=combinestring(mbody,"<br><h4>Additional Notes:</h4><br>"+aservice+"<br>");
-		 mbody=combinestring(mbody,"</td></tr>");
-		}
-	 mbody=combinestring(mbody,"<h3>PRICE OF THIS AGREEMENT: <b>"+cost+"</b></h3> ");
-	// mbody=combinestring(mbody,"<h3>THIS AGREEMENT BEGINS ON: "+startdate+" AND ENDS ON: "+enddate+"</h3> ");
-	 mbody=combinestring(mbody,"<br><br> ");
-	 mbody=combinestring(mbody,"<table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
-	 mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
-
-	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<br><br> ");
-	 mbody=combinestring(mbody,"<center><h3>Schedule of Visits</h3></center>");
-	 mbody=combinestring(mbody,"<table width=\"50%\" align=left border=\"1\">");
-	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 1:</td><td>"+visit1+"</td></tr> ");
-			}
-	if ((visit2!=null)&&!visit2.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 2:</td><td>"+visit2+"</td></tr> ");
-			}
-	if ((visit3!=null)&&!visit3.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 3:</td><td>"+visit3+"</td></tr> ");
-			}
-	if ((visit4!=null)&&!visit4.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 4:</td><td>"+visit4+"</td></tr> ");
-			}
-	if ((visit5!=null)&&!visit5.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 5:</td><td>"+visit5+"</td></tr> ");
-			}
-	if ((visit6!=null)&&!visit6.equalsIgnoreCase("-")) {
-	 mbody=combinestring(mbody,"<tr><td>Visit 6:</td><td>"+visit6+"</td></tr> ");
-			}
-	 mbody=combinestring(mbody,"</table>");
-			}
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetSvc_Email(username);
         techemailaddress=doGetTech_Email(username);
+	String tech_name = doGetTechInfo_name(username);
                 out.println(mbody);
-	doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Agreement: "+cname+" - "+agrdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	doMailSend(emailserver, emailsendaddress, techemailaddress, "Preventative Agreement: "+cname+" - "+ tech_name , mbody, smtpuser, smtppassword);
 		mbody="";
 	out.println("</html>");
 		con.close();
@@ -26239,201 +25889,18 @@ private void doPrintPrevagreement(HttpServletRequest req, HttpServletResponse re
 		String custstop = req.getParameter("custstop");
 	int custnum = Integer.parseInt(tcustnum);
        		 int contnum = Integer.parseInt(tcontnum);
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
 
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                int enum10 =0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-		String visit1=null;
-		String visit2=null;
-		String visit3=null;
-		String visit4=null;
-		String visit5=null;
-		String visit6=null;
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
-		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
-
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
- 	stmt = con.createStatement();
-	rs = stmt.executeQuery("SELECT * FROM pagreement where contnum="+contnum+"");
-
-		 while(rs.next())
+		String mbody=null;
+                Vector v;
+                v = PrintPagreement.getIndItem(con, custnum, contnum, username );
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
                 {
-		enum1=rs.getInt("enum1");
-		enum2=rs.getInt("enum2");
-		enum3=rs.getInt("enum3");
-		enum4=rs.getInt("enum4");
-		enum5=rs.getInt("enum5");
-		enum6=rs.getInt("enum6");
-		enum7=rs.getInt("enum7");
-		enum8=rs.getInt("enum8");
-		enum9=rs.getInt("enum9");
-		enum10=rs.getInt("enum10");
-		aservice=rs.getString("aservice");
-		visit1=rs.getString("visit1");
-		visit2=rs.getString("visit2");
-		visit3=rs.getString("visit3");
-		visit4=rs.getString("visit4");
-		visit5=rs.getString("visit5");
-		visit6=rs.getString("visit6");
-		startdate=doFormatDate(getDate(rs.getString("startdate")));
-		enddate=doFormatDate(getDate(rs.getString("enddate")));
-		term=rs.getString("term");
-		cost=rs.getString("cost");
-		notes=rs.getString("notes");
-		agrdate=doFormatDate(getDate(rs.getString("agrdate")));
-		vperyear=rs.getInt("vperyear");
+                       	PrintPagreement t = (PrintPagreement) v.elementAt(i);
+			mbody= t.getAgreement();
 		}
-	int vfreq=12/vperyear;
-	int totvisits=Integer.parseInt(term)*vperyear;
-	out.println("<html><basefont size=1>");
-	out.println("<html><head><title>Preventative Agreement</title></head>");
-	doMHeader(req, res, out, session, username); 
-	out.println("<h2 align=CENTER>Planned Service Agreement</h2>");
-	out.println("<P ALIGN=LEFT><table><tr>");
-	out.println("<td>This agreement is issued to:</td><td>"+cname+" </td></tr> ");
-	out.println("<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+agrdate+" </td></tr> ");
-	out.println("<tr><td>Covering equipment located at:</td><td><br>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
-	out.println("</table></p> ");
-
-	out.println("<table border=1 width=95% font=\"-2\">");
-        out.println("<th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Type</th><th>Notes</th>");
-
- 	stmt = con.createStatement();
-	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+enum1+"' or enum='"+enum2+"' or enum='"+enum3+"' or enum='"+enum4+"' or enum='"+enum5+"' or enum='"+enum6+"' or enum='"+enum7+"' or enum='"+enum8+"' or enum='"+enum9+"' or enum='"+enum10+"';");
-
-		 while(rs.next())
-                {
-		brand = rs.getString("brand");
-                modelnum = rs.getString("modelnum");
-                serialnum = rs.getString("serialnum");
-                filter = rs.getString("filter");
-                notes = rs.getString("notes");
-                type = rs.getString("etype");
-	out.println("<tr><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+type+"</td><td>"+notes+"</tr>");
-		}
-
-	out.println(" ");
-	out.println(" ");
-	out.println("</table> ");
-	out.println("<P ALIGN=LEFT FONT=\"-1\"><h3 ALIGN=LEFT>TERMS OF THIS AGREEMENT:</h3> ");
-	if ((visit1!=null)&&(visit1.length()!=0)&&!visit1.equalsIgnoreCase("-")) {
-	out.println("We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement starting with the "+visit1+" visit. The inspection ");
-					} else {
-	out.println("We agree to provide "+totvisits+" inspection and maintenance visits as specified on both pages of this agreement. The inspection ");
-					}
-	out.println(" and maintenance services to be performed during the heating and/or cooling seasons by <b>"+doGetCompanyName()+"</b> by one of our qualified technicians. Maintenance dates may vary depending on weather and scheduling.<br><br>");
-	out.println("Customer agrees to have an adult homeowner or authorized representative on-site during each maintenance visit. The approximate time for our maintenance visit is (residential between 45 minutes and 1 hour per unit)/(commercial 2-3 hours). Customer agrees to operate the specified equipment per our instructions. ");
-	out.println("It is important for the customer to notify us in the event of any unusual operating conditions such as fumes, noise, etc. Customer agrees to permit only our Maintenance / Service Technicians to work on the specified equipment.");
-	out.println("<h3>CONDITIONS:</h3>");
-	out.println("1. Service parts not covered under warranty will be charged at regular rates less <b>20% preferential customer discount</b>.<br> ");
-	out.println("2. Maintenance workmanship is guaranteed for thirty (30) days from the date of inspection. All parts and equipment are warranted per manufacturer's specifications.<br> ");
-	out.println("3. Repair services requested by the customer will be provided during normal working hours (8:00am - 4:30pm) - at our current service rate less preferential customer discount noted above.<br> ");
-	out.println("4. Request for emergency service after normal working hours will be charged at our current service rate less preferential customer discount.<br>");
-	out.println("5. This agreement is non-refundable and may be assigned.");
-	out.println("<h3>ADDITIONAL BENEFITS:</h3>");
-	out.println("1. Automatic professional cleaning and maintenance.<br> ");
-	out.println("2. Priority customer repair service.<br> ");
-	out.println("3. Discount on all parts.<br> ");
-	out.println("4. Up to date information on safety and energy saving accessories.<br> ");
-	out.println("5. Increased efficiency of your unit.<br> ");
-	out.println("6. Written evaluation of your equipment.<br> ");
-	out.println("7. Extended life of your equipment.<br> ");
-	out.println("8. Agreement is transferable to different owner.<br> ");
-	out.println("9. Protection of price increases.");
-	out.println("<h3>TERMS AND CONDITIONS</h3>");
-	out.println("1. This planned service agreement contains the entire understanding between "+doGetCompanyName()+" (The Company) and the Customer. Any modifications, amendments or changes must be in writing and signed by both parties.<br> ");
-	out.println("2. The Company shall not be liable for damage, loss or delays resulting from fire, explosion, flooding, the elements, labor troubles or any other cause beyond our control.<br> ");
-	out.println("3. The Company shall not be responsible for the identification, detection, abatement, encapsulation, storage, removal or transportation of any regulated or hazardous substances. Regulated or hazardous substances may include, but are not limited to asbestos, certain refrigerants, and refrigerant oils.  ");
-	out.println("If any such products or materials are encountered during the course of work, the company can discontinue work until regulated or hazardous materials have been removed or hazard or liability is eliminated.<br> ");
-	out.println("4. No maintenance appointments will be scheduled before 8:00 A.M. or beginning after 3:30 P.M. - Monday through Friday. Hours or days may be changed at the discretion of The Company without notice.");
-	out.println("<h3><u>DEFINITIONS:</u></h3> ");
-	out.println("<b>Priority Service:</b> We will not accept non-service agreement customer emergencies before we will respond to Planned Service Agreement customer emergencies.<br> ");
-	out.println("<br><b>Professionally Cleaned:</b> Due to time and cost, not every component of the system is cleaned or checked during a normal maintenance call. We maintain those items that the HVAC industry and the manufacturer typically accepts as part of routine scheduled maintenance. We do not check every electrical and mechanical component on your system unless a problem leads us to do so. e.g. cleaning of the evaporator coil is done at additional cost if necessary. This coil should only have to be cleaned every third or fourth year if a high efficiency air cleaner is used, more frequently if the standard fiberglass filter is used.<br> ");
-	out.println("<br><b>Emergency Service:</b> Any situation where the Customer is in immediate danger due to a safety issue, i.e. gas leak, gas smell, threat of carbon monoxide, water leak or is without heat and there is a potential danger of frozen pipes and property damage. <u>Typically being without air conditioning is not considered an emergency</u>, unless there is a health related issue.<br><br><br> ");
-	
-		if (aservice.length()>1) {
-		out.println("<br><h4>Additional Notes:</h4><br>"+aservice+"<br>");
-		out.println("</td></tr>");
-		}
-	out.println("<h3>PRICE OF THIS AGREEMENT: <b>"+cost+"</b></h3> ");
-	out.println("<br><br> ");
-	out.println("<table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	out.println("<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
-	out.println("<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
-
-	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
-	out.println("<br><br> ");
-	out.println("<center><h3>Schedule of Visits</h3></center>");
-	out.println("<table width=\"50%\" align=left border=\"1\">");
-	if ((visit1!=null)&&!visit1.equalsIgnoreCase("-")) {
-	out.println("<tr><td>Visit 1:</td><td>"+visit1+"</td></tr> ");
-			}
-	if ((visit2!=null)&&!visit2.equalsIgnoreCase("-")) {
-	out.println("<tr><td>Visit 2:</td><td>"+visit2+"</td></tr> ");
-			}
-	if ((visit3!=null)&&!visit3.equalsIgnoreCase("-")) {
-	out.println("<tr><td>Visit 3:</td><td>"+visit3+"</td></tr> ");
-			}
-	if ((visit4!=null)&&!visit4.equalsIgnoreCase("-")) {
-	out.println("<tr><td>Visit 4:</td><td>"+visit4+"</td></tr> ");
-			}
-	if ((visit5!=null)&&!visit5.equalsIgnoreCase("-")) {
-	out.println("<tr><td>Visit 5:</td><td>"+visit5+"</td></tr> ");
-			}
-	if ((visit6!=null)&&!visit6.equalsIgnoreCase("-")) {
-	out.println("<tr><td>Visit 6:</td><td>"+visit6+"</td></tr> ");
-			}
-	out.println("</table>");
-			}
+		out.println(mbody);
+		out.println("</html>");
 		con.close();
     }
 

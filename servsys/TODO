@@ -15,6 +15,15 @@
 - Update callslip from server to laptop if requested.
 - Update inspection from server to laptop if requested.
 - Update equipment from server to laptop if requested.
+- Need to add update of company information from server - include company info and preventative agreement
+
+=================================================================
+RELEASE 2.07
+==================================================================
+- Added preventative maint agreement as a form. 
+- Configuration option for preventative agreement - now stored in database.
+- All preventative maint agreements now handled by external routines.
+
 
 =================================================================
 RELEASE 2.06
