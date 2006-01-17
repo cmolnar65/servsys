@@ -525,6 +525,14 @@ out.println("</CENTER>");
 	                        {
                                 doDownloadTimeCat(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("downloadcompconfig"))
+	                        {
+                                doDownloadCompConfig(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("uploadcompconfig"))
+	                        {
+                                doUploadCompConfig(req, res, out, session, username);
+				}
 //ADMIN FUNCTION
                         else if (action.equalsIgnoreCase("ecompletioncodes"))
 	                        {
@@ -2048,6 +2056,7 @@ out.println("</CENTER>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updatedoclist target=phpmain>Document List</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updateuserinfo target=phpmain>User Info</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadtimecat target=phpmain>Time Sheet Categories</a><br>");
+        mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadcompconfig target=phpmain>Company Configuration</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=syncdbserver target=phpmain>DbServer Config</a><br>");
 					} else if (thismainserver.equalsIgnoreCase("yes"))
 					 {
@@ -6240,6 +6249,58 @@ private void doDownloadTimeCat(HttpServletRequest req, HttpServletResponse res, 
 		conu.close();
             }
 
+private void doDownloadCompConfig(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+		        {
+                String  psform="";
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String localdate=null;
+	String remotedate=null;
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
+                Vector v;
+                v = ResPsForm.getAllItems(conu);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	ResPsForm t = (ResPsForm) v.elementAt(i);
+                      	psform = t.getResPsForm();
+		ResPsForm.AddItem(con, psform);
+                }
+		out.println("Res Prev Form Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
+		con.close();
+		conu.close();
+            }
+
+private void doUploadCompConfig(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+		        {
+                String  psform="";
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String localdate=null;
+	String remotedate=null;
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
+                Vector v;
+                v = ResPsForm.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	ResPsForm t = (ResPsForm) v.elementAt(i);
+                      	psform = t.getResPsForm();
+		ResPsForm.AddItem(conu, psform);
+                }
+		out.println("Res Prev Form Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
+		con.close();
+		conu.close();
+            }
+
 private void doUploadTimeCat(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
 		        {
@@ -6304,6 +6365,7 @@ private void doUpdateTimeCat(HttpServletRequest req, HttpServletResponse res, Pr
 		con.close();
                  res.sendRedirect(""+classdir+"UniCash?action=edittimecats");
             }
+
 
 private void doSaveComplCat(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception

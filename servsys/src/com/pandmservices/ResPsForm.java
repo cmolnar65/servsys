@@ -52,5 +52,15 @@ public class ResPsForm
       	}
 
 
+	public static void AddItem(Connection con, String psform)
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+		int result206=stmt.executeUpdate("DROP TABLE IF EXISTS prform;");
+		int result206a = stmt.executeUpdate("create table prform (pagreement text)");
+		int result206ab = stmt.executeUpdate("insert into prform (pagreement) values ('"+psform+"');");
+      	}
+
+
         public String getResPsForm() { return psform; }
 }

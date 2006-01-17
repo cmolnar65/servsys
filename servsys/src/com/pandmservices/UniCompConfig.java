@@ -68,6 +68,16 @@ public class UniCompConfig
       	}
 
 
+	public static void AddItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead)
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("DROP TABLE IF EXISTS configcompany;");
+		stmt.executeUpdate("create table configcompany (image text, imagewidth text, imagehight text, coname text, cologo text, coaddress text, cophone text, useletterhead text not null, yearenddate date default '2005-09-31');");
+      		stmt.executeUpdate("insert into configcompany (image,imagehight, imagewidth, coname, cologo,coaddress,cophone, useletterhead) values ('"+image+"','"+imagehight+"','"+imagewidth+"','"+coname+"','"+cologo+"','"+coaddress+"','"+cophone+"','"+useletterhead+"');");
+      	}
+
+
         public String getImage() { return image; }
         public String getImageWidth() { return imagewidth; }
         public String getImageHight() { return imagehight; }
