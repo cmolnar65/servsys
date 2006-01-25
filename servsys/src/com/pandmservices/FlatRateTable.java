@@ -130,6 +130,29 @@ public class FlatRateTable
 		return V;
 	}
         
+	public static Vector getCatItems(Connection c, String catnum)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rsc = stmt.executeQuery("Select category from flat_rate_cat where catnum='"+catnum+"';");
+		if (!rsc.next())
+		{
+			throw new TodoException("Record not found, id = " + catnum);
+		}
+		String newcat = rsc.getString("category");
+
+
+		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table where category='"+newcat+"' order by category");
+		while(rs.next())
+		{
+			
+			FlatRateTable t = new FlatRateTable(c,rs.getInt("code"));
+			V.addElement(t);
+		}
+		return V;
+	}
+        
 	public static Vector getAllItems(Connection c)
 		throws SQLException, TodoException
 	{	

@@ -1887,6 +1887,8 @@ out.println("</CENTER>");
 	{
 	String menu="";
 	String mbody="";
+	String category="";
+	int catnum=0;
 	log ("this is start of menu");
 	log ("String mbody is created");
 	doOpenConnection();
@@ -1969,14 +1971,15 @@ out.println("</CENTER>");
 	menu = req.getParameter("menu");
 	if (menu.equalsIgnoreCase("flatrate")) {
 	log("in printing flat rate menus"); 
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=a&serviceend=d target=phpmain>Flat Rate Prices A-C</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=d&serviceend=g target=phpmain>Flat Rate Prices D-F</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=g&serviceend=j target=phpmain>Flat Rate Prices G-I</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=j&serviceend=m target=phpmain>Flat Rate Prices J-L</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=m&serviceend=p target=phpmain>Flat Rate Prices M-O</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=p&serviceend=s target=phpmain>Flat Rate Prices P-R</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=s&serviceend=v target=phpmain>Flat Rate Prices S-U</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=v&serviceend= target=phpmain>Flat Rate Prices V-Z</a><br>");
+                Vector v;
+                v = FlatRateCat.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FlatRateCat t = (FlatRateCat) v.elementAt(i);
+                      	catnum = t.getCatnum();
+                        category = t.Category();
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=a&serviceend=d&catnum="+catnum+" target=phpmain>"+category+"</a><br>");
+                }
 	}
 
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=masterworksheet target=nav>Master Worksheets</a><br>");
@@ -2712,7 +2715,9 @@ private void doUpdateFlatRateTable(HttpServletRequest req, HttpServletResponse r
 			String nlocaldate=rs.getString("dateupdated");
 			out.println("New Local Date: "+ nlocaldate +"<br>");
 			}
-		
+			int result15 = stmt.executeUpdate("DROP TABLE IF EXISTS flat_rate_cat;");
+			int result15a = stmt.executeUpdate("create table flat_rate_cat (catnum int(11) NOT NULL auto_increment, category text, PRIMARY KEY  (catnum), UNIQUE KEY code (catnum));");
+			int result15b = stmt.executeUpdate("insert into flat_rate_cat (category) select category from flat_rate_table group by category;");
 		out.println("<a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
 		printFooter(req,res,out,username);
 		con.close();
@@ -5611,19 +5616,26 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.07";
+			vnumber = "2.08";
+		if (dbvnumber.equalsIgnoreCase("2.07")) {
+			Statement stmtu2 = con.createStatement();
+			int result207 = stmtu2.executeUpdate("DROP TABLE IF EXISTS flat_rate_cat;");
+			int result207a = stmtu2.executeUpdate("create table flat_rate_cat (catnum int(11) NOT NULL auto_increment, category text, PRIMARY KEY  (catnum), UNIQUE KEY code (catnum));");
+			int result207b = stmtu2.executeUpdate("insert into flat_rate_cat (category) select category from flat_rate_table group by category;");
+			int result207c = stmtu2.executeUpdate("UPDATE version set vnumber='2.08';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.06")) {
 			Statement stmtu2 = con.createStatement();
 			int result206=stmtu2.executeUpdate("DROP TABLE IF EXISTS prform;");
 			int result206a = stmtu2.executeUpdate("create table prform (pagreement text)");
 			int result206ab = stmtu2.executeUpdate("insert into prform (pagreement) values ('blank');");
-			int result205b = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result205b = stmtu2.executeUpdate("UPDATE version set vnumber='2.07';");
 							}
 		if (dbvnumber.equalsIgnoreCase("2.05")) {
 			Statement stmtu2 = con.createStatement();
 			int result205a=stmtu2.executeUpdate("alter table callslip add parts text after servsync;");
 			int result205b=stmtu2.executeUpdate("alter table inspection add parts text after servsync;");
-			int result205c = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result205c = stmtu2.executeUpdate("UPDATE version set vnumber='2.06';");
 			int result205d = stmtu2.executeUpdate("UPDATE callslip set parts='-';");
 			int result205e = stmtu2.executeUpdate("UPDATE inspection set parts='-';");
 
@@ -5641,7 +5653,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result2041e = stmtu2.executeUpdate("insert into paytype (paytype) values ('American_Express');");
 			int result2041f = stmtu2.executeUpdate("insert into paytype (paytype) values ('Other_Credit');");
 			int result2041g = stmtu2.executeUpdate("insert into paytype (paytype) values ('Purchase_Order');");
-			int result2042 = stmtu2.executeUpdate("UPDATE version set vnumber='"+vnumber+"';");
+			int result2042 = stmtu2.executeUpdate("UPDATE version set vnumber='2.05';");
 		}
 		if (dbvnumber.equalsIgnoreCase("2.03")) {
 			Statement stmtu2 = con.createStatement();
@@ -11401,7 +11413,7 @@ private void doExportCallSlips(HttpServletRequest req, HttpServletResponse res, 
 	String etype="";
 	String sitenum="";
 	String custsite="";
-            String mbody = "";
+            String mbody = "<xml>\n";
             String listdate = req.getParameter("listdate");
 
 		String tech_init = doGetTechInfo_init(username);
@@ -11458,7 +11470,7 @@ private void doExportCallSlips(HttpServletRequest req, HttpServletResponse res, 
 
  	stmt = con.createStatement();
 	rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"'  or enum='"+equip3+"' or enum='"+equip4+"';");
-	mbody=combinestring(mbody,"<equipment_section>");
+	mbody=combinestring(mbody,"<equipment_section>\n");
 	mbody=combinestring(mbody,"");
 
 		 while(rs.next())
@@ -11477,18 +11489,19 @@ if (etype==null) {
 
 	mbody=combinestring(mbody,"</equipment_section>\n");
 
-	rs = stmt.executeQuery("select inv_detail.itemnum as itemnum, callslip, date as idate, itemname, abs(quantity) as quant, description from inv_detail, inv_items where inv_detail.itemnum=inv_items.itemnum and inv_detail.date='"+cdate+"' and inv_detail.callslip='"+callslip+"' order by description");
-        if (rs!= null) {
-		mbody=combinestring(mbody,"<inventory_section>");
-		while (rs.next()) {
-			String description = rs.getString("description");
-			String itemname=rs.getString("itemname");
-			String pquant = rs.getString("quant");
-			String idate = rs.getString("idate");
-			mbody=combinestring(mbody,"<inventory_item>\n<ikeycode>"+description+"</ikeycode>\n<iname>\n"+itemname+"\n</iname>\n<iquant>"+pquant+"</iquant>\n<idate>"+doFormatDate(getDate(idate))+"</idate>\n</inventory_item>\n");
+		mbody=combinestring(mbody,"<inventory_section>\n");
+Vector ci;
+ci = InvUse.getAllCallslipItems(con, callslip, cdate);
+for (int cc = 0 ; cc < ci.size(); cc++)
+{
+	InvUse ti = (InvUse) ci.elementAt(cc);
+	String keycode = ti.getKeyCode();
+	String itemname = ti.getItemName();
+	String pquant = ti.getQuantity();
+	String idate = doFormatDate(getDate(ti.getTDate()));
+			mbody=combinestring(mbody,"<inventory_item>\n<ikeycode>"+keycode+"</ikeycode>\n<iname>\n"+itemname+"\n</iname>\n<iquant>"+pquant+"</iquant>\n<idate>"+doFormatDate(getDate(idate))+"</idate>\n</inventory_item>\n");
 			}
 	mbody=combinestring(mbody,"</inventory_section>\n");
-		}
 
         Vector r = UniSvcCompl.getAllItems(con,callslip);
 	if ((r.size()>0) )
@@ -11508,7 +11521,23 @@ if (etype==null) {
 		}
 		
 	if (services.length()>1) {
-	mbody=combinestring(mbody,"<services>\n"+services+"\n</services>\n");
+	mbody=combinestring(mbody,"<services>\n");
+	
+	int begin=1;
+	int end=0;
+	int stringlength= services.length();
+	while (begin <= stringlength)
+		{
+	if ((stringlength-(begin+52)<0)) {
+		end=begin+(stringlength-begin);
+	} else {	
+		end=begin+52;
+	}
+	mbody=combinestring(mbody,"<serviceline>"+services.substring(begin-1,end)+"</serviceline>\n");
+	begin=end+1;
+		}
+		
+	mbody=combinestring(mbody,"\n</services>\n");
 	}
 
 	if (recommendations.length()>1) {
@@ -11519,7 +11548,7 @@ if (etype==null) {
 	mbody=combinestring(mbody,"<notes>\n"+notes+"\n</notes>\n");
 	}
 
-	mbody=combinestring(mbody,"<charges>");
+	mbody=combinestring(mbody,"<charges>\n");
         Vector u;
 	int frcode=0;
         u = UniSvcCharges.getAllItems(con,callslip);
@@ -11539,10 +11568,8 @@ if (etype==null) {
 		}
 	mbody=combinestring(mbody,"</charges>\n");
 	mbody=combinestring(mbody,"</callslip>\n");
-		out.println(""+mbody+"");
-	
-		mbody="";
 		}
+		out.println(""+mbody+"\n</xml>\n");
 		con.close();
 	}
 
@@ -11737,8 +11764,25 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	//Print Services
 	///////////////////////////////////////////////////
 	if (services.length()>1) {
-	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
-	pmbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	mbody=combinestring(mbody,"Services:<br><br>------------------<br>");
+	pmbody=combinestring(mbody,"Services:<br><br>------------------<br>");
+	int begin=1;
+	int end=0;
+	int stringlength= services.length();
+	//while (begin <= stringlength)
+	//	{
+	//if ((stringlength-(begin+52)<0)) {
+	//		end=begin+(stringlength-begin);
+	//} else {	
+	//	end=begin+52;
+	//}
+	//mbody=combinestring(mbody,""+services.substring(begin-1,end)+"<br>");
+	//pmbody=combinestring(pmbody,""+services.substring(begin-1,end)+"<br>");
+	//begin=end+1;
+	//	}
+	mbody=combinestring(mbody,""+services+"<br>");
+	pmbody=combinestring(pmbody,""+services+"<br>");
+	
 	}
 
 
@@ -11825,15 +11869,6 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 		mbody="";
 		pmbody="";
 		}
-////////////////////////////////////////////////////////
-// Here is where we end the http headers
-// BLOCKED THIS TO SEPERATE CALLSLIPS INTO INDIVIDUAL MESSAGES
-////////////////////////////////////////////////////////
-//                out.println(mbody);
-//               //String newstring = mbody.replaceAll("<br>","\n");
-//        emailserver = doGetSmtpServer();
-//        emailsendaddress=doGetSvc_Email();
-//        techemailaddress=doGetTech_Email();
 //	doMailSend(emailserver, emailsendaddress, techemailaddress, "Service CallSlips - "+listdate+" - "+ tech_name , mbody);
 	out.println("</html>");
 
@@ -12320,14 +12355,30 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 
 		
 	
+	int begin=1;
+	int end=0;
+	int stringlength= services.length();
 	////////////////////////////////////////////////////
 	//Print Services
 	///////////////////////////////////////////////////
 	if (services.length()>1) {
-	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
-	pmbody=combinestring(pmbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	mbody=combinestring(mbody,"Services:<br><br>------------------<br>");
+	pmbody=combinestring(mbody,"Services:<br><br>------------------<br>");
+	//while (begin <= stringlength)
+	//	{
+	//if ((stringlength-(begin+49)<0)) {
+	//	end=begin+(stringlength-begin);
+	//} else {	
+	//	end=begin+49;
+	//}
+	//mbody=combinestring(mbody,""+services.substring(begin-1,end)+"<br>");
+	//pmbody=combinestring(pmbody,""+services.substring(begin-1,end)+"<br>");
+	//begin=end+1;
+	//	}
+	mbody=combinestring(mbody,""+services+"<br>");
+	pmbody=combinestring(pmbody,""+services+"<br>");
+	
 	}
-
 	
 	////////////////////////////////////////////////////
 	//Print Services
@@ -12607,15 +12658,30 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 		}
 
 		
+	int begin=1;
+	int end=0;
+	int stringlength= services.length();
 	
 	////////////////////////////////////////////////////
 	//Print Services
 	///////////////////////////////////////////////////
 	if (services.length()>1) {
-	mbody=combinestring(mbody,"Services:<br><br>------------------<br>"+services+"<br>");
-	pmbody=combinestring(pmbody,"Services:<br><br>------------------<br>"+services+"<br>");
+	mbody=combinestring(mbody,"Services:<br><br>------------------<br>");
+	pmbody=combinestring(mbody,"Services:<br><br>------------------<br>");
+	//while (begin <= stringlength)
+	//	{
+	//if ((stringlength-(begin+49)<0)) {
+	//	end=begin+(stringlength-begin);
+	//} else {	
+	//	end=begin+49;
+	//}
+	//mbody=combinestring(mbody,""+services.substring(begin-1,end)+"<br>");
+	//pmbody=combinestring(pmbody,""+services.substring(begin-1,end)+"<br>");
+	//begin=end+1;
+	//	}
+	mbody=combinestring(mbody,""+services+"<br>");
+	pmbody=combinestring(pmbody,""+services+"<br>");
 	}
-
 	
 	////////////////////////////////////////////////////
 	//Print parts
@@ -17268,6 +17334,7 @@ private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, P
 		int wsnum=0;
 		double ptotal=0;
                 int intcustnum = Integer.parseInt(tcustnum);
+		custnum=Integer.parseInt(tcustnum);
 
 	out.println("<html>");
 	out.println("<head>");
@@ -17286,26 +17353,25 @@ private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, P
 	out.println("<tr><td width=\"60%\">");
 	out.println("<h3>Customer Detail</h3>");
 	out.println("<table border=1 width=\"100%\">");
- 	Statement stmt = con.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
 
-		 while(rs.next())
+                Vector vc;
+                vc = UniCustomer.getIndItem(con, intcustnum);
+                for (int ic = 0 ; ic < vc.size(); ic++)
                 {
-		custnum=rs.getInt("custnum");
-		cname=rs.getString("cname");
-		address1=rs.getString("address1");
-		address2=rs.getString("address2");
-		city =rs.getString("city");
-		state=rs.getString("state");
-		zip=rs.getString("zip");
-		homephone=rs.getString("homephone");
-		altphone=rs.getString("altphone");
-		cust_notes=rs.getString("cust_notes");
-		cemail=rs.getString("cemail");
-		custsite=rs.getString("custsite");
-		sitenum=rs.getString("sitenum");
-		custtype=rs.getString("custtype");
-	
+                        UniCustomer tc = (UniCustomer) vc.elementAt(ic);
+                        custtype = tc.getCustType();
+			cname=tc.getCustomerName();
+			address1=tc.getAddress1();
+			address2=tc.getAddress2();
+			city =tc.getCity();
+			state=tc.getState();
+			zip=tc.getZip();
+			homephone=tc.getHomePhone();
+			altphone=tc.getAltPhone();
+			cust_notes=tc.getCustomerNotes();
+			custsite=tc.getCustSite();
+			sitenum=tc.getSiteNum();
+			cemail=tc.getCEmail();
 		
 		out.println("<tr><td>Name</td><td>"+cname+"</td></tr>");
 		out.println("<tr><td>Address</td><td>"+address1+"</td></tr>");
@@ -24556,25 +24622,31 @@ private void doShowQuoteCatListMenu(HttpServletRequest req, HttpServletResponse 
 	
 			if (action.equalsIgnoreCase("addservquoteitemmenu"))
 	                        {
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=a&serviceend=d&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices A-C</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=d&serviceend=g&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices D-F</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=g&serviceend=j&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices G-I</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=j&serviceend=m&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices J-L</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=m&serviceend=p&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices M-O</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=p&serviceend=s&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices P-R</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=s&serviceend=v&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices S-U</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=v&serviceend=&custnum="+crecnum+"&quotenum="+quotenum+"&&psource=addservquoteitemmenu target=phpmain>Flat Rate Prices V-Z</a><br>");
+		int catnum=0;
+		String category="";
+                Vector v;
+                v = FlatRateCat.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FlatRateCat t = (FlatRateCat) v.elementAt(i);
+                      	catnum = t.getCatnum();
+                        category = t.Category();
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=a&serviceend=d&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addservquoteitemmenu&catnum="+catnum+" target=phpmain>"+category+"</a><br>");
+                }
                 out.println("<br><br><br>");
 				} else
 				{
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=a&serviceend=d&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices A-C</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=d&serviceend=g&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices D-F</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=g&serviceend=j&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices G-I</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=j&serviceend=m&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices J-L</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=m&serviceend=p&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices M-O</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=p&serviceend=s&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices P-R</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=s&serviceend=v&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu target=phpmain>Flat Rate Prices S-U</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=v&serviceend=&custnum="+crecnum+"&quotenum="+quotenum+"&&psource=addquoteitemmenu target=phpmain>Flat Rate Prices V-Z</a><br>");
+		int catnum=0;
+		String category="";
+                Vector v;
+                v = FlatRateCat.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FlatRateCat t = (FlatRateCat) v.elementAt(i);
+                      	catnum = t.getCatnum();
+                        category = t.Category();
+                out.println("<a href="+classdir+"UniCash?action=showservpchargeselect&servicestart=a&serviceend=d&custnum="+crecnum+"&quotenum="+quotenum+"&psource=addquoteitemmenu&catnum="+catnum+" target=phpmain>"+category+"</a><br>");
+                }
                 out.println("<br><br><br>");
 
 
@@ -26084,14 +26156,17 @@ private void doAddChargeMenu(HttpServletRequest req, HttpServletResponse res, Pr
                 out.println("<body bgcolor=\"#FFFFFF\" >");
                 out.println("<br><br><br>");
 
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=a&serviceend=d&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices A-C</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=d&serviceend=g&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices D-F</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=g&serviceend=j&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices G-I</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=j&serviceend=m&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices J-L</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=m&serviceend=p&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices M-O</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=p&serviceend=s&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices P-R</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=s&serviceend=v&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices S-U</a><br>");
-                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=v&serviceend=&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>Flat Rate Prices V-Z</a><br>");
+		int catnum=0;
+		String category="";
+                Vector vf;
+                vf = FlatRateCat.getAllItems(con);
+                for (int i = 0 ; i < vf.size(); i++)
+                {
+                       	FlatRateCat t = (FlatRateCat) vf.elementAt(i);
+                      	catnum = t.getCatnum();
+                        category = t.Category();
+                out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=a&serviceend=d&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+"&catnum="+catnum+" target=phpmain>"+category+"</a><br>");
+                }
                 out.println("<br><br><br>");
 
                 out.println("<a href="+classdir+"UniCash?action="+psource+"&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+" target=phpmain>Return To Call Slip</a><br>");
@@ -26528,6 +26603,7 @@ private void doListFlatRate(HttpServletRequest req, HttpServletResponse res, Pri
 		String psource = req.getParameter("psource");
                 String trecnum = req.getParameter("crecnum");
                 String quotenum = req.getParameter("quotenum");
+		String catnum = req.getParameter("catnum");
 		int crecnum=0;
 		int icustnum=0;
 		String CustType="";
@@ -26628,7 +26704,10 @@ else if (action.equalsIgnoreCase("showservpchargeselect")) {
 }
         
                         Vector v;
-                        
+			if (!catnum.equalsIgnoreCase("")) {
+				v = FlatRateTable.getCatItems(con, catnum);
+			} else 
+                        	
                         if (servicestop.equalsIgnoreCase("")) {
                         v = FlatRateTable.getAllItems(con,servicestart);    
                         }
