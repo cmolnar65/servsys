@@ -158,7 +158,7 @@ public class FlatRateTable
 	{	
 		Vector V = new Vector();
 		Statement stmt = c.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table order by category");
+		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table order by code");
 		while(rs.next())
 		{
 			

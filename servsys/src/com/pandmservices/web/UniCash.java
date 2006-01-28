@@ -2039,7 +2039,7 @@ out.println("</CENTER>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=selectservproposaldatespan target=_blank>Service Proposal Report</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=selectwsdatespan target=_blank>Worksheet Report</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=flatratereport target=_blank>Flat Rates</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=exportflatrate&servicestart=a&serviceend= target=_blank>Flat Rate Export</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=exportflatrate&servicestart=a&serviceend=&catnum=0 target=_blank>Flat Rate Export</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=nositenum target=_blank>No Cust Number</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=selecttimereportdate target=_blank>Display Time/Activity Report</a><br>");
 	}
@@ -5616,7 +5616,11 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.08";
+			vnumber = "2.09";
+		if (dbvnumber.equalsIgnoreCase("2.08")) {
+			Statement stmtu2 = con.createStatement();
+			int result208a = stmtu2.executeUpdate("UPDATE version set vnumber='2.09';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.07")) {
 			Statement stmtu2 = con.createStatement();
 			int result207 = stmtu2.executeUpdate("DROP TABLE IF EXISTS flat_rate_cat;");
@@ -26648,16 +26652,14 @@ private void doListFlatRate(HttpServletRequest req, HttpServletResponse res, Pri
 			double sitemhighprice = doSitemHighPrice();
 			double sitemhighhours = doSitemHighHours();
 			String commercial="";
-			//double jtime;
-			//double psaddmult=doPsAdditional();
-			//double psprimmult=doPsPrimary();
-			//double tmaddmult=doTmAdditional();
-			//int specitem;
+if (!action.equalsIgnoreCase("exportflatrate"))
+		{
                         out.println ("<html>");
                         out.println ("<head>");
                         out.println ("<title>Flat Rate Prices</title>");
                         out.println ("</head>");
                         out.println ("<BODY TEXT=#000000 LINK=#0000ff VLINK=#000080 BGCOLOR=#ffffff> ");
+		}
 if (action.equalsIgnoreCase("listflatrate"))
 		{
                         out.println ("<a href="+classdir+"UniCash?action=addflatrate&servicestart="+servicestart+"&serviceend="+servicestop+">Add a Flat Rate Price</a>");
@@ -26666,6 +26668,11 @@ else if (action.equalsIgnoreCase("showchargeselect")) {
 	out.println("<a href="+classdir+"UniCash?action=addchargemenu&psource="+psource+"&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+">Return to Prior Menu</a>");
 			}
 	
+if (action.equalsIgnoreCase("exportflatrate"))
+		{
+			res.setContentType("text/comma-seperated-values;charset=UTF-8");
+			res.setHeader("Content-disposition","attachment;filename=FLATRATE.CSV");
+		}
 if (!action.equalsIgnoreCase("exportflatrate"))
 		{
                         out.println ("<P><P>");
@@ -26674,7 +26681,7 @@ if (!action.equalsIgnoreCase("exportflatrate"))
 
 if (action.equalsIgnoreCase("exportflatrate"))
 		{
-                        out.println ("code,part,category,hours,tm_labor,tm_parts,tm_sales_tax,tm_add_labor,tm_add_parts,tm_add_sales_tax,sc_lab,sc_parts,sc_sales_tax,sc_add_lab,sc_add_parts,sc_add_sales_tax,comm_lab,comm_parts,comm_sales_tax,partcost,lab_cost<br>");
+                        out.println ("code,part,category,hours,tm_labor,tm_parts,tm_sales_tax,tm_add_labor,tm_add_parts,tm_add_sales_tax,sc_lab,sc_parts,sc_sales_tax,sc_add_lab,sc_add_parts,sc_add_sales_tax,comm_lab,comm_parts,comm_sales_tax,partcost,lab_cost\n");
 		}
 else if (action.equalsIgnoreCase("listflatrate"))
 		{
@@ -26704,10 +26711,12 @@ else if (action.equalsIgnoreCase("showservpchargeselect")) {
 }
         
                         Vector v;
+			if (catnum.equalsIgnoreCase("0")) {
+				v = FlatRateTable.getAllItems(con);
+				} else
 			if (!catnum.equalsIgnoreCase("")) {
 				v = FlatRateTable.getCatItems(con, catnum);
-			} else 
-                        	
+			} else  
                         if (servicestop.equalsIgnoreCase("")) {
                         v = FlatRateTable.getAllItems(con,servicestart);    
                         }
@@ -26760,7 +26769,7 @@ else if (action.equalsIgnoreCase("showservpchargeselect")) {
 			}
 	if (action.equalsIgnoreCase("exportflatrate"))
 		{
-			out.println(""+code+",\""+part+"\",\""+category+"\",\""+hours+"\","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_primary)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_add)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_primary)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_add)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_primary)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(commercial)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+partcost+","+NumberFormat.getCurrencyInstance().format(lab_cost)+"<br>");
+			out.println(""+code+",\""+part+"\",\""+category+"\",\""+hours+"\","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_primary)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_add)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_primary)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_add)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_primary)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+NumberFormat.getCurrencyInstance().format(Double.parseDouble(commercial)-tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_partcost)+","+NumberFormat.getCurrencyInstance().format(tm_salestax)+","+partcost+","+NumberFormat.getCurrencyInstance().format(lab_cost)+"\n");
 		}
 	else if (action.equalsIgnoreCase("listflatrate"))
 		{

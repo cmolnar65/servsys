@@ -17,6 +17,12 @@
 - Update equipment from server to laptop if requested.
 
 =================================================================
+RELEASE 2.09	
+=================================================================
+- Export report with FLATRATE.CSV from flat-rate-export directly.
+- Fix some issues on callslip transmit. DO NOT break on # characters.
+
+=================================================================
 RELEASE 2.07
 ==================================================================
 - Added preventative maint agreement as a form. 
