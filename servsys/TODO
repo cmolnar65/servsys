@@ -9,7 +9,6 @@
 167. Add server update admin on software expire date -
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
-- add encryption to drop dead date.
 - if running on master server allow update of server dates.
 - Update callslip from server to laptop if requested.
 - Update inspection from server to laptop if requested.
@@ -18,6 +17,7 @@
 RELEASE 2.10
 =================================================================
 - Update equipment from server to laptop if requested.
+- add encryption to drop dead date. (not needed - GPL now)
 
 =================================================================
 RELEASE 2.09	

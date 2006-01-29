@@ -79,6 +79,20 @@ public class UniCallslip
 		return V;
 	}
 
+	public static Vector getAllItems(Connection c, String custsite, String sitenum)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT crecnum  FROM callslip where custsite='"+custsite+"' and sitenum='"+sitenum+"' ORDER BY cdate;");
+		while(rs.next())
+		{
+			UniCallslip t = new UniCallslip(c,rs.getInt("crecnum"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
         public static void deleteItem(Connection con, String d)
                 throws SQLException
         {
