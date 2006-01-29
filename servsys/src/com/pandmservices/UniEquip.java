@@ -66,6 +66,21 @@ public class UniEquip
 
 
 
+	public static Vector getCustomerItems(Connection c, String custsite, String sitenum)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT enum  FROM equipment where custsite='"+custsite+"' and sitenum='"+sitenum+"' ORDER BY enum;");
+
+		while(rs.next())
+		{
+			UniEquip t = new UniEquip(c,rs.getInt("enum"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
 	public static Vector getUnSyncedItems(Connection c)
 		throws SQLException, TodoException
 	{	

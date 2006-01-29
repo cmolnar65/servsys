@@ -1,5 +1,4 @@
 - Need to figure out a way for master worksheets to update when pricing updates.
-- need to send export of flat rates as a CSV file rather than an html file
 55. Identify email of callslips into system -
 54. Read email from server - 
 136. Load calc entry form -
@@ -14,6 +13,10 @@
 - if running on master server allow update of server dates.
 - Update callslip from server to laptop if requested.
 - Update inspection from server to laptop if requested.
+
+=================================================================
+RELEASE 2.10
+=================================================================
 - Update equipment from server to laptop if requested.
 
 =================================================================
