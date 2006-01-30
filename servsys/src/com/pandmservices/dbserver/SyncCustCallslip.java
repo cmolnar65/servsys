@@ -30,17 +30,19 @@ public class SyncCustCallslip
 	private String custsite=null;
 	private String sitenum=null;
 	private String crectype=null;
+	private String parts=null;
 	private String techid=null;
 
         public SyncCustCallslip (Connection con, Connection conu, String custsitenum, String sitenum)
 		throws SQLException, TodoException
 	{
-		Statement stmt = con.createStatement();
-		Statement stmt99 = con.createStatement();
-		Statement stmt2 = con.createStatement();
-		Statement stmtu = conu.createStatement();
-		Statement stmtu2 = conu.createStatement();
-		ResultSet rs99 = stmt99.executeQuery("SELECT *  FROM callslip where servsync!=2 or servsync is NULL and custsite is not NULL and sitenum is not NULL ORDER BY crecnum;");
+		Statement stmt = conu.createStatement();
+		Statement stmtl = con.createStatement();
+		Statement stmt99 = conu.createStatement();
+		Statement stmt2 = conu.createStatement();
+		Statement stmtu = con.createStatement();
+		Statement stmtu2 = con.createStatement();
+		ResultSet rs99 = stmt99.executeQuery("SELECT *  FROM callslip where custsite='"+custsitenum+"' and sitenum='"+sitenum+"' ORDER BY crecnum;");
 		while(rs99.next())
 		{
 		this.crecnum = rs99.getInt("crecnum");
@@ -65,10 +67,17 @@ public class SyncCustCallslip
 		this.custsite=rs99.getString("custsite");
 		this.sitenum=rs99.getString("sitenum");
 		this.servsync=rs99.getInt("servsync");
-		
-		//////////////////////////////////////////////
-		// Now check for server exact match
-		/////////////////////////////////////////////
+		this.parts=rs99.getString("parts");
+
+		///////////////////////////////////////////////////////////////////
+		// Now check for local machine exact match of callslip , date, tech
+		///////////////////////////////////////////////////////////////////
+
+		ResultSet rsl = stmtl.executeQuery("SELECT *  FROM callslip where custsite='"+custsitenum+"' and sitenum='"+sitenum+"' and callslip='"+callslip+"' and techid='"+techid+"' and cdate='"+cdate+"' ORDER BY crecnum;");
+	if (!rsl.first()) {	
+		///////////////////////////////////////////////////////
+		// Now check for local machine exact match of equipment
+		///////////////////////////////////////////////////////
 		String renum1="0";
 		String renum2="0";
 		String renum3="0";
@@ -122,7 +131,7 @@ public class SyncCustCallslip
 		}}
 		}	
 			Vector vc;
-			vc = UniCustomer.getCustNumSite(conu,custsite,sitenum);
+			vc = UniCustomer.getCustNumSite(con,custsite,sitenum);
 			if (vc.size()>0) {
 				for (int ic = 0 ; ic < vc.size(); ic++)
 				{
@@ -133,6 +142,11 @@ String tservices="";
 if (services!=null) {
 tservices = services.replaceAll("'","''");
 }
+
+String tparts="";
+if (parts!=null) {
+	tparts=parts.replaceAll("'","''");
+}
 		
 String trecommendations="";
 if (recommendations!=null) {
@@ -140,12 +154,11 @@ trecommendations = recommendations.replaceAll("'","''");
 }
 				//////////////////////////////////////////////
 				// Add to server
-	                System.out.println("INSERT INTO callslip (custnum, callslip, cdate, equip1, equip2, equip3, equip4,reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, techid, servsync) Values ('" + remotecrecnum + "','" + callslip + "','"+cdate+"','"+renum1+"','"+renum2+"','"+renum3+"','"+renum4+"','"+reason+"','"+tservices+"','"+trecommendations+"','"+rscheduled+"','"+charges+"','"+collected+"', '"+notes+"','"+followup+"', '"+custsite+"','"+sitenum+"', '"+crectype+"','"+techid+"', 0)");
-	                stmtu2.executeUpdate("INSERT INTO callslip (custnum, callslip, cdate, equip1, equip2, equip3, equip4,reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, techid, servsync) Values ('" + remotecrecnum + "','" + callslip + "','"+cdate+"','"+renum1+"','"+renum2+"','"+renum3+"','"+renum4+"','"+reason+"','"+tservices+"','"+trecommendations+"','"+rscheduled+"','"+charges+"','"+collected+"', '"+notes+"','"+followup+"', '"+custsite+"','"+sitenum+"', '"+crectype+"','"+techid+"', 0)");
+	                System.out.println("INSERT INTO callslip (custnum, callslip, cdate, equip1, equip2, equip3, equip4,reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, techid, servsync, parts) Values ('" + remotecrecnum + "','" + callslip + "','"+cdate+"','"+renum1+"','"+renum2+"','"+renum3+"','"+renum4+"','"+reason+"','"+tservices+"','"+trecommendations+"','"+rscheduled+"','"+charges+"','"+collected+"', '"+notes+"','0', '"+custsite+"','"+sitenum+"', '"+crectype+"','"+techid+"', 2,'"+tparts+"')");
+	                stmtu2.executeUpdate("INSERT INTO callslip (custnum, callslip, cdate, equip1, equip2, equip3, equip4,reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, techid, servsync, parts) Values ('" + remotecrecnum + "','" + callslip + "','"+cdate+"','"+renum1+"','"+renum2+"','"+renum3+"','"+renum4+"','"+reason+"','"+tservices+"','"+trecommendations+"','"+rscheduled+"','"+charges+"','"+collected+"', '"+notes+"','0', '"+custsite+"','"+sitenum+"', '"+crectype+"','"+techid+"', 2, '"+tparts+"')");
 			}
-			stmt.executeUpdate("update callslip set servsync=2 where crecnum="+crecnum+";");
+			}
 		}
-	
 
 	}
 

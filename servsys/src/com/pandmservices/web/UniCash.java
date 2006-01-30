@@ -1068,6 +1068,10 @@ out.println("</CENTER>");
 	                        {
                                 doPrintCallslip(req, res, out, session, username);
 				}
+			else if (action.equalsIgnoreCase("viewpcallslip"))
+	                        {
+                                doPrintCallslip(req, res, out, session, username);
+				}
 			else if (action.equalsIgnoreCase("senddailycheckme"))
 	                        {
                                 doMailCheckme(req, res, out, session, username);
@@ -1079,6 +1083,10 @@ out.println("</CENTER>");
 			else if (action.equalsIgnoreCase("getservequip"))
 	                        {
                                 doDownloadEquipment(req, res, out, session, username);
+				}
+			else if (action.equalsIgnoreCase("getservcallslip"))
+	                        {
+                                doDownloadCallSlips(req, res, out, session, username);
 				}
 			else if (action.equalsIgnoreCase("uploaddailyequipment"))
 	                        {
@@ -5620,7 +5628,11 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.09";
+			vnumber = "2.10";
+		if (dbvnumber.equalsIgnoreCase("2.09")) {
+			Statement stmtu2 = con.createStatement();
+			int result209a = stmtu2.executeUpdate("UPDATE version set vnumber='2.10';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.08")) {
 			Statement stmtu2 = con.createStatement();
 			int result208a = stmtu2.executeUpdate("UPDATE version set vnumber='2.09';");
@@ -5735,7 +5747,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-01-08";
+			vdate="2006-01-29";
 
                         return vdate;                       
         }
@@ -13228,6 +13240,106 @@ private void doUploadPreventative(HttpServletRequest req, HttpServletResponse re
 	out.println("</html>");
 	}
 
+private void doDownloadCallSlips(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+            String mbody = "";
+            String custsitenum  = req.getParameter("custsitenum");
+            String sitenum = req.getParameter("sitenum");
+            String custnum = req.getParameter("custnum");
+/////////////////////////////////////////////////////////
+// Here is where we get main server information
+////////////////////////////////////////////////////////
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String localdate=null;
+	String remotecrecnum="";
+	String remotedate=null;
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	printHeader(req, res, out, username);
+	int servsync=0;
+	int equipnum=0;
+	String brand="";
+	String modelnum="";
+	String serialnum="";
+	String filter="";
+	String enoutes="";
+	String type="";
+	String seer="";
+	String btuout="";
+	String notes="";
+	
+	int eremote = 0;
+	int esynced = 0;
+
+                Vector v;
+        	v = UniEquip.getCustomerItems(conu, custsitenum, sitenum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniEquip t = (UniEquip) v.elementAt(i);
+			
+		servsync=t.getServSync();
+		equipnum=t.getId();
+		custsitenum=t.getCustSite();
+		sitenum=t.getSiteNum();
+		brand=t.getBrand();
+		modelnum=t.getModelnum();
+		serialnum=t.getSerialnum();
+		filter=t.getFilter();
+		notes=t.getNotes();
+		type=t.getEtype();
+		seer=t.getCSeer();
+		btuout=t.getBtuOut();
+		eremote++;
+// Now we have remote - now let's check the local database for an exact match
+// 
+
+String tserialnum="";
+if (serialnum!=null) {                                
+	tserialnum = serialnum.replaceAll("'","''");
+                    }
+		Statement stmt = con.createStatement();
+		ResultSet rsu = stmt.executeQuery("SELECT enum  FROM equipment where brand='"+brand+"' and modelnum like '"+modelnum+"' and serialnum like '"+tserialnum+"' and notes like '"+notes+"' and etype='"+type+"' ORDER BY enum;");
+		if (!rsu.first()) {
+//////////////////////////////////////////////
+// Not on server - find customer number on localmachine
+/////////////////////////////////////////////
+
+	Vector vc;
+	vc = UniCustomer.getCustNumSite(con,custsitenum,sitenum);
+	if (vc.size()>0) {
+		for (int ic = 0 ; ic < vc.size(); ic++)
+		{
+		UniCustomer tc = (UniCustomer) vc.elementAt(ic);
+		remotecrecnum = tc.getCusNum();
+		}
+//////////////////////////////////////////////
+// No Match - Add to local machine
+/////////////////////////////////////////////
+				String tmodelnum="";
+				if (modelnum!=null) {
+				tmodelnum = modelnum.replaceAll("'","''");
+						}
+				String ttserialnum="";
+				if (serialnum!=null) {
+				ttserialnum = serialnum.replaceAll("'","''");
+						}
+		UniEquip.AddItem(con,Integer.parseInt(remotecrecnum),brand,tmodelnum,ttserialnum, filter, notes, type, seer, btuout, custsitenum, sitenum, 2);
+		esynced++;
+		}
+	}
+	}
+	SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsitenum, sitenum);
+		out.println("<br>Number of pieces of equipment on server was: "+eremote+"<br>");
+		out.println("Number of pieces of equipment synced to laptop was: "+esynced+"<br>");
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+	out.println("</html>");
+	}
+
 private void doDownloadEquipment(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
@@ -17623,7 +17735,7 @@ if (action.equalsIgnoreCase("showcustdetail_ide"))
 			
 		out.println("<tr><td><a href="+classdir+"UniCash?action=editcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=printcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecallslips&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
 			} else {
-		out.println("<tr><td>"+ccallslip+"</td><td>"+cdate+"</td><td>"+creason+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=printcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecallslips&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
+		out.println("<tr><td><a href="+classdir+"UniCash?action=viewpcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=printcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecallslips&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
 			}
 //DELETE LINK
 				if (AllowDelete==1) {
@@ -18689,6 +18801,7 @@ int month = now.get(Calendar.MONTH);
 int minute = now.get(Calendar.MINUTE);
 int millisecond = now.get(Calendar.MILLISECOND);
 String tcustnum = req.getParameter("custnum");
+String action = req.getParameter("action");
 int custnum = Integer.parseInt(tcustnum);
 String tcrecnum = req.getParameter("crecnum");
 int crecnum = Integer.parseInt(tcrecnum);
@@ -18743,7 +18856,11 @@ String tech_truck = doGetTechInfo_truck(username);
 
 out.println("<html><basefont size=-1>");
 out.println("<head><title>Service Invoice</title></head>");
+
+		if (!action.equalsIgnoreCase("viewpcallslip")) 
+				{
 doMHeader(req, res, out, session, username);
+				}
 Statement stmt = con.createStatement();
 ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecnum+"' ORDER BY cdate;");
 	 while(rs.next())
@@ -18873,7 +18990,7 @@ if ((r.size()>0) )
 		out.println("<font size=1>");
 		out.println("<table width=\"95%\" size=\"95%\" align=\"center\" border=1 height=5>");
 		out.println("<font size=1");
-if ((services!=null)||(recommendations!=null)||(rscheduled!=null)) {
+if ((services!=null)||(recommendations!=null)||(rscheduled!=null)||(notes!=null)) {
 		out.println("<br>");
 		out.println("<table width=\"95%\" size=\"95%\" align=\"center\" border=1>");
 		out.println("<font size=1>");
@@ -18895,6 +19012,10 @@ if ((services!=null)||(recommendations!=null)||(rscheduled!=null)) {
 		}
 		if (parts.length()>1) {
 		out.println("<tr><td><h4>Parts Needed</h4></td></tr><tr><td>"+parts+"");
+		out.println("</td></tr>");
+			}
+		if ((notes.length()>1)&&action.equalsIgnoreCase("viewpcallslip")) {
+		out.println("<tr><td><h4>THESE NOTES ARE NOT GIVEN TO CUSTOMER!!!</h4></td></tr><tr><td>"+notes+"");
 		out.println("</td></tr>");
 			}
 	out.println("</font>");
@@ -18940,6 +19061,8 @@ out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</
 
 // Put the discount information in here...
 
+		if (!action.equalsIgnoreCase("viewpcallslip")) 
+				{
 	out.println("<table width=\"95%\" align=\"center\">");
 	out.println("<font size=1>");
                         if (nateid==0) {
@@ -18971,12 +19094,17 @@ out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</
 		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
 			}
 			}
+			}
 out.println("</font></table>");
 
 out.println("</body>");
 out.println("</html>");
 	
 		con.close();
+		if (action.equalsIgnoreCase("viewpcallslip")) 
+				{
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+				}
 }
 
 
