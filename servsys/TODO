@@ -11,7 +11,7 @@
 - if running on master server allow update of server dates.
 
 =================================================================
-RELEASE 2.10
+RELEASE 2.10 and 2.11 
 =================================================================
 - Update equipment from server to laptop if requested.
 - add encryption to drop dead date. (not needed - GPL now)

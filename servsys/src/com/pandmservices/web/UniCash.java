@@ -1060,6 +1060,10 @@ out.println("</CENTER>");
 	                        {
                                 doPrintInspection(req, res, out, session, username);
 				}
+			else if (action.equalsIgnoreCase("vinspectprint"))
+	                        {
+                                doPrintInspection(req, res, out, session, username);
+				}
 			else if (action.equalsIgnoreCase("printcheckme"))
 	                        {
                                 doPrintCheckme(req, res, out, session, username);
@@ -5632,7 +5636,11 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.10";
+			vnumber = "2.11";
+		if (dbvnumber.equalsIgnoreCase("2.10")) {
+			Statement stmtu2 = con.createStatement();
+			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.11';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.09")) {
 			Statement stmtu2 = con.createStatement();
 			int result209a = stmtu2.executeUpdate("UPDATE version set vnumber='2.10';");
@@ -17804,7 +17812,7 @@ if (action.equalsIgnoreCase("showcustdetail_ide"))
 	if (techname.equalsIgnoreCase(username)) {
 	out.println("<tr><td><a href="+classdir+"UniCash?action=editinspection&icrecnum="+icrecnum+"&custnum="+icustnum+"&custstart="+custstart+"&custstop="+custstop+">"+icallslip+"</a></td><td>"+idate+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=inspectprint&crecnum="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsingleinspections&csrec="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Email</a></td>");
 			} else {	
-	out.println("<tr><td>"+icallslip+"</td><td>"+idate+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=inspectprint&crecnum="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsingleinspections&csrec="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Email</a></td>");
+	out.println("<tr><td><a href="+classdir+"UniCash?action=vinspectprint&crecnum="+icrecnum+"&custnum="+icustnum+">"+icallslip+"</a></td><td>"+idate+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=inspectprint&crecnum="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsingleinspections&csrec="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Email</a></td>");
 				}
 			
 //DELETE LINK
@@ -18952,6 +18960,7 @@ String homephone=null;
 String altphone=null;
 String cust_notes=null;
 String etype="";
+String techid="";
 String custsite=null;
 String cemail=null;
 String sitenum=null;
@@ -18974,6 +18983,7 @@ ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecn
 	{
 	crecnum=rs.getInt("crecnum");
 	callslip=rs.getString("callslip");
+	techid=rs.getString("techid");
 	cdate=rs.getString("cdate");
 	equip1=rs.getInt("equip1");
 	equip2=rs.getInt("equip2");
@@ -19157,12 +19167,13 @@ if ((services!=null)||(recommendations!=null)||(rscheduled!=null)||(notes!=null)
 	out.println("<table width=\"95%\" align=\"center\">");
 	out.println("<font size=1>");
 	out.println("<tr>");
+	String itech_name = doGetTechInfo_name(techid);
 	out.println("<P></p><br><br>");
 	if (totalcharge>0) {
-		out.println("<td>____________________________________</td><td>"+tech_name+"</td><td>Amount Due</td><td><b>"+NumberFormat.getCurrencyInstance().format(totalcharge)+"</b></td>");
+		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>"+NumberFormat.getCurrencyInstance().format(totalcharge)+"</b></td>");
 
 	} else {
-		out.println("<td>____________________________________</td><td>"+tech_name+"</td><td>Amount Due</td><td><b>_________________</b></td>");
+		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>_________________</b></td>");
 	}
 out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</h5></td><td>Amount Paid</td><td>_________________</td></tr></font></table>");
 
@@ -19231,6 +19242,7 @@ private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, 
         int millisecond = now.get(Calendar.MILLISECOND);
 	String tcustnum = req.getParameter("custnum");
         int custnum = Integer.parseInt(tcustnum);
+	String action = req.getParameter("action");
 	String tcrecnum = req.getParameter("crecnum");
         int crecnum = Integer.parseInt(tcrecnum);
          int eenum=0;
@@ -19258,6 +19270,7 @@ private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, 
 	String state=null;
 	String zip=null;
 	String homephone=null;
+	String techid=null;
 	String altphone=null;
 	String cust_notes=null;
 	String custsite=null;
@@ -19397,8 +19410,10 @@ private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, 
 /////////////////////////////////////////////////////
 
 	out.println("<html><basefont size=2>");
+	if (!action.equalsIgnoreCase("vinspectprint")) {
 	out.println("<head><title>Inspection Report</title></head><body>");
 	doMHeader(req, res, out, session, username);
+			}
 
 
 ////////////////////////////////////////////////////////
@@ -19528,6 +19543,7 @@ private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, 
 		mcfm=t.getMCfm();
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
+		techid=t.getTechID();
 		}
 
 //////////////////////////////////////////
@@ -19801,7 +19817,7 @@ if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_
 /////////////////////////////////////////////////////////
 // Print Comments and Notes section
 ////////////////////////////////////////////////////////
-if (services.length()>1||recommendations.length()>1||parts.length()>1) {
+if (services.length()>1||recommendations.length()>1||parts.length()>1||notes.length()>1) {
 out.println("<br>");
 out.println("<table size=95% width=\"95%\" align=center border=1>");
 out.println("<font size=1>");
@@ -19819,6 +19835,12 @@ out.println("<P></P><br>");
 		out.println("<tr><td><h4>Our Trained Technician Recommends</h4></td></tr><tr><td>"+recommendations+"");
 		out.println("<table><font size=1><tr><td>Customer Accepts Recomendations</td><td>______________</td><td>Customer Declines Recommendations</td><td>________________</td></tr></font></table></tr>");
 		out.println("</td></tr>");
+}
+if (action.equalsIgnoreCase("vinspectprint")) {
+if (notes.length()>1) {
+out.println("<tr><td><b>NOTES: DO NOT PRINT FOR CUSTOMER!!</td></tr><tr><td>"+notes);
+out.println("</td></tr>");
+}
 }
 out.println("</font>");
 out.println("</table>");
@@ -19855,14 +19877,15 @@ out.println("");
         out.println("</table>");
 		}
 	out.println("</font>");
+	String itech_name = doGetTechInfo_name(techid);
 	out.println("<table width=\"95%\" align=\"center\">");
 	out.println("<font size=1>");
 	out.println("<tr>");
 	if (totalcharge>0) {
-		out.println("<td>____________________________________</td><td>"+tech_name+"</td><td>Amount Due</td><td><b>"+NumberFormat.getCurrencyInstance().format(totalcharge)+"</b></td>");
+		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>"+NumberFormat.getCurrencyInstance().format(totalcharge)+"</b></td>");
 
 	} else {
-		out.println("<td>____________________________________</td><td>"+tech_name+"</td><td>Amount Due</td><td><b>_________________</b></td>");
+		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>_________________</b></td>");
 	}
 	out.println("<P></p><br><br>");
 out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</h5></td><td>Amount Paid</td><td>_________________</td>");
@@ -19870,6 +19893,7 @@ out.println("</tr></font></table>");
 
 // Put the discount information in here...
 
+if (!action.equalsIgnoreCase("vinspectprint")) {
 	out.println("<table width=\"95%\" align=\"center\">");
 	out.println("<font size=1>");
                         if (nateid==0) {
@@ -19900,13 +19924,18 @@ out.println("</tr></font></table>");
                         else {
 		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
 			}
-	}
+			}
+}
 
 out.println("</font></table>");
 
 out.println("</body>");
 out.println("</html>");
 		con.close();
+		if (action.equalsIgnoreCase("vinspectprint")) 
+				{
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+				}
 
 }
 
