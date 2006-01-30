@@ -6,18 +6,18 @@
 138. Load calc report - 
 145. Add prompting for package selection -
 146. Add color prompting for package selection -
-167. Add server update admin on software expire date -
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
 - if running on master server allow update of server dates.
-- Update inspection from server to laptop if requested.
 
 =================================================================
 RELEASE 2.10
 =================================================================
 - Update equipment from server to laptop if requested.
 - add encryption to drop dead date. (not needed - GPL now)
+167. Add server update admin on software expire date - (Not needed - GPL now)
 - Update callslip from server to laptop if requested.
+- Update inspection from server to laptop if requested.
 
 =================================================================
 RELEASE 2.09	

@@ -1088,6 +1088,10 @@ out.println("</CENTER>");
 	                        {
                                 doDownloadCallSlips(req, res, out, session, username);
 				}
+			else if (action.equalsIgnoreCase("getservinspection"))
+	                        {
+                                doDownloadInspections(req, res, out, session, username);
+				}
 			else if (action.equalsIgnoreCase("uploaddailyequipment"))
 	                        {
                                 doUploadEquipment(req, res, out, session, username);
@@ -13240,6 +13244,108 @@ private void doUploadPreventative(HttpServletRequest req, HttpServletResponse re
 	out.println("</html>");
 	}
 
+
+private void doDownloadInspections(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+            String mbody = "";
+            String custsitenum  = req.getParameter("custsitenum");
+            String sitenum = req.getParameter("sitenum");
+            String custnum = req.getParameter("custnum");
+/////////////////////////////////////////////////////////
+// Here is where we get main server information
+////////////////////////////////////////////////////////
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String localdate=null;
+	String remotecrecnum="";
+	String remotedate=null;
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname, dbuser, dbpasswd);
+	printHeader(req, res, out, username);
+	int servsync=0;
+	int equipnum=0;
+	String brand="";
+	String modelnum="";
+	String serialnum="";
+	String filter="";
+	String enoutes="";
+	String type="";
+	String seer="";
+	String btuout="";
+	String notes="";
+	
+	int eremote = 0;
+	int esynced = 0;
+
+                Vector v;
+        	v = UniEquip.getCustomerItems(conu, custsitenum, sitenum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniEquip t = (UniEquip) v.elementAt(i);
+			
+		servsync=t.getServSync();
+		equipnum=t.getId();
+		custsitenum=t.getCustSite();
+		sitenum=t.getSiteNum();
+		brand=t.getBrand();
+		modelnum=t.getModelnum();
+		serialnum=t.getSerialnum();
+		filter=t.getFilter();
+		notes=t.getNotes();
+		type=t.getEtype();
+		seer=t.getCSeer();
+		btuout=t.getBtuOut();
+		eremote++;
+// Now we have remote - now let's check the local database for an exact match
+// 
+
+String tserialnum="";
+if (serialnum!=null) {                                
+	tserialnum = serialnum.replaceAll("'","''");
+                    }
+		Statement stmt = con.createStatement();
+		ResultSet rsu = stmt.executeQuery("SELECT enum  FROM equipment where brand='"+brand+"' and modelnum like '"+modelnum+"' and serialnum like '"+tserialnum+"' and notes like '"+notes+"' and etype='"+type+"' ORDER BY enum;");
+		if (!rsu.first()) {
+//////////////////////////////////////////////
+// Not on server - find customer number on localmachine
+/////////////////////////////////////////////
+
+	Vector vc;
+	vc = UniCustomer.getCustNumSite(con,custsitenum,sitenum);
+	if (vc.size()>0) {
+		for (int ic = 0 ; ic < vc.size(); ic++)
+		{
+		UniCustomer tc = (UniCustomer) vc.elementAt(ic);
+		remotecrecnum = tc.getCusNum();
+		}
+//////////////////////////////////////////////
+// No Match - Add to local machine
+/////////////////////////////////////////////
+				String tmodelnum="";
+				if (modelnum!=null) {
+				tmodelnum = modelnum.replaceAll("'","''");
+						}
+				String ttserialnum="";
+				if (serialnum!=null) {
+				ttserialnum = serialnum.replaceAll("'","''");
+						}
+		UniEquip.AddItem(con,Integer.parseInt(remotecrecnum),brand,tmodelnum,ttserialnum, filter, notes, type, seer, btuout, custsitenum, sitenum, 2);
+		esynced++;
+		}
+	}
+	}
+	SyncCustInspection slc = new SyncCustInspection(con, conu, custsitenum, sitenum);
+		out.println("<br>Number of pieces of equipment on server was: "+eremote+"<br>");
+		out.println("Number of pieces of equipment synced to laptop was: "+esynced+"<br>");
+		out.println("Missing Inspections or now downloaded<br>");
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+	out.println("</html>");
+	}
+
 private void doDownloadCallSlips(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
@@ -13336,6 +13442,7 @@ if (serialnum!=null) {
 	SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsitenum, sitenum);
 		out.println("<br>Number of pieces of equipment on server was: "+eremote+"<br>");
 		out.println("Number of pieces of equipment synced to laptop was: "+esynced+"<br>");
+		out.println("Missing Callslips are now downloaded<br>");
                 out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
 	out.println("</html>");
 	}
@@ -17637,7 +17744,7 @@ if (action.equalsIgnoreCase("showcustdetail_ide"))
 		//out.println("</SCRIPT>");
 		out.println("<tr><td><a href="+classdir+"UniCash?action=sendarrive&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Arrived</a><br></td><td><a href="+classdir+"UniCash?action=getservequip&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsitenum="+custsite+"&sitenum="+sitenum+" target=phpmain>Get Equipment from Server</a><br></td></tr>");
 		out.println("<tr><td><a href="+classdir+"UniCash?action=sendextratime&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Need Extra Time</a><br></td><td><a href="+classdir+"UniCash?action=getservcallslip&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsitenum="+custsite+"&sitenum="+sitenum+" target=phpmain>Get Calls from Server</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=sendalmostdone&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Doing Paperwork</a><br></td></tr>");
+		out.println("<tr><td><a href="+classdir+"UniCash?action=sendalmostdone&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Doing Paperwork</a><br></td><td><a href="+classdir+"UniCash?action=getservinspection&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsitenum="+custsite+"&sitenum="+sitenum+" target=phpmain>Get Inspections from Server</a><br></td></tr>");
 		out.println("<tr><td><a href="+classdir+"UniCash?action=sendcomplete&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Complete</a><br></td></tr>");
 		out.println("<tr><td> </td></tr>");
 		out.println("<tr><td>MUST HAVE INTERNET<br>CONNECT FOR THESE</td></tr>");
@@ -17685,7 +17792,7 @@ if (action.equalsIgnoreCase("showcustdetail_ide"))
  	Statement stmt3 = con.createStatement();
 	ResultSet rs3 = stmt3.executeQuery("SELECT * FROM inspection where custnum="+tcustnum+"");
 		out.println("<table border=1 width=50%>");
-		out.println("<th>Callslip</th><th>Date</th><th>Print</th><th>Email</th>");
+		out.println("<th>Callslip</th><th>Date</th><th>Tech</th><th>Print</th><th>Email</th>");
 		while(rs3.next())
                 {
 		icrecnum=rs3.getInt("crecnum");

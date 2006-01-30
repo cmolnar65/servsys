@@ -7,7 +7,7 @@ import java.lang.*;
 import java.util.*;
 import java.util.Vector;
 
-public class SyncInspection
+public class SyncCustInspection
 {
 		private int crecnum = 0;
 		private int custnum = 0;
@@ -139,47 +139,15 @@ public class SyncInspection
 
 
 
-        public SyncInspection (Connection con, Connection conu)
+        public SyncCustInspection (Connection con, Connection conu, String custsitenum, String sitenum)
 		throws SQLException, TodoException
 	{
-		Statement stmt = con.createStatement();
-		Statement stmt2 = con.createStatement();
-		Statement stmtu = conu.createStatement();
-		Statement stmt2u = conu.createStatement();
-//////////////////////////////////////////////
-// Check for any missing sitenum and custsite locally
-/////////////////////////////////////////////
-		ResultSet rs = stmt.executeQuery("SELECT crecnum, custnum  FROM inspection where custsite is NULL and sitenum is NULL or (length(custsite)<1 or length(sitenum)<1) ORDER BY custnum;");
-                while(rs.next())
-                {
-		this.id = rs.getInt("crecnum");
-		this.custnum = rs.getInt("custnum");
-
-//////////////////////////////////////////////
-// Get sitenum and custnum
-/////////////////////////////////////////////
-               Vector ve;
-                ve = UniCustomer.getIndItem(con, custnum);
-                int counter=0;
-                for (int ie = 0 ; ie < ve.size(); ie++)
-                {
-		UniCustomer te = (UniCustomer) ve.elementAt(ie);
-		custsite=te.getCustSite();
-		sitenum=te.getSiteNum();
-		}
-//////////////////////////////////////////////
-// Update with sitenum and custnum set servsync=0
-/////////////////////////////////////////////
-
-		if ((custsite!="")&&(custsite!=null)&&(sitenum!=null)&&(sitenum!=""))
-			{
-		 //System.out.println("emum:"+id+"     custsite: "+custsite+"    sitenum: "+sitenum+"\n");
-		 stmt2.executeUpdate("Update inspection Set custsite ='"+custsite+"', sitenum='"+sitenum+"', servsync='0' Where crecnum=" + id + ";");	
-			}
-	}
-
-
-		rs= stmt2.executeQuery("SELECT * FROM inspection where (servsync!=2 or servsync is NULL) and custsite is not NULL and sitenum is not NULL ORDER BY crecnum;");
+		Statement stmt = conu.createStatement();
+		Statement stmtl = con.createStatement();
+		Statement stmt2 = conu.createStatement();
+		Statement stmtu = con.createStatement();
+		Statement stmt2u = con.createStatement();
+		ResultSet rs= stmt2.executeQuery("SELECT * FROM inspection where custsite='"+custsitenum+"' and sitenum='"+sitenum+"' ORDER BY crecnum;");
 		while(rs.next())
 		{
 		this.crecnum = rs.getInt("crecnum");
@@ -307,9 +275,14 @@ public class SyncInspection
 		this.parts=rs.getString("parts");
 	
 		
-		//////////////////////////////////////////////
-		// Now check for server exact match
-		/////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////
+		// Now check local machine for match on callslip, idate, techid
+		///////////////////////////////////////////////////////////////
+		//
+		ResultSet rsl = stmtl.executeQuery("Select idate from inspection where custsite='"+custsitenum+"' and sitenum='"+sitenum+"' and callslip='"+callslip+"' and idate='"+idate+"' and techid='"+techid+"' order by crecnum;");
+
+		if (!rsl.first()) {
+		
 		String renum1="0";
 		String renum2="0";
 		String renum3="0";
@@ -363,7 +336,7 @@ public class SyncInspection
 		}}
 		}	
 			Vector vc;
-			vc = UniCustomer.getCustNumSite(conu,custsite,sitenum);
+			vc = UniCustomer.getCustNumSite(con,custsite,sitenum);
 			if (vc.size()>0) {
 				for (int ic = 0 ; ic < vc.size(); ic++)
 				{
@@ -374,15 +347,18 @@ public class SyncInspection
 		paidamount="0.00";
 		dueamount="0.00";
 			String tservices = services.replaceAll("'","''");
-			String tparts = parts.replaceAll("'","''");
+		String tparts="";
+	if (parts!=null) {
+	        tparts=parts.replaceAll("'","''");
+	}
+
                         String trecommendations = recommendations.replaceAll("'","''");
 
 	                //System.out.println("INSERT INTO inspection (custnum, callslip, idate, equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer, humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa, frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor, scap, ctimedelay, oelectrical, comppad, recommendations,services, dueamount, paidamount,notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle,ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic, orating, opower,otank, otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return,g_filter,g_electrical,g_looppres,g_cleancoil,g_cleandrain,g_pansensor,g_cleancomp,g_cleanunit,g_oilblower,g_cleanpump,g_tsplit,g_pampr,g_pampa,g_compar,g_compaa,g_bampr,g_bampa,g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp, custsite, sitenum, expansion, ahage, conage, techid, servsync) VALUES ('"+remotecrecnum+"','"+callslip+"','"+idate+"',"+renum1+" ,"+renum2+","+renum3+" ,"+renum4+",'"+mbearing+"','"+mblades+"','"+ecoil+"','"+dline+"','"+dpan+"','"+ielect+"','"+mcap+"','"+hstrips+"' ,'"+filter+"','"+gpreassures+"','"+ignition+"','"+burners+"','"+limits+"','"+flame+"','"+dinducer+"','"+humidifier+"','"+atemp+"','"+tempsplit+"','"+crlaa+"','"+crlar+"','"+ccapr+"','"+ccapa+"','"+frlaa+"','"+frlar+"','"+fcapr+"','"+fcapa+"','"+fbearing+"','"+coilcond+"','"+cleancoil+"','"+contactor+"','"+scap+"','"+ctimedelay+"','"+oelectrical+"','"+comppad+"','"+trecommendations+"','"+tservices+"','"+dueamount+"','"+paidamount+"','"+notes+"','"+lpres+"','"+hpres+"','"+startco+"','"+runco+"','"+stacktemp+"','"+ventpipe+"', '"+oleaks+"', '"+ochimney+"', '"+opump+"', '"+ocontrols+"', '"+otstat+"', '"+oprimesafety+"', '"+osafetime+"', '"+oigntrans+"', '"+olubemotors+"', '"+ofulemix+"', '"+onozzle+"', '"+ogross+"', '"+osmoke+"', '"+onet+"', '"+oco2+"', '"+oo2+"', '"+oco+"', '"+oexcessair+"', '"+obreachdraft+"', '"+ofiredraft+"', '"+oeffic+"', '"+orating+"', '"+opower+"', '"+otank+"', '"+otcond+"', '"+odheat+"', '"+ocombustion+"', '"+oelectrodes+"', '"+obrush+"', '"+ofilters+"',"+followup+",'"+airflow+"','"+spres_rated+"','"+spres_supply+"','"+spres_return+"','"+g_filter+"','"+g_electrical+"','"+g_looppres+"','"+g_cleancoil+"','"+g_cleandrain+"','"+g_pansensor+"','"+g_cleancomp+"','"+g_cleanunit+"','"+g_oilblower+"','"+g_cleanpump+"','"+g_tsplit+"','"+g_pampr+"','"+g_pampa+"','"+g_compar+"','"+g_compaa+"','"+g_bampr+"','"+g_bampa+"','"+g_pdrop+"', '"+sductsize+"', '"+rductsize+"','"+liqtemp+"','"+sucttemp+"', '"+r_temp+"', '"+s_temp+"', '"+rw_temp+"', '"+mcfm+"','"+out_temp+"','"+custsite+"','"+sitenum+"', '"+expansion+"','"+ahage+"', '"+conage+"', '"+techid+"', '"+servsync+"')\n");
-	                stmtu.executeUpdate("INSERT INTO inspection (custnum, callslip, idate, equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer, humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa, frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor, scap, ctimedelay, oelectrical, comppad, recommendations,services, dueamount, paidamount,notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle,ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic, orating, opower,otank, otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return,g_filter,g_electrical,g_looppres,g_cleancoil,g_cleandrain,g_pansensor,g_cleancomp,g_cleanunit,g_oilblower,g_cleanpump,g_tsplit,g_pampr,g_pampa,g_compar,g_compaa,g_bampr,g_bampa,g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp, custsite, sitenum, expansion, ahage, conage, techid, servsync,parts) VALUES ('"+remotecrecnum+"','"+callslip+"','"+idate+"',"+renum1+" ,"+renum2+","+renum3+" ,"+renum4+",'"+mbearing+"','"+mblades+"','"+ecoil+"','"+dline+"','"+dpan+"','"+ielect+"','"+mcap+"','"+hstrips+"' ,'"+filter+"','"+gpreassures+"','"+ignition+"','"+burners+"','"+limits+"','"+flame+"','"+dinducer+"','"+humidifier+"','"+atemp+"','"+tempsplit+"','"+crlaa+"','"+crlar+"','"+ccapr+"','"+ccapa+"','"+frlaa+"','"+frlar+"','"+fcapr+"','"+fcapa+"','"+fbearing+"','"+coilcond+"','"+cleancoil+"','"+contactor+"','"+scap+"','"+ctimedelay+"','"+oelectrical+"','"+comppad+"','"+trecommendations+"','"+tservices+"','"+dueamount+"','"+paidamount+"','"+notes+"','"+lpres+"','"+hpres+"','"+startco+"','"+runco+"','"+stacktemp+"','"+ventpipe+"', '"+oleaks+"', '"+ochimney+"', '"+opump+"', '"+ocontrols+"', '"+otstat+"', '"+oprimesafety+"', '"+osafetime+"', '"+oigntrans+"', '"+olubemotors+"', '"+ofulemix+"', '"+onozzle+"', '"+ogross+"', '"+osmoke+"', '"+onet+"', '"+oco2+"', '"+oo2+"', '"+oco+"', '"+oexcessair+"', '"+obreachdraft+"', '"+ofiredraft+"', '"+oeffic+"', '"+orating+"', '"+opower+"', '"+otank+"', '"+otcond+"', '"+odheat+"', '"+ocombustion+"', '"+oelectrodes+"', '"+obrush+"', '"+ofilters+"',"+followup+",'"+airflow+"','"+spres_rated+"','"+spres_supply+"','"+spres_return+"','"+g_filter+"','"+g_electrical+"','"+g_looppres+"','"+g_cleancoil+"','"+g_cleandrain+"','"+g_pansensor+"','"+g_cleancomp+"','"+g_cleanunit+"','"+g_oilblower+"','"+g_cleanpump+"','"+g_tsplit+"','"+g_pampr+"','"+g_pampa+"','"+g_compar+"','"+g_compaa+"','"+g_bampr+"','"+g_bampa+"','"+g_pdrop+"', '"+sductsize+"', '"+rductsize+"','"+liqtemp+"','"+sucttemp+"', '"+r_temp+"', '"+s_temp+"', '"+rw_temp+"', '"+mcfm+"','"+out_temp+"','"+custsite+"','"+sitenum+"', '"+expansion+"','"+ahage+"', '"+conage+"', '"+techid+"', '"+servsync+"','"+tparts+"')");
+	                stmtu.executeUpdate("INSERT INTO inspection (custnum, callslip, idate, equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer, humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa, frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor, scap, ctimedelay, oelectrical, comppad, recommendations,services, dueamount, paidamount,notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle,ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic, orating, opower,otank, otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return,g_filter,g_electrical,g_looppres,g_cleancoil,g_cleandrain,g_pansensor,g_cleancomp,g_cleanunit,g_oilblower,g_cleanpump,g_tsplit,g_pampr,g_pampa,g_compar,g_compaa,g_bampr,g_bampa,g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp, custsite, sitenum, expansion, ahage, conage, techid, servsync,parts) VALUES ('"+remotecrecnum+"','"+callslip+"','"+idate+"',"+renum1+" ,"+renum2+","+renum3+" ,"+renum4+",'"+mbearing+"','"+mblades+"','"+ecoil+"','"+dline+"','"+dpan+"','"+ielect+"','"+mcap+"','"+hstrips+"' ,'"+filter+"','"+gpreassures+"','"+ignition+"','"+burners+"','"+limits+"','"+flame+"','"+dinducer+"','"+humidifier+"','"+atemp+"','"+tempsplit+"','"+crlaa+"','"+crlar+"','"+ccapr+"','"+ccapa+"','"+frlaa+"','"+frlar+"','"+fcapr+"','"+fcapa+"','"+fbearing+"','"+coilcond+"','"+cleancoil+"','"+contactor+"','"+scap+"','"+ctimedelay+"','"+oelectrical+"','"+comppad+"','"+trecommendations+"','"+tservices+"','"+dueamount+"','"+paidamount+"','"+notes+"','"+lpres+"','"+hpres+"','"+startco+"','"+runco+"','"+stacktemp+"','"+ventpipe+"', '"+oleaks+"', '"+ochimney+"', '"+opump+"', '"+ocontrols+"', '"+otstat+"', '"+oprimesafety+"', '"+osafetime+"', '"+oigntrans+"', '"+olubemotors+"', '"+ofulemix+"', '"+onozzle+"', '"+ogross+"', '"+osmoke+"', '"+onet+"', '"+oco2+"', '"+oo2+"', '"+oco+"', '"+oexcessair+"', '"+obreachdraft+"', '"+ofiredraft+"', '"+oeffic+"', '"+orating+"', '"+opower+"', '"+otank+"', '"+otcond+"', '"+odheat+"', '"+ocombustion+"', '"+oelectrodes+"', '"+obrush+"', '"+ofilters+"','0','"+airflow+"','"+spres_rated+"','"+spres_supply+"','"+spres_return+"','"+g_filter+"','"+g_electrical+"','"+g_looppres+"','"+g_cleancoil+"','"+g_cleandrain+"','"+g_pansensor+"','"+g_cleancomp+"','"+g_cleanunit+"','"+g_oilblower+"','"+g_cleanpump+"','"+g_tsplit+"','"+g_pampr+"','"+g_pampa+"','"+g_compar+"','"+g_compaa+"','"+g_bampr+"','"+g_bampa+"','"+g_pdrop+"', '"+sductsize+"', '"+rductsize+"','"+liqtemp+"','"+sucttemp+"', '"+r_temp+"', '"+s_temp+"', '"+rw_temp+"', '"+mcfm+"','"+out_temp+"','"+custsite+"','"+sitenum+"', '"+expansion+"','"+ahage+"', '"+conage+"', '"+techid+"', '2','"+tparts+"')");
 		        }
-			stmt.executeUpdate("update inspection set servsync=2 where crecnum="+crecnum+";");
 			}
-			stmt.executeUpdate("update inspection set servsync=2 where crecnum="+crecnum+";");
+		}
 		}
   }
 }
