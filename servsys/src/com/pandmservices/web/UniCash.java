@@ -5636,7 +5636,11 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.11";
+			vnumber = "2.12";
+		if (dbvnumber.equalsIgnoreCase("2.11")) {
+			Statement stmtu2 = con.createStatement();
+			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.12';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.10")) {
 			Statement stmtu2 = con.createStatement();
 			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.11';");
@@ -5759,7 +5763,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-01-29";
+			vdate="2006-02-14";
 
                         return vdate;                       
         }
@@ -20846,7 +20850,12 @@ private void doSaveCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 	String hport= req.getParameter("hport");
 	String mdevice= req.getParameter("mdevice");
 	String targetas= req.getParameter("targetas");
-
+				if ((callslip.length()<=3))
+				{
+					out.println("You must click the back key and fill in the callslip number<br>.");
+					out.println("The data can not be saved without it.<br><br>If you do not have this information please call the office.<br>");
+				} else 
+		{
 		int followup=0;
 		if (tfollowup != null) {
        		followup = 1;
@@ -20870,6 +20879,7 @@ private void doSaveCallslip(HttpServletRequest req, HttpServletResponse res, Pri
                 out.println("Your item has been updated in the database<br>");
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+		}
             }
 
 
@@ -21192,11 +21202,18 @@ private void doSaveInspection(HttpServletRequest req, HttpServletResponse res, P
 			SiteNum=t.getSiteNum();
 		}
 			
+				if ((callslip.length()<=3))
+				{
+					out.println("You must click the back key and fill in the callslip number<br>.");
+					out.println("The data can not be saved without it.<br><br>If you do not have this information please call the office.<br>");
+				} else 
+		{
 
                UniInspection.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, sucttemp, liqtemp, r_temp, s_temp, rw_temp, mcfm, out_temp, CustNum, SiteNum , expansion, ahage, conage, username, servsync, parts);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+		}
             }
 	
 private void doEditCompPhoneItem(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -21785,6 +21802,12 @@ private void doSaveEquip(HttpServletRequest req, HttpServletResponse res, PrintW
                 String cseer = req.getParameter("cseer");
                 String btuout = req.getParameter("btuout");
 		
+				if ((brand.length()<=3))
+				{
+					out.println("You must click the back key and fill in the equipment brand<br>.");
+					out.println("The data can not be saved without it.<br><br>If you do not have this information please call the office.<br>");
+				} else 
+		{
 
 		String CustNum=null;
 		String SiteNum=null;
@@ -21802,6 +21825,7 @@ private void doSaveEquip(HttpServletRequest req, HttpServletResponse res, PrintW
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
+			}
 
 private void doAddWorkSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
