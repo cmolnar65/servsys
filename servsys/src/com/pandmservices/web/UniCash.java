@@ -704,6 +704,28 @@ out.println("</CENTER>");
 				doLoginAdminUser(req, res, out, session, action, username);
 					}
 				}
+                        else if (action.equalsIgnoreCase("deluserrec"))
+	                        {
+	//ADMIN FUNCTION
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+				doDeleteUserRec(req, res, out, session, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
+				}
+                        else if (action.equalsIgnoreCase("deluserrecy"))
+	                        {
+	//ADMIN FUNCTION
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+				doDeleteUserRecY(req, res, out, session, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
+				}
                         else if (action.equalsIgnoreCase("listtechinfo"))
 	                        {
 	//ADMIN FUNCTION
@@ -3739,8 +3761,9 @@ private void doUpdateCompInfo(HttpServletRequest req, HttpServletResponse res, P
 		String complogo = req.getParameter("complogo");
 		String compaddress = req.getParameter("compaddress");
 		String compphone = req.getParameter("compphone");
+		String enabcustomer = req.getParameter("enabcustomer");
 		String useletterhead = req.getParameter("useletterhead");
-                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead);
+                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer);
                 out.println("Your item has been updated in the database<br>");
                 res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
 		con.close();
@@ -4384,6 +4407,7 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		String compaddress=null;
 		String compphone=null;
 		String useletterhead=null;
+		String enabcustomer=null;
                 Vector v;
                 v = UniCompConfig.getAllItems(con);
 		int counter=0;
@@ -4398,6 +4422,7 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			compaddress=t.getCoAddress();
 			compphone=t.getCoPhone();
 			useletterhead=t.getUseLetterHead();
+			enabcustomer=t.getEnabCustomer();
 		}
 
 	out.println("<html>");
@@ -4431,6 +4456,21 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		}
 		out.println("<option selected>"+useletterhead+"</option>");
 		out.println("</select></td></tr>");
+	out.println("<tr>");
+	out.println("<td>Allow Customer Access:</td>");
+	out.println("<td align=\"left\"><select width=\"50\" name=\"enabcustomer\">");
+               v = SupYesNo.getAllItems(con);
+		out.println("<option value=\"-\">-</option>");
+		counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                SupYesNo t = (SupYesNo) v.elementAt(i);
+		out.println("<option value="+t.getAnswer()+">"+t.getAnswer()+"</option>");
+
+		}
+		out.println("<option selected>"+enabcustomer+"</option>");
+		out.println("</select></td></tr>");
+		
 		
 	out.println("<tr><td>");
 	out.println("Company Phone  :");
@@ -4516,6 +4556,7 @@ private void doLoginAdminUser(HttpServletRequest req, HttpServletResponse res, P
 private void doLoginUser(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
+		doVersionInfo_VNumber();
 		String action = req.getParameter("action");
 	out.println("<html>");
 	out.println("<head>");
@@ -4710,7 +4751,7 @@ private void doListUsers(HttpServletRequest req, HttpServletResponse res, PrintW
 	out.println("</head>");
 
 	out.println("<table>");
-		out.println("<th>Login</th><th>Full Name</th><th>Tech Init</th><th>Truck</th><th>Nate ID</th><th>Allow Delete</th><th>Install</th><th>Air Balance</th><th>Serv. Admin</th><th>Update Server</th><th>Serv Sync</th><th>Edit Phone</th><th>Add Mast.<br>Worksheet</th><th>Transmit</th><th>Department</th><th>E-Mail</th>");
+		out.println("<th>Login</th><th>Full Name</th><th>Tech Init</th><th>Truck</th><th>Nate ID</th><th>Allow Delete</th><th>Install</th><th>Air Balance</th><th>Serv. Admin</th><th>Update Server</th><th>Serv Sync</th><th>Edit Phone</th><th>Add Mast.<br>Worksheet</th><th>Transmit</th><th>Department</th><th>E-Mail</th><th>Del</th>");
                 Vector v;
                 v = UniTechInfo.getAllItems(con);
 		int counter=0;
@@ -4742,7 +4783,7 @@ private void doListUsers(HttpServletRequest req, HttpServletResponse res, PrintW
                        	out.println("<tr>");
 			counter=0;	
 				}
-		out.println("<td><a href="+classdir+"UniCash?action=edittechinfo&tsid="+lusername+">"+lusername+"</a></td><td>"+tech_name+"</td><td>"+tech_init+"</td><td>"+tech_truck+"</td><td>"+nate_id+"</td><td>"+allow_delete+"</td><td>"+mod_install+"</td><td>"+mod_airbal+"</td><td>"+mod_servadmin+"</td><td>"+serv_update+"</td><td>"+servsync+"</td><td>"+edit_compphonelist+"</td><td>"+create_worksheet+"</td><td>"+transmit+"</td><td>"+department+"</td><td><a href="+classdir+"UniCash?action=editemailinfo&adminok=1&tsid="+lusername+">Email</a></td></tr>");
+		out.println("<td><a href="+classdir+"UniCash?action=edittechinfo&tsid="+lusername+">"+lusername+"</a></td><td>"+tech_name+"</td><td>"+tech_init+"</td><td>"+tech_truck+"</td><td>"+nate_id+"</td><td>"+allow_delete+"</td><td>"+mod_install+"</td><td>"+mod_airbal+"</td><td>"+mod_servadmin+"</td><td>"+serv_update+"</td><td>"+servsync+"</td><td>"+edit_compphonelist+"</td><td>"+create_worksheet+"</td><td>"+transmit+"</td><td>"+department+"</td><td><a href="+classdir+"UniCash?action=editemailinfo&adminok=1&tsid="+lusername+">Email</a></td><td><a href="+classdir+"UniCash?action=deluserrec&adminok=1&tsid="+lusername+">Del</a></td></tr>");
                 }
 
 	out.println("</td></tr></table>");
@@ -5636,7 +5677,12 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.12";
+			vnumber = "2.13";
+		if (dbvnumber.equalsIgnoreCase("2.12")) {
+			Statement stmtu2 = con.createStatement();
+			int result213a=stmtu2.executeUpdate("alter table configcompany add enabcustomer text after yearenddate;");
+			int result213b = stmtu2.executeUpdate("UPDATE version set vnumber='2.13';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.11")) {
 			Statement stmtu2 = con.createStatement();
 			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.12';");
@@ -5732,6 +5778,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		String complogo=null;
 		String compaddress=null;
 		String compphone=null;
+		String enabcustomer=null;
                 Vector v;
                 v = UniCompConfig.getAllItems(con);
 		int counter=0;
@@ -5745,6 +5792,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			complogo=t.getCoLogo();
 			compaddress=t.getCoAddress();
 			compphone=t.getCoPhone();
+			enabcustomer = t.getEnabCustomer();
 		}
 		return compname;
 	}
@@ -5763,7 +5811,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-02-14";
+			vdate="2006-03-01";
 
                         return vdate;                       
         }
@@ -5865,6 +5913,21 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                         yearenddate = t.getYearEndDate();
                 }
                         return yearenddate;                       
+        }
+
+	public String doGetEnabCustomer()
+        throws Exception
+        {
+                Vector v;
+                v = UniCompConfig.getAllItems(con);
+                int counter=0;
+		String enabcustomer = null;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCompConfig t = (UniCompConfig) v.elementAt(i);
+                        enabcustomer = t.getEnabCustomer();
+                }
+                        return enabcustomer;                       
         }
 
 	public String doGetTechInfo_init(String iusername)
@@ -21649,6 +21712,25 @@ private void doDeleteQuoteOption(HttpServletRequest req, HttpServletResponse res
                 res.sendRedirect(""+classdir+"UniCash?action=editproposal&custnum="+custnum+"&quotenum="+quotenum+"");
             }
 
+
+private void doDeleteUserRecY(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String tsid = req.getParameter("tsid");
+		String adminok = req.getParameter("adminok");
+		UniTechInfo.deleteItem(con, tsid);
+		con.close();
+                out.println("<a href="+classdir+"UniCash?action=listtechinfo&adminok="+adminok+">Click here to continue</a>");
+            }
+
+private void doDeleteUserRec(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String tsid = req.getParameter("tsid");
+		String adminok = req.getParameter("adminok");
+		con.close();
+                out.println("<a href="+classdir+"UniCash?action=deluserrecy&tsid="+tsid+"&adminok="+adminok+">Click here to continue deleting this user</a>");
+            }
 
 private void doDeletePropRec(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception

@@ -9,13 +9,26 @@
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
 - if running on master server allow update of server dates.
+- Add customer interface: customer selects on "request service" from main screen prior to log in. 
+  is prompted for customer number from bill. customer number is searched to match address and phone number.
+  customer is presented with a pre-filled form or requested for information. Customer is asked to complete
+  information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
+  appropriate people.
+
+=================================================================
+RELEASE 2.13
+=================================================================
+(N) - Allow admins to delete user records
+(N) - Added option to enable customer access in company configuration
+(F) - Moved version number check to do updates PRIOR to any company configuration check
+
 =================================================================
 RELEASE 2.12
 =================================================================
 (N)- Fixed where you can add a callslip and inspection without a callslip number. 
      Solves Mark's problem.
 (N)- While at it made sure that Brand on equipment is filled in.
-(U)- Add ability to email job flow worksheet
+(U)- Add ability to email job flow worksheet (Started - not complete)
 (F)- Fixed problem adding tech info - department was not following through
 (F)- Fixed problem with flat rate additions - pass catnum when page reloaded
 

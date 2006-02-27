@@ -105,9 +105,10 @@ public class UniTechInfo
 	public static void deleteItem(Connection con, String d)
 		throws SQLException
 	{
-		int x = Integer.parseInt(d);
 		Statement stmt = con.createStatement();
-		stmt.executeUpdate("Delete From Todo Where ID=" + x + ";");
+		stmt.executeUpdate("Delete From tech_table where tech_name='" + d + "';");
+		stmt.executeUpdate("Delete From configemail where username='" + d + "';");
+		stmt.executeUpdate("Delete From users where username='" + d + "';");
 	}
 	  
 
