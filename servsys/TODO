@@ -9,6 +9,15 @@
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
 - if running on master server allow update of server dates.
+=================================================================
+RELEASE 2.12
+=================================================================
+(N)- Fixed where you can add a callslip and inspection without a callslip number. 
+     Solves Mark's problem.
+(N)- While at it made sure that Brand on equipment is filled in.
+(U)- Add ability to email job flow worksheet
+(F)- Fixed problem adding tech info - department was not following through
+(F)- Fixed problem with flat rate additions - pass catnum when page reloaded
 
 =================================================================
 RELEASE 2.10 and 2.11 

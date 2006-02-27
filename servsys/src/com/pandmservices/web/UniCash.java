@@ -3800,7 +3800,7 @@ private void doSaveTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		String userpassword=req.getParameter("userpassword");
 		String userrole=req.getParameter("userrole");
 		String transmit=req.getParameter("transmit");
-		String department=req.getParameter("depatment");
+		String department=req.getParameter("department");
                 UniTechInfo.AddItem(con, tname, tinit, tnum,nate_id, allow_delete, mod_airbal, mod_install, mod_servadmin, serv_update, create_worksheet, edit_compphonelist, servsync, lusername, transmit, department);
 		UniLogin.addUser(con,tinit,lusername,userrole,userpassword);
                 out.println("Your item has been updated in the database<br>");
@@ -24908,6 +24908,7 @@ private void doEditProposal(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("<br><br><a href="+classdir+"UniCash?action=addservquoteitemmenu&custnum="+crecnum+"&quotenum="+quotenum+">Add Item to Quote</a>");
 		}
 	out.println("<br><br><a href="+classdir+"UniCash?action=printjobflow&custnum="+crecnum+"&quotenum="+quotenum+" target=_blank>Print Job Flow Worksheet</a>");
+	out.println("<br><a href="+classdir+"UniCash?action=emailjobflow&custnum="+crecnum+"&quotenum="+quotenum+" target=_blank>Email Job Flow Worksheet</a>");
 		con.close();
 	}
 
@@ -26438,6 +26439,7 @@ private void doAddFlatPrice(HttpServletRequest req, HttpServletResponse res, Pri
                 throws Exception
                         {
                         String servicestart = req.getParameter("servicestart");
+                        String catnum = req.getParameter("catnum");
                         String servicestop = req.getParameter("serviceend");
                         out.println("<html>");
                         out.println("<head>");
@@ -26466,6 +26468,7 @@ private void doAddFlatPrice(HttpServletRequest req, HttpServletResponse res, Pri
                         out.println("</table>");
                         out.println("<input type=\"hidden\" name=\"servicestart\" size=\"8\" value="+servicestart+">");
                         out.println("<input type=\"hidden\" name=\"servicestop\" size=\"8\" value="+servicestop+">");
+                        out.println("<input type=\"hidden\" name=\"catnum\" size=\"8\" value="+catnum+">");
                         out.println("<p> <CENTER>");
                         out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
                         out.println("<INPUT TYPE=\"reset\">");
@@ -26478,6 +26481,7 @@ private void doSaveFlatRate(HttpServletRequest req, HttpServletResponse res, Pri
                         {
                         String servicestart = req.getParameter("servicestart");
                         String servicestop = req.getParameter("serviceend");
+			String catnum=req.getParameter("catnum");
                         String category = req.getParameter("category");
                         String part = req.getParameter("part");
                         String tcode = req.getParameter("code");
@@ -26492,9 +26496,8 @@ private void doSaveFlatRate(HttpServletRequest req, HttpServletResponse res, Pri
 			double thours = Double.parseDouble(hours);
                         
 			FlatRateTable.AddItem(con, code, category, part, keycode, thours, tpartcost, custnotes, nodiscount, specitem);
-                out.println("Your item has been added the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=listflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=listflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"&catnum="+catnum+"");
 }
 
 private void doDeleteFlatRate(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -26502,12 +26505,13 @@ private void doDeleteFlatRate(HttpServletRequest req, HttpServletResponse res, P
                         {
                         String servicestart = req.getParameter("servicestart");
                         String servicestop = req.getParameter("serviceend");
+			String catnum = req.getParameter("catnum");
                         String code  = req.getParameter("recnum");
                         
                         FlatRateTable.deleteItem(con, code);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=listflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=listflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"&catnum="+catnum+"");
 }
 
 private void doUpdateFlatRate(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -27053,7 +27057,7 @@ if (!action.equalsIgnoreCase("exportflatrate"))
 		}
 if (action.equalsIgnoreCase("listflatrate"))
 		{
-                        out.println ("<a href="+classdir+"UniCash?action=addflatrate&servicestart="+servicestart+"&serviceend="+servicestop+">Add a Flat Rate Price</a>");
+                        out.println ("<a href="+classdir+"UniCash?action=addflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"&catnum="+catnum+">Add a Flat Rate Price</a>");
 		}
 else if (action.equalsIgnoreCase("showchargeselect")) {
 	out.println("<a href="+classdir+"UniCash?action=addchargemenu&psource="+psource+"&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+">Return to Prior Menu</a>");
@@ -27171,7 +27175,7 @@ else if (action.equalsIgnoreCase("showservpchargeselect")) {
 			else {
                             out.println ("<tr>");
 				}
-			out.println("<td><a href="+classdir+"UniCash?action=editflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"&recnum="+code+">"+part+"</a></td><td>"+category+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_primary))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_add))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_primary))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_add))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(commercial))+"</td><td>"+code+"</td><td>"+hours+"</td><td>"+keycode+"</td><td>"+partcost+"</td><td><a href="+classdir+"UniCash?action=deleteflatrateprice&servicestart="+servicestart+"&serviceend="+servicestop+"&recnum="+code+">Del</a></td></tr>");
+			out.println("<td><a href="+classdir+"UniCash?action=editflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"&recnum="+code+">"+part+"</a></td><td>"+category+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_primary))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(tm_add))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_primary))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(sa_add))+"</td><td>"+NumberFormat.getCurrencyInstance().format(Double.parseDouble(commercial))+"</td><td>"+code+"</td><td>"+hours+"</td><td>"+keycode+"</td><td>"+partcost+"</td><td><a href="+classdir+"UniCash?action=deleteflatrateprice&servicestart="+servicestart+"&serviceend="+servicestop+"&recnum="+code+"&catnum="+catnum+">Del</a></td></tr>");
 		}
 		else if (action.equalsIgnoreCase("showchargeselect")) {
 
@@ -27225,7 +27229,7 @@ else if (action.equalsIgnoreCase("showservpchargeselect")) {
                         out.println ("<P><P>");
 if (action.equalsIgnoreCase("listflatrate"))
 		{
-                        out.println ("<a href="+classdir+"UniCash?action=addflatrate&servicestart="+servicestart+"&serviceend="+servicestop+">Add a Flat Rate Price</a>");
+                        out.println ("<a href="+classdir+"UniCash?action=addflatrate&servicestart="+servicestart+"&serviceend="+servicestop+"&catnum="+catnum+">Add a Flat Rate Price</a>");
 		if (phonelistperm==1) 
 			{
 out.println("<p><br><a href="+classdir+"UniCash?action=uploadflatrates>Update Server (MUST HAVE INTERNET CONNECT)</a><br><br>");
