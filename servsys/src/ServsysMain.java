@@ -38,30 +38,45 @@ import java.awt.event.KeyEvent;
 
 public class ServsysMain extends JFrame implements ActionListener 
 	{
+		private final int ITEM_PLAIN = 0;
+		private final int ITEM_CHECK = 1;
+		private final int ITEM_RADIO = 2;
+
 		private JPanel topPanel;
 		private JMenuBar menuBar;
+		
+		private JMenu menuFile;
+		private JMenuItem menuQuit;
+
 		private JMenu menuTime;
+		private JMenuItem menuTimeSheet;
+		private JMenuItem menuTimeTransmit;
+		
 		private JMenu menuCustomer;
 		private JMenu menuReport;
 		private JMenu menuUpdate;
 		private JMenu menuHelp;
+		private JMenuItem menuAbout;
 	
 		public ServsysMain()
 		{
 			setTitle("Servsys Main Window");
 			setSize(1124, 810);
-			
 			topPanel = new JPanel();
-			
 			topPanel.setLayout(new BorderLayout());
 			getContentPane().add(topPanel);
-			
 			menuBar = new JMenuBar();
-			
 			setJMenuBar(menuBar);
-			
+			menuFile=new JMenu("File");
+			menuBar.add(menuFile);
+			menuFile.addSeparator();
+			menuQuit = CreateMenuItem( menuFile, ITEM_PLAIN, "Quit", "Quit Program");
 			menuTime = new JMenu("Time");
 			menuBar.add(menuTime);
+			menuTime.addSeparator();
+			menuTimeSheet = CreateMenuItem(menuTime, ITEM_PLAIN, "Time Sheet", "Edit Time Sheet");
+			menuTimeTransmit = CreateMenuItem(menuTime, ITEM_PLAIN, "Transmit", "Transmit Daily Reports");
+			
 			
 			menuCustomer = new JMenu("Customer");
 			menuBar.add(menuCustomer);
@@ -74,6 +89,8 @@ public class ServsysMain extends JFrame implements ActionListener
 			
 			menuHelp = new JMenu("Help");
 			menuBar.add(menuHelp);				
+			menuHelp.addSeparator();
+			menuAbout = CreateMenuItem(menuHelp, ITEM_PLAIN, "About", "Show About Box");
 
 		this.addWindowListener (new WindowAdapter()
 								{
@@ -88,9 +105,50 @@ public class ServsysMain extends JFrame implements ActionListener
 
 	public void actionPerformed(ActionEvent event)
 			{
+			
+				System.out.println(event);
+				if (event.getSource() == menuQuit )
+				{
+
+				servsys.loginFrame.setVisible(true);
+				setVisible(false);
+				} else if (event.getSource() == menuAbout )
+				{
+
+				try {
+				AboutBox aboutwindow = new AboutBox();
+				aboutwindow.setVisible(true);
+				//setVisible(false);
+			    			} catch (java.lang.Exception e) {
+						System.out.println("error on opening window\n"+e.getMessage()+"\n");
+								}
+				}
 
 			}
 			
 	
+	public JMenuItem CreateMenuItem( JMenu menu, int iType, String sText, String sToolTip)
+	{
+		JMenuItem menuItem;
+		switch (iType)
+		{
+			case ITEM_RADIO:
+				menuItem = new JRadioButtonMenuItem();
+				break;
+			case ITEM_CHECK:
+				menuItem = new JCheckBoxMenuItem();
+				break;
+			default:
+				menuItem = new JMenuItem();
+				break;
+		}
+		menuItem.setText( sText);
+		if (sToolTip!=null) menuItem.setToolTipText(sToolTip);
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+		return menuItem;
+	}
+
+
 
 	}
