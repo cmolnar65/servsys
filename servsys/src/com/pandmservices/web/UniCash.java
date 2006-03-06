@@ -25,7 +25,7 @@ import javax.mail.internet.*;
 public class UniCash extends HttpServlet
 {
 	ServletConfig config = null;
-	Connection con = null;
+	static Connection con = null;
 	Connection condb = null;
 	Connection conu = null;
 	String glogin = null;
@@ -17588,7 +17588,7 @@ private void doAddSurvey(HttpServletRequest req, HttpServletResponse res, PrintW
 	out.println("--> </style>");
 	}
 
-public void doMenuStyleSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+public static void doMenuStyleSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 	      throws Exception
       {
       out.println("<style type=\"text/css\"><!-- body,table { color: #000000; background-color: #A0B8C8; margin-left: 2px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; font-size: .9em; font-family: Arial, Helvetica, sans-serif; } ");

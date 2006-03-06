@@ -16,6 +16,23 @@
   appropriate people.
 
 =================================================================
+RELEASE 2.14
+=================================================================
+(N) OK - Time to get serious about the non-web GUI version of this. The web is WAY
+to difficult to deploy and we need to change what we are doing. Web version has to
+much overhead.
+(N) Login window created
+(N) Config File Read completed (this is passed at startup as parameter 1):
+		dbsubprotocol=mysql
+		dbprotocol=jdbc
+		dbhost=127.0.0.1 (or DBSERVERIP or NAME)
+		dbdriver=com.mysql.jdbc.Driver
+		dbpassword=DBSERVERPASSWORD
+		dbuser=DBSERVERUSER
+		dbname=DATABASENAME
+
+
+=================================================================
 RELEASE 2.13
 =================================================================
 (N) - Allow admins to delete user records

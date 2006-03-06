@@ -18,10 +18,13 @@ public class AboutBox extends JFrame implements ActionListener {
     protected Font titleFont, bodyFont;
     protected ResourceBundle resbundle;
 
-    public AboutBox() {
+    public AboutBox() 
+    		throws Exception
+    {
+	    
         super("");
         this.setResizable(false);
-        resbundle = ResourceBundle.getBundle ("servguistrings", Locale.getDefault());
+        //resbundle = ResourceBundle.getBundle ("servguistrings", Locale.getDefault());
         SymWindow aSymWindow = new SymWindow();
         this.addWindowListener(aSymWindow);	
 		

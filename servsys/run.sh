@@ -1,0 +1,1 @@
+java -classpath /var/tomcat5/common/lib/mysql-connector-java-3.1.6-bin.jar:/var/tomcat5/common/lib/servlet-api.jar:/var/tomcat5/mail.jar:/var/tomcat5/common/lib/activation.jar:./ -jar dist/servsys.jar test
