@@ -114,11 +114,9 @@ public class ServsysMain extends JFrame implements ActionListener
 				setVisible(false);
 				} else if (event.getSource() == menuAbout )
 				{
-
 				try {
 				AboutBox aboutwindow = new AboutBox();
 				aboutwindow.setVisible(true);
-				//setVisible(false);
 			    			} catch (java.lang.Exception e) {
 						System.out.println("error on opening window\n"+e.getMessage()+"\n");
 								}

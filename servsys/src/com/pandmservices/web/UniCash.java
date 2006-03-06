@@ -5677,7 +5677,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.13";
+			vnumber = "2.14";
 		if (dbvnumber.equalsIgnoreCase("2.12")) {
 			Statement stmtu2 = con.createStatement();
 			int result213a=stmtu2.executeUpdate("alter table configcompany add enabcustomer text after yearenddate;");
@@ -16562,7 +16562,7 @@ mbody=null;
 			counter=0;	
 				}
 			
-                        out.println("<td><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">");
+                        out.println("<td><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&csection=1>");
                         out.println(custname+"</a></td>");
                         out.println("<td>");
                         out.println(address1+"</td>");
@@ -17016,7 +17016,7 @@ private void doSaveSurvey(HttpServletRequest req, HttpServletResponse res, Print
 				}
 
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum);
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=1&custnum="+custnum);
 	}
 
 private void doAddSurvey(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -17579,7 +17579,7 @@ private void doAddSurvey(HttpServletRequest req, HttpServletResponse res, PrintW
 	}
 
 
-  private void doStyleSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+  public static void doStyleSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
 	out.println("<style type=\"text/css\"><!-- body,table { color: #000000; background-color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; font-size: .9em; font-family: Arial, Helvetica, sans-serif; } ");
@@ -17682,437 +17682,13 @@ private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, P
 		String custstop = req.getParameter("custstop");
 		String action = req.getParameter("action");
 		String csection = req.getParameter("csection");
-		int AllowDelete= Integer.parseInt(doGetAllowDelete(username));
-		String qstatus="-";
-		int custnum=0;
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
-		int eenum=0;
-		int ecustnum=0;
-		String brand=null;
-		String etype=null;
-		String modelnum=null;
-		String serialnum=null;
-		String filter=null;
-		String notes=null;
-		int counter=0;
-		int icrecnum=0;
-		int ccrecnum=0;
-		String icallslip=null;
-		double totinvestment=0.00;
-		String icustnum=null;
-		String idate=null;
-		String ccallslip=null;
-		String ccustnum=null;
-		String cdate=null;
-		String tcdate=null;
-		String creason=null;
-		int pcontnum=0;
-		String pcustnum=null;
-		String pstartdate=null;
-		String penddate=null;
-		String pcost=null;
-		String pnotes=null;
-	        int propnum=0;
-                String pdate=null;
-		int qcustnum=0;
-                String psummary=null;
-		String wssummary=null;
-		String cemail=null;
-		int wsrec=0;
-		String custsite=null;
-		String custtype=null;
-		String sitenum=null;
-		String wsdate=null;
-		int wscustnum=0;
-		int wsnum=0;
-		double ptotal=0;
-                int intcustnum = Integer.parseInt(tcustnum);
-		custnum=Integer.parseInt(tcustnum);
-
-	out.println("<html>");
-	out.println("<head>");
-	out.println("<title>Customer Detail</title>");
-	doStyleSheet(req, res, out, session, username);
-	//out.println("<style type=\"text/css\"><!-- body,table { color: #000000; background-color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; font-size: .9em; font-family: Arial, Helvetica, sans-serif; } ");
-	//out.println(" .tableoffcolor { font-family: Arial, Helvetica, sans-serif; font-size=1em; background-color: #A0B8C8; } ");
-
-
-	//out.println("--> </style>");
-	out.println("</head>");
-	out.println("<BODY>");
-
-
-	out.println("<table border=0 width=100%>");
-	out.println("<tr><td width=\"60%\">");
-	out.println("<h3>Customer Detail</h3>");
-	out.println("<table border=1 width=\"100%\">");
-
-                Vector vc;
-                vc = UniCustomer.getIndItem(con, intcustnum);
-                for (int ic = 0 ; ic < vc.size(); ic++)
-                {
-                        UniCustomer tc = (UniCustomer) vc.elementAt(ic);
-                        custtype = tc.getCustType();
-			cname=tc.getCustomerName();
-			address1=tc.getAddress1();
-			address2=tc.getAddress2();
-			city =tc.getCity();
-			state=tc.getState();
-			zip=tc.getZip();
-			homephone=tc.getHomePhone();
-			altphone=tc.getAltPhone();
-			cust_notes=tc.getCustomerNotes();
-			custsite=tc.getCustSite();
-			sitenum=tc.getSiteNum();
-			cemail=tc.getCEmail();
+		if (csection==null) {
+		       csection="1";
+		}	       
 		
-		out.println("<tr><td>Name</td><td>"+cname+"</td></tr>");
-		out.println("<tr><td>Address</td><td>"+address1+"</td></tr>");
-		out.println("<tr><td>Address</td><td>"+address2+"</td></tr>");
-		out.println("<tr><td>City</td><td>"+city+"</td></tr>");
-		out.println("<tr><td>State</td><td>"+state+"</td></tr>");
-		out.println("<tr><td>Zip</td><td>"+zip+"</td></tr>");
-		out.println("<tr><td>Home Phone</td><td>"+homephone+"</td></tr>");
-		out.println("<tr><td>Alt Phone</td><td>"+altphone+"</td></tr>");
-		out.println("<tr><td>Email Address</td><td>"+cemail+"</td></tr>");
-		out.println("<tr><td>Customer Number</td><td>"+custsite+"</td></tr>");
-		out.println("<tr><td>Site Number</td><td>"+sitenum+"</td></tr>");
-		out.println("<tr><td>CustType</td><td>"+custtype+"</td></tr>");
-		out.println("<tr><td>Customer Notes</td><td>"+cust_notes+"</td></tr>");
-		out.println("</table>");
+		String n = ShowCustomerDetail.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection);
+		
 		}
-		out.println("</td>");
-		out.println("<td valign=top>");
-		out.println("<table border=0 width=\"95%\" valign=top class=\"tableoffcolor\" id=\"custforms\">");
-		out.println("<tr><td><h3>Customer Forms</h3></td></tr>");
-if (action.equalsIgnoreCase("showcustdetail_ide"))
-			{
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printspaceheater&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Print Space Heater Liability Form</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printaccover&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Print AC Cover Disclaimer Form</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printiaqdisc&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Print IAQ Disclaimer Form</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printelist&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Print Equipment List</a><br></td></tr>");
-			} else {
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printspaceheater&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=_blank>Print Space Heater Liability Form</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printaccover&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=_blank>Print AC Cover Disclaimer Form</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printiaqdisc&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=_blank>Print IAQ Disclaimer Form</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=printelist&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=_blank>Print Equipment List</a><br></td></tr>");
-				}
-		out.println("<tr><td></td></tr>");
-		out.println("</table>");
-
-		out.println("<table border=0 width=\"95%\" valign=top class=\"tableoffcolor2\" id=\"custforms\">");
-		out.println("<tr><td><h3>Actions</h3></td></tr>");
-		//out.println("<SCRIPT LANGUAGE=\"JavaScript\">");
-		//out.println("<!-- HIDE FROM OTHER BROWSERS");
-		//out.println("");
-		//out.println("");
-		//out.println("");
-		//out.println("// STOP HIDING FROM OTHER BROWSERS  -->");
-		//out.println("</SCRIPT>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=sendarrive&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Arrived</a><br></td><td><a href="+classdir+"UniCash?action=getservequip&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsitenum="+custsite+"&sitenum="+sitenum+" target=phpmain>Get Equipment from Server</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=sendextratime&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Need Extra Time</a><br></td><td><a href="+classdir+"UniCash?action=getservcallslip&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsitenum="+custsite+"&sitenum="+sitenum+" target=phpmain>Get Calls from Server</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=sendalmostdone&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Doing Paperwork</a><br></td><td><a href="+classdir+"UniCash?action=getservinspection&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsitenum="+custsite+"&sitenum="+sitenum+" target=phpmain>Get Inspections from Server</a><br></td></tr>");
-		out.println("<tr><td><a href="+classdir+"UniCash?action=sendcomplete&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+" target=phpmain>Send Complete</a><br></td></tr>");
-		out.println("<tr><td> </td></tr>");
-		out.println("<tr><td>MUST HAVE INTERNET<br>CONNECT FOR THESE</td></tr>");
-		out.println("</table>");
-
-
-		out.println("</td></tr>");
-		out.println("</table>");
-
-		out.println("<br>");
-		out.println("<a href="+classdir+"UniCash?action=editcustomer&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Edit Customer Info</a><br>");
-		String taddress1 = address1.replaceAll(" ","+");
-		String tcity = city.replaceAll(" ","+");
-		out.println("<a href=http://www.mapquest.com/maps/map.adp?searchtype=address&country=US&addtohistory=&searchtab=home&formtype=address&popflag=0&latitude=&longitude=&name=&phone=&cat=&address="+taddress1+"&city="+tcity+"&state="+state+"&zipcode="+zip+" target=_blank>Show on Mapquest (must have internet connect)</a>");
-	out.println("<P><P>");
-	out.println("<h3>Customer Equipment List</h3>");
-
-                Vector v;
-                v = UniEquip.getAllItems(con,intcustnum);
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Brand</th><th>Type</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th><th>Delete<br>(no second chance)</th>");
-
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                UniEquip t = (UniEquip) v.elementAt(i);
-		eenum=t.getId();
-		ecustnum=t.getCustnum();
-		brand=t.getBrand();
-		modelnum=t.getModelnum();
-		serialnum=t.getSerialnum();
-		filter=t.getFilter();
-		notes=t.getNotes();
-		etype=t.getEtype();
-		if (etype==null) { 
-                	etype = "-";
-                	}
-
-                out.println("<tr><td><a href="+classdir+"UniCash?action=editequipment&eenum="+eenum+"&custnum="+ecustnum+">"+brand+"</a></td><td>"+etype+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+notes+"</td><td><a href="+classdir+"UniCash?action=delequip&eenum="+eenum+"&custnum="+ecustnum+">D</a>elete</td></tr>");
-                }
-	out.println("</table><br><br>");
-
-		out.println("<a href="+classdir+"UniCash?action=addequipment&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Equipment to Customer File</a>");
-		out.println("<P><P>");
-		out.println("<h3>Inspection Record</h3>");
- 	Statement stmt3 = con.createStatement();
-	ResultSet rs3 = stmt3.executeQuery("SELECT * FROM inspection where custnum="+tcustnum+"");
-		out.println("<table border=1 width=50%>");
-		out.println("<th>Callslip</th><th>Date</th><th>Tech</th><th>Print</th><th>Email</th>");
-		while(rs3.next())
-                {
-		icrecnum=rs3.getInt("crecnum");
-		icallslip=rs3.getString("callslip");
-		icustnum=rs3.getString("custnum");
-		String techname=rs3.getString("techid");
-		idate=doFormatDate(getDate(rs3.getString("idate")));
-		if (techname==null) { techname="-"; }
-	if (techname.equalsIgnoreCase(username)) {
-	out.println("<tr><td><a href="+classdir+"UniCash?action=editinspection&icrecnum="+icrecnum+"&custnum="+icustnum+"&custstart="+custstart+"&custstop="+custstop+">"+icallslip+"</a></td><td>"+idate+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=inspectprint&crecnum="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsingleinspections&csrec="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Email</a></td>");
-			} else {	
-	out.println("<tr><td><a href="+classdir+"UniCash?action=vinspectprint&crecnum="+icrecnum+"&custnum="+icustnum+">"+icallslip+"</a></td><td>"+idate+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=inspectprint&crecnum="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsingleinspections&csrec="+icrecnum+"&custnum="+icustnum+" target=\"_blank\">Email</a></td>");
-				}
-			
-//DELETE LINK
-		if (AllowDelete==1) {
-		out.println("<td><a href="+classdir+"UniCash?action=delinspection&crecnum="+icrecnum+"&custnum="+icustnum+">D</a>elete</td>");
-		}
-		out.println("</tr>");
-                }
-		out.println("</table><br><br><a href="+classdir+"UniCash?action=addinspection&custnum="+tcustnum+">Add Inspection to Customer Record</a>");	
-
-
-	out.println("<P><P>");
-	out.println("<h3>Customer Call Record</h3>");
-
- 	Statement stmt4 = con.createStatement();
-	ResultSet rs4 = stmt4.executeQuery("SELECT * FROM callslip where custnum="+tcustnum+" and crectype='c'");
-		//out.println("<table border=1 width=50%>");
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Callslip</th><th>Date</th><th>Reason</th><th>Tech</th><th>Print</th><th>Email</th>");
-		while(rs4.next())
-			{
-		ccrecnum=rs4.getInt("crecnum");
-		ccallslip=rs4.getString("callslip");
-		ccustnum=rs4.getString("custnum");
-		String techname=rs4.getString("techid");
-
-// Added t to cdate
-		tcdate=rs4.getString("cdate");
-// Added date formatting
-		cdate=doFormatDate(getDate(tcdate));
-		creason=rs4.getString("reason");
-
-		if (techname==null) { techname="-"; }
-	if (techname.equalsIgnoreCase(username)) {
-			
-		out.println("<tr><td><a href="+classdir+"UniCash?action=editcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=printcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecallslips&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
-			} else {
-		out.println("<tr><td><a href="+classdir+"UniCash?action=viewpcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td>"+techname+"</td><td><a href="+classdir+"UniCash?action=printcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecallslips&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
-			}
-//DELETE LINK
-				if (AllowDelete==1) {
-		out.println("<td><a href="+classdir+"UniCash?action=delcallslip&crecnum="+ccrecnum+"&custnum="+ccustnum+">D</a>elete<td>");
-				}
-		out.println("</tr>");
-                }
-out.println("</table><br><br>");
-
-		out.println("<a href="+classdir+"UniCash?action=addcallslip&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Call Slip to Customer File</a>");
-
-out.println("<P><P>");
-out.println("<h3>Preventative Agreements</h3>");
- 	Statement stmt5 = con.createStatement();
-	ResultSet rs5 = stmt5.executeQuery("SELECT * FROM pagreement where custnum="+tcustnum+"");
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Contract</th><th>Start Date</th><th>End Date</th><th>Cost</th><th>Print</th><th>Email</th>");
-	while(rs5.next())
-		{
-		pcontnum=rs5.getInt("contnum");
-		pcustnum=rs5.getString("custnum");
-		pstartdate=doFormatDate(getDate(rs5.getString("startdate")));
-		penddate=doFormatDate(getDate(rs5.getString("enddate")));
-		pcost=rs5.getString("cost");
-		pnotes=rs5.getString("notes");
-		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editprevagreement&reqsource=UniCash&contnum="+pcontnum+"&&custnum="+pcustnum+"\">"+pcontnum+"</a></td><td>"+pstartdate+"</td><td>"+penddate+"</td><td>"+pcost+"</td>");
-		if (action.equalsIgnoreCase("showcustdetail_ide")) {
-		out.println("<td><a href="+classdir+"UniCash?action=printprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+">Print Format</a></td></tr>");
-				} else {
-		out.println("<td><a href="+classdir+"UniCash?action=printprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+" target=_blank>Print Format</a></td><td><a href="+classdir+"UniCash?action=sendprevagreement&contnum="+pcontnum+"&custnum="+pcustnum+" target=_blank>Email</a></tr>");
-				}
-			
-                }
-out.println("</table><br><br>");
-		out.println("<a href="+classdir+"UniCash?action=addprevagreement&custnum="+custnum+"&reqsource=UniCash&custstart="+custstart+"&custstop="+custstop+"&custsite="+custsite+"&sitenum="+sitenum+">Add Preventative Agreement to Customer File</a>");
-
-out.println("<P><P>");
-out.println("<h3>Service Proposals</h3>");
-
-                Vector vs;
-                vs = ServQuotes.getAllItems(con,intcustnum);
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Proposal #</th><th>Date</th><th>Summary</th><th>Cost</th><th>Status</th>");
-		counter=0;
-                for (int i = 0 ; i < vs.size(); i++)
-                {
-                ServQuotes ts = (ServQuotes) vs.elementAt(i);
-		propnum=ts.getQuoteNum();
-		qcustnum=ts.getCrecNum();
-		pdate=doFormatDate(getDate(ts.getQDate()));
-		psummary=ts.getQDescription();
-		qstatus=ts.getQStatus();
-		totinvestment=0.00;
-                Vector vp;
-                vp = ServQuoteParts.getAllItems(con,propnum);
-                for (int j = 0 ; j < vp.size(); j++)
-                {
-                ServQuoteParts tp = (ServQuoteParts) vp.elementAt(j);
-		ptotal=tp.getQuoteTotal();
-		totinvestment=totinvestment+ptotal;
-		}
-
-                out.println("<tr><td><a href=\""+classdir+"UniCash?action=editservproposal&quotenum="+propnum+"&&custnum="+qcustnum+"\">"+propnum+"</a></td><td>"+pdate+"</td><td>"+psummary+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"</td><td><a href="+classdir+"UniCash?action=printservproposal&propnum="+propnum+"&custnum="+custnum+" target=_blank>Print Format</a></td>");
-//DELETE LINK				
-				if (AllowDelete==1) {
-				out.println("<td><a href="+classdir+"UniCash?action=delservproprec&custnum="+custnum+"&propnum="+propnum+">Delete</a></td>");
-				}
-				out.println("</tr>");
-                }
-out.println("</table><br><br>");
-		out.println("<a href="+classdir+"UniCash?action=addservproposal&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Service Proposal to Customer File</a>");
-
-
-out.println("<P><P>");
-out.println("<h3>Sales Proposals</h3>");
-
-                Vector vv;
-                vv = UniQuotes.getAllItems(con,intcustnum);
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Proposal #</th><th>Date</th><th>Summary</th><th>Cost</th><th>Status</th><th>Print</th><th>Email</th>");
-		counter=0;
-                for (int i = 0 ; i < vv.size(); i++)
-                {
-                UniQuotes tt = (UniQuotes) vv.elementAt(i);
-		propnum=tt.getQuoteNum();
-		qcustnum=tt.getCrecNum();
-		pdate=doFormatDate(getDate(tt.getQDate()));
-		psummary=tt.getQDescription();
-		qstatus=tt.getQStatus();
-		totinvestment=0.00;
-                Vector vp;
-                vp = UniQuoteParts.getAllItems(con,propnum);
-                for (int j = 0 ; j < vp.size(); j++)
-                {
-                UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
-		ptotal=tp.getQuoteTotal();
-		totinvestment=totinvestment+ptotal;
-		}
-
-                out.println("<tr><td><a href=\""+classdir+"UniCash?action=editproposal&quotenum="+propnum+"&&custnum="+qcustnum+"\">"+propnum+"</a></td><td>"+pdate+"</td><td>"+psummary+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"</td><td><a href="+classdir+"UniCash?action=printproposal&propnum="+propnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=sendsingleproposals&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
-
-//DELETE LINK	
-				if (AllowDelete==1) {
-				out.println("<td><a href="+classdir+"UniCash?action=delproprec&custnum="+custnum+"&propnum="+propnum+">Delete</a></td>");
-				}
-				out.println("</tr>");
-                }
-out.println("</table><br><br>");
-		out.println("<a href="+classdir+"UniCash?action=addproposal&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Proposal to Customer File</a>");
-
-
-out.println("<P><P>");
-out.println("<h3>Pricing Worksheets</h3>");
-
-                Vector vw;
-                vw = UniWorksheet.getAllItems(con,intcustnum);
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Worksheet #</th><th>Date</th><th>Summary</th><th>Print</th><th>Email</th>");
-		counter=0;
-                for (int i = 0 ; i < vw.size(); i++)
-                {
-                UniWorksheet tw = (UniWorksheet) vw.elementAt(i);
-		wsnum=tw.getWsRec();
-		wscustnum=tw.getCrec();
-		wsdate=doFormatDate(getDate(tw.getWsDate()));
-		wssummary=tw.getWsDesc();
-
-
-		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editws&wsnum="+wsnum+"&&custnum="+wscustnum+"\">"+wsnum+"</a></td><td>"+wsdate+"</td><td>"+wssummary+"</td><td><a href="+classdir+"UniCash?action=printworksheet&wsnum="+wsnum+"&custnum="+wscustnum+" target=_blank>Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsingleworksheet&wsnum="+wsnum+"&qdate="+wsdate+"&custnum="+wscustnum+" target=_blank>Email</a></td>");
-
-//DELETE LINK	
-		if (AllowDelete==1) {
-		out.println("<td><a href="+classdir+"UniCash?action=delwsrec&custnum="+custnum+"&wsnum="+wsnum+">Delete</a></td>");
-		}
-		out.println("</tr>");
-                }
-out.println("</table><br><br>");
-		out.println("<a href="+classdir+"UniCash?action=addworksheet&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Worksheet to Customer File</a>");
-		out.println("<P><P>");
-		out.println("<h3>Site Survey</h3>");
-		stmt5 = con.createStatement();
-		rs5 = stmt5.executeQuery("SELECT * FROM custsurvey where custnum="+custnum+"");
-		out.println("<table border=1 width=100%>");
-        out.println("<th>Number</th><th>Date</th>");
-		while(rs5.next())
-		{
-			int precnum=rs5.getInt("recnum");
-			pcustnum=rs5.getString("custnum");
-			String psdate=doFormatDate(getDate(rs5.getString("sdate")));
-			out.println("<tr><td><a href=\""+classdir+"UniCash?action=editsurvey&recnum="+precnum+"&custnum="+pcustnum+"\">"+precnum+"</a></td><td>"+psdate+"</td></td><td><a href="+classdir+"UniCash?action=printsurvey&recnum="+precnum+"&custnum="+pcustnum+" target=_blank>Print Format</a></td></tr>");
-		}
-		out.println("</table>");
-		out.println("<br><br><a href="+classdir+"UniCash?action=addsurvey&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Survey to Customer File</a><br><br>");		
-	
-out.println("</body>");
-out.println("</html>");
-	
-
-	out.println("<P><P>");
-	out.println("<h3>Equipment Check Record</h3>");
-
- 	Statement stmtcm = con.createStatement();
-	ResultSet rscm = stmtcm.executeQuery("SELECT * FROM checkme where custnum="+tcustnum+" and crectype='c'");
-		//out.println("<table border=1 width=50%>");
-	out.println("<table border=1 width=100%>");
-        out.println("<th>Callslip</th><th>Date</th><th>Reason</th><th>Print</th><th>Email</th>");
-		while(rscm.next())
-			{
-		ccrecnum=rscm.getInt("crecnum");
-		ccallslip=rscm.getString("callslip");
-		ccustnum=rscm.getString("custnum");
-// Added t to cdate
-		tcdate=rscm.getString("cdate");
-// Added date formatting
-		cdate=doFormatDate(getDate(tcdate));
-		creason=rscm.getString("reason");
-
-		if (action.equalsIgnoreCase("showcustdetail_ide"))
-			{
-		out.println("<tr><td><a href="+classdir+"UniCash?action=editcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td><a href="+classdir+"UniCash?action=printcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecheckme&csrec="+ccrecnum+"&custnum="+ccustnum+">Email</a></td>");
-			} else {
-		out.println("<tr><td><a href="+classdir+"UniCash?action=editcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td><a href="+classdir+"UniCash?action=printcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecheckme&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
-			}
-//DELETE LINK
-				if (AllowDelete==1) {
-		out.println("<td><a href="+classdir+"UniCash?action=delcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+">D</a>elete<td>");
-				}
-		out.println("</tr>");
-                }
-out.println("</table><br><br>");
-
-		out.println("<a href="+classdir+"UniCash?action=addcheckme&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Equipment Check to Customer File</a>");
-
-		con.close();
-	}
 
 
 private void doEditEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -19288,7 +18864,7 @@ out.println("</html>");
 		con.close();
 		if (action.equalsIgnoreCase("viewpcallslip")) 
 				{
-                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&csection=2&custnum="+custnum+">Click here to continue</a>");
 				}
 }
 
@@ -20001,7 +19577,7 @@ out.println("</html>");
 		con.close();
 		if (action.equalsIgnoreCase("vinspectprint")) 
 				{
-                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
+                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&csection=3&custnum="+custnum+">Click here to continue</a>");
 				}
 
 }
@@ -20653,7 +20229,7 @@ private void doUpdateCallslip(HttpServletRequest req, HttpServletResponse res, P
 				} 
 			else
 				{
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&csection=2");
 				}
             }
 	
@@ -20749,7 +20325,7 @@ private void doUpdateCheckme(HttpServletRequest req, HttpServletResponse res, Pr
                 UniCheckMe.UpdateItem(con, crecnum, custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2, equip3, equip4, reason, tservices, trecommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username, oa1, oa2, rwb1,rwb2, rdb1, rdb2, sdb1, sdb2, slt1, slt2, est1, est2,cst1,cst2,llt1, llt2, lp1, lp2, hp1, hp2, ss1, ss2, rs1, rs2, rfc1, rca1, afcor, csp, newins, acsuite, acn, comp, ttype, actype, manyear, min1, min2, rtype, trueflow, hport, mdevice, targetas);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=7&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doSaveCheckme(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -20840,7 +20416,7 @@ private void doSaveCheckme(HttpServletRequest req, HttpServletResponse res, Prin
                 UniCheckMe.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2, equip3, equip4, reason, tservices, trecommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username, oa1, oa2, rwb1,rwb2, rdb1, rdb2, sdb1, sdb2, slt1, slt2, est1, est2,cst1,cst2,llt1, llt2, lp1, lp2, hp1, hp2, ss1, ss2, rs1, rs2, rfc1, rca1, afcor, csp, newins, acsuite, acn, comp, ttype, actype, manyear, min1, min2, rtype, trueflow, hport, mdevice, targetas);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=7&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 
@@ -20941,7 +20517,7 @@ private void doSaveCallslip(HttpServletRequest req, HttpServletResponse res, Pri
                 UniCallslip.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2,equip3, equip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, CustNum, SiteNum, crectype, username,parts);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=2&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
 		}
             }
 
@@ -21104,7 +20680,7 @@ private void doUpdateInspection(HttpServletRequest req, HttpServletResponse res,
 		con.close();
 			if (action.equalsIgnoreCase("updateinspection"))
 	                        {
-                			res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                			res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=3&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
 				} 
 			 else if (action.equalsIgnoreCase("rcupdateinspection"))
 	                        {
@@ -21275,7 +20851,7 @@ private void doSaveInspection(HttpServletRequest req, HttpServletResponse res, P
                UniInspection.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, sucttemp, liqtemp, r_temp, s_temp, rw_temp, mcfm, out_temp, CustNum, SiteNum , expansion, ahage, conage, username, servsync, parts);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=3&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
 		}
             }
 	
@@ -21585,7 +21161,7 @@ private void doUpdateCustomerEntry(HttpServletRequest req, HttpServletResponse r
                 UniCustomer.UpdateItem(con, custnum, cname,address1, address2, city, state, zip, homephone, altphone, cust_notes, cemail, custsite, sitenum, custtype);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+""+reqsource+"?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+""+reqsource+"?action=showcustdetail&csection=1&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doUpdateEquipmentEntry(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -21621,7 +21197,7 @@ private void doUpdateEquipmentEntry(HttpServletRequest req, HttpServletResponse 
                 UniEquip.UpdateItem(con, eenum, custnum, brand, modelnum, serialnum, filter, notes, etype, cseer, btuout, CustNum, SiteNum, 0 );
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=1&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doDeleteEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -21636,7 +21212,7 @@ private void doDeleteEquip(HttpServletRequest req, HttpServletResponse res, Prin
                 UniEquip.deleteItem(con, tenum);
                 out.println("Your item has been deleted from the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=1&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 
@@ -21652,7 +21228,7 @@ private void doDeleteInspection(HttpServletRequest req, HttpServletResponse res,
                 UniInspection.deleteItem(con, tenum);
                 out.println("Your item has been deleted from the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=3&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 
@@ -21775,7 +21351,7 @@ private void doDeletePropRecY(HttpServletRequest req, HttpServletResponse res, P
 		}
                 out.println("Your item has been deleted from the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=5&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doDeleteWsRec(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -21837,7 +21413,7 @@ private void doDeleteWsRecY(HttpServletRequest req, HttpServletResponse res, Pri
                 UniWorksheet.deleteItem(con, twsrec);
                 out.println("Your item has been deleted from the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 
@@ -21864,7 +21440,7 @@ private void doDeleteCallslip(HttpServletRequest req, HttpServletResponse res, P
                 UniCallslip.deleteItem(con, tenum);
                 out.println("Your item has been deleted from the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=2&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 		
@@ -21905,7 +21481,7 @@ private void doSaveEquip(HttpServletRequest req, HttpServletResponse res, PrintW
                 UniEquip.AddItem(con, custnum, brand, modelnum, serialnum, filter, notes, etype , cseer, btuout, CustNum, SiteNum, 0);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=1&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 			}
 
@@ -22167,7 +21743,7 @@ private void doUpdatePrev(HttpServletRequest req, HttpServletResponse res, Print
                 UniPagreement.UpdateItem(con, contnum, custnum, tenum1, tenum2, tenum3, tenum4, tenum5, tenum6, tenum7, tenum8, tenum9, tenum10, aservice, doFormatDateDb(getDateDb(startdate)), doFormatDateDb(getDateDb(enddate)), term, cost, notes, doFormatDateDb(getDateDb(agrdate)), vperyear, visit1, visit2, visit3, visit4, visit5, visit6 );
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+""+reqsource+"?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+""+reqsource+"?action=showcustdetail&csection=4&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 	
 	
@@ -22186,7 +21762,7 @@ private void doUpdateWorksheet(HttpServletRequest req, HttpServletResponse res, 
         UniWorksheet.UpdateItem(con, wsnum, custnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult);
         out.println("Your item has been updated in the database<br>");
 		con.close();
-        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doUpdateProposal(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -22219,7 +21795,7 @@ private void doUpdateProposal(HttpServletRequest req, HttpServletResponse res, P
 	}
 		con.close();
         out.println("Your item has been updated in the database<br>");
-        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 
@@ -22240,7 +21816,7 @@ private void doSaveWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
         UniWorksheet.AddItem(con, custnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult, custsite, sitenum,login, 0);
 		con.close();
         out.println("Your item has been updated in the database<br>");
-        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doSaveProposal(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -22276,7 +21852,7 @@ private void doSaveProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		con.close();
 
         out.println("Your item has been updated in the database<br>");
-        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 	
 private void doSavePrev(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -22336,7 +21912,7 @@ private void doSavePrev(HttpServletRequest req, HttpServletResponse res, PrintWr
                 UniPagreement.AddItem(con, custnum, tenum1, tenum2, tenum3, tenum4, tenum5, tenum6, tenum7, tenum8, tenum9, tenum10, taservice, doFormatDateDb(getDateDb(startdate)), doFormatDateDb(getDateDb(enddate)), term, cost, notes, doFormatDateDb(getDateDb(agrdate)), vperyear, visit1, visit2, visit3, visit4, visit5, visit6,0, custsite, sitenum, techid );
                 out.println("Your item has been updated in the database<br>");
 		con.close();
-                res.sendRedirect(""+classdir+""+reqsource+"?action=showcustdetail&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+                res.sendRedirect(""+classdir+""+reqsource+"?action=showcustdetail&csection=4&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
 private void doCalcPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -23888,7 +23464,7 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
 		con.close();
 		con2.close();
 
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+crecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=5&custnum="+crecnum+"");
 	out.println("<html>");
 	out.println("Got to finish</html>");
 		}
@@ -23990,7 +23566,7 @@ private void doCopyMasterWstoCus(HttpServletRequest req, HttpServletResponse res
 		}
 
 		con.close();
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+ncrecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+ncrecnum+"");
 	out.println("<html>");
 	out.println("Got to finish</html>");
 		}
@@ -24094,7 +23670,7 @@ private void doCopyWstoCus(HttpServletRequest req, HttpServletResponse res, Prin
 		}
 
 		con.close();
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+ncrecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+ncrecnum+"");
 	out.println("<html>");
 	out.println("Got to finish</html>");
 		}
@@ -24196,7 +23772,7 @@ private void doCopyWs(HttpServletRequest req, HttpServletResponse res, PrintWrit
 		}
 
 		con.close();
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+crecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+crecnum+"");
 	out.println("<html>");
 	out.println("Got to finish</html>");
 		}
@@ -24340,7 +23916,7 @@ private void doWsToProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		}
 
 		con.close();
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+crecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+crecnum+"");
 
 
 	out.println("<html>");
@@ -24469,7 +24045,7 @@ private void doWsToServProposal(HttpServletRequest req, HttpServletResponse res,
 		}
 
 		con.close();
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+crecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=5&custnum="+crecnum+"");
 
 
 	out.println("<html>");
