@@ -18,6 +18,7 @@
 =================================================================
 RELEASE 2.14
 =================================================================
+(N) Added MainMenu class - seperater out the doMenu from the main UniCash class.
 (N) Added ShowCustDetail class - seperated out ShowCustDetail from the main UniCash class.
 (C) Changed the way customer detail is displayed. Screen was to busy. Now display in sections.
 (N) OK - Time to get serious about the non-web GUI version of this. The web is WAY
