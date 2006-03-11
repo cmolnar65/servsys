@@ -104,9 +104,9 @@ public class MainMenu extends UniCash
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=listprevprice target=_blank>Planned Service Pricing</a><br>");
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=calcprice target=_blank>Calculate Price</a><br>");
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=reminders target=_blank>Reminders</a><br>");
-	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=flatrate target=nav>Flat Rate Prices</a><br>");
+	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=flatrate-cat target=nav>Flat Rate Prices</a><br>");
 	menu = req.getParameter("menu");
-	if (menu.equalsIgnoreCase("flatrate")) {
+	if (menu.equalsIgnoreCase("flatrate-cat")) {
                 Vector v;
                 v = FlatRateCat.getAllItems(con);
                 for (int i = 0 ; i < v.size(); i++)
@@ -162,7 +162,7 @@ public class MainMenu extends UniCash
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=editfrconfig target=phpmain>Flat Rate Config</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=confightgloadcatlist target=phpmain>Heating Loads</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=zerotruckstock target=_blank>Zero Truck Stock</a><br>");
-	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=configforms target=_blank>Forms</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=configforms target=phpmain>Forms</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=edrespsform target=phpmain>Residential Planned Service Form</a><br>");
 	}
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=reports target=nav>Reports</a><br>");

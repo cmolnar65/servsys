@@ -544,6 +544,62 @@ out.println("</CENTER>");
 				doLoginAdminUser(req, res, out, session, action, username);
 					}
 				}
+                        else if (action.equalsIgnoreCase("updateformquestion"))
+	                        {
+                                doSaveFormQuestion(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("saveformquestion"))
+	                        {
+                                doSaveFormQuestion(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("updateform"))
+	                        {
+                                doSaveForm(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("saveform"))
+	                        {
+                                doSaveForm(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("editformquestion"))
+	                        {
+                                doAddFormQuestion(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("addformquestion"))
+	                        {
+                                doAddFormQuestion(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("deleteform"))
+	                        {
+                                doDeleteForm(req, res, out, username);
+				}
+                        else if (action.equalsIgnoreCase("delformquestion"))
+	                        {
+                                doDeleteFormQuestion(req, res, out, username);
+				}
+                        else if (action.equalsIgnoreCase("editform"))
+	                        {
+                                doAddForm(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("addform"))
+	                        {
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+                                doAddForm(req, res, out, session, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
+				}
+                        else if (action.equalsIgnoreCase("configforms"))
+	                        {
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+                                doShowForms(req, res, out, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
+				}
                         else if (action.equalsIgnoreCase("edittimecats"))
 	                        {
 				adminok = req.getParameter("adminok");
@@ -5482,85 +5538,20 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 
 //RELEASE_VERSION
 			vnumber = "2.14";
+		if (dbvnumber.equalsIgnoreCase("2.13")) {
+			Statement stmtu2 = con.createStatement();
+			int result214a=stmtu2.executeUpdate("DROP TABLE IF EXISTS formlist;");
+			int result214b=stmtu2.executeUpdate("CREATE TABLE formlist (formnum int(11) NOT NULL auto_increment, formname text, formdescription text, PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum));");
+			int result214c=stmtu2.executeUpdate("DROP TABLE IF EXISTS formparts;");
+			int result214d=stmtu2.executeUpdate("CREATE TABLE formparts (recnum int(11) not null auto_increment, formnum int(11), formquestion text, primary key (recnum), unique key recnum(recnum));");
+			int result214e = stmtu2.executeUpdate("UPDATE version set vnumber='2.14';");
+
+		}
 		if (dbvnumber.equalsIgnoreCase("2.12")) {
 			Statement stmtu2 = con.createStatement();
 			int result213a=stmtu2.executeUpdate("alter table configcompany add enabcustomer text after yearenddate;");
 			int result213b = stmtu2.executeUpdate("UPDATE version set vnumber='2.13';");
 		}
-		if (dbvnumber.equalsIgnoreCase("2.11")) {
-			Statement stmtu2 = con.createStatement();
-			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.12';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.10")) {
-			Statement stmtu2 = con.createStatement();
-			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.11';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.09")) {
-			Statement stmtu2 = con.createStatement();
-			int result209a = stmtu2.executeUpdate("UPDATE version set vnumber='2.10';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.08")) {
-			Statement stmtu2 = con.createStatement();
-			int result208a = stmtu2.executeUpdate("UPDATE version set vnumber='2.09';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.07")) {
-			Statement stmtu2 = con.createStatement();
-			int result207 = stmtu2.executeUpdate("DROP TABLE IF EXISTS flat_rate_cat;");
-			int result207a = stmtu2.executeUpdate("create table flat_rate_cat (catnum int(11) NOT NULL auto_increment, category text, PRIMARY KEY  (catnum), UNIQUE KEY code (catnum));");
-			int result207b = stmtu2.executeUpdate("insert into flat_rate_cat (category) select category from flat_rate_table group by category;");
-			int result207c = stmtu2.executeUpdate("UPDATE version set vnumber='2.08';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.06")) {
-			Statement stmtu2 = con.createStatement();
-			int result206=stmtu2.executeUpdate("DROP TABLE IF EXISTS prform;");
-			int result206a = stmtu2.executeUpdate("create table prform (pagreement text)");
-			int result206ab = stmtu2.executeUpdate("insert into prform (pagreement) values ('blank');");
-			int result205b = stmtu2.executeUpdate("UPDATE version set vnumber='2.07';");
-							}
-		if (dbvnumber.equalsIgnoreCase("2.05")) {
-			Statement stmtu2 = con.createStatement();
-			int result205a=stmtu2.executeUpdate("alter table callslip add parts text after servsync;");
-			int result205b=stmtu2.executeUpdate("alter table inspection add parts text after servsync;");
-			int result205c = stmtu2.executeUpdate("UPDATE version set vnumber='2.06';");
-			int result205d = stmtu2.executeUpdate("UPDATE callslip set parts='-';");
-			int result205e = stmtu2.executeUpdate("UPDATE inspection set parts='-';");
-
-							}
-		if (dbvnumber.equalsIgnoreCase("2.04")) {
-			Statement stmtu2 = con.createStatement();
-			int result204=stmtu2.executeUpdate("DROP TABLE IF EXISTS paytype;");
-			int result204a=stmtu2.executeUpdate("alter table time_sheet add paytype text after login;");
-			int result2040 = stmtu2.executeUpdate("create table paytype (paytype text)");
-			int result2041 = stmtu2.executeUpdate("insert into paytype (paytype) values ('Cash');");
-			int result2041a = stmtu2.executeUpdate("insert into paytype (paytype) values ('Check');");
-			int result2041b = stmtu2.executeUpdate("insert into paytype (paytype) values ('Visa');");
-			int result2041c = stmtu2.executeUpdate("insert into paytype (paytype) values ('Master_Card');");
-			int result2041d = stmtu2.executeUpdate("insert into paytype (paytype) values ('Discover');");
-			int result2041e = stmtu2.executeUpdate("insert into paytype (paytype) values ('American_Express');");
-			int result2041f = stmtu2.executeUpdate("insert into paytype (paytype) values ('Other_Credit');");
-			int result2041g = stmtu2.executeUpdate("insert into paytype (paytype) values ('Purchase_Order');");
-			int result2042 = stmtu2.executeUpdate("UPDATE version set vnumber='2.05';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.03")) {
-			Statement stmtu2 = con.createStatement();
-			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='2.04';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.02")) {
-			Statement stmtu2 = con.createStatement();
-			int result10 = stmtu2.executeUpdate("UPDATE version set vnumber='2.03';");
-		}
-		if (dbvnumber.equalsIgnoreCase("2.01")) {
-			Statement stmtu = con.createStatement();
-			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS flatrateconfig;");
-			int result2=stmtu.executeUpdate("CREATE TABLE flatrateconfig ( labperhour decimal(10,2), psdiscount decimal(10,2), mrdiscount decimal(10,2), commarkup decimal(10,2), salestax decimal(10,2), partmarkup decimal(10,2), sitemlowprice decimal(10,2), sitemhighprice decimal(10,2), sitemhighhours decimal(10,2))");
-			int result4 = stmtu.executeUpdate("insert into flatrateconfig (labperhour, psdiscount, mrdiscount, commarkup, salestax, partmarkup, sitemlowprice, sitemhighprice,sitemhighhours) values ('1', '1', '1', '1', '1', '1', '1', '1', '1');");
-			int result5 = stmtu.executeUpdate("DROP TABLE IF EXISTS flat_rate_table;");
-			int result6 = stmtu.executeUpdate("CREATE TABLE flat_rate_table (code int(11) NOT NULL auto_increment, part text, category text, keycode text, hours decimal(10,2) default '0.00', partcost decimal(10,2) default 0.00, custnotes text, nodiscount text, specitem int(11), PRIMARY KEY  (code), UNIQUE KEY code (code));");
-			int result7 = stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
-			int result8 = stmtu.executeUpdate("create table formlist (formnum int(11) not null auto_increment, formname text, formdescription text, PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum))");
-			int result9 = stmtu.executeUpdate("alter table svc_charges add frcode int(11) after servsync;");
-			int result3 = stmtu.executeUpdate("UPDATE version set vnumber='2.02';");
-							}
 
                 v = UniVersion.getAllItems(con);
                 for (int i = 0 ; i < v.size(); i++)
@@ -7733,6 +7724,209 @@ private void doUpdateHtgLoadClass(HttpServletRequest req, HttpServletResponse re
 			{
 out.println("<p><br><a href="+classdir+"UniCash?action=uploadpackagelist>Update Server (MUST HAVE INTERNET CONNECT)</a><br><br>");
 			}
+			con.close();
+        }
+
+
+private void doSaveFormQuestion(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+             {
+	String action = req.getParameter("action");
+	String recnum = req.getParameter("recnum");
+	String formnum = req.getParameter("formnum");
+        String formquestion = req.getParameter("formquestion");
+	if (action.equalsIgnoreCase("saveformquestion")) {
+        FormParts.AddItem(con, formnum, formquestion);
+	}
+	if (action.equalsIgnoreCase("updateformquestion")) {
+        FormParts.UpdateItem(con, recnum, formnum, formquestion);
+		}
+		con.close();
+        out.println("Your item has been updated in the database<br>");
+        res.sendRedirect(""+classdir+"UniCash?action=editform&formnum="+formnum+"");
+            }
+
+private void doSaveForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+             {
+	String action = req.getParameter("action");
+	String formname = req.getParameter("formname");
+	String formnum = req.getParameter("formnum");
+        String formdescription = req.getParameter("formdesc");
+	if (action.equalsIgnoreCase("saveform")) {
+        FormList.AddItem(con, formname, formdescription);
+	}
+	if (action.equalsIgnoreCase("updateform")) {
+        FormList.UpdateItem(con, formnum, formname, formdescription);
+		}
+		con.close();
+        out.println("Your item has been updated in the database<br>");
+        res.sendRedirect(""+classdir+"UniCash?action=configforms");
+            }
+
+private void doAddFormQuestion(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+			String action = req.getParameter("action");
+			String formnum = req.getParameter("formnum");
+			int c=0;
+			String formquestion=null;
+			String recnum=req.getParameter("formquestion");
+			if (action.equalsIgnoreCase("addformquestion"))
+                        {
+				formquestion="-";
+			}
+			if (action.equalsIgnoreCase("editformquestion"))
+			{
+				formnum=req.getParameter("formnum");
+				recnum=req.getParameter("formquestion");
+                		Vector v;
+                		v = FormParts.getIndItem(con, recnum);
+                		for (int i = 0 ; i < v.size(); i++)
+                			{
+                       			FormParts t = (FormParts) v.elementAt(i);
+                        		formquestion = t.getFormQuestion();
+					}
+			}
+			
+				
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add Form Question or Edit Form Question</title>");
+	out.println("</head>");
+	if (action.equalsIgnoreCase("addformquestion")) {
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=saveformquestion\" name=\"addform\">");
+						}
+	if (action.equalsIgnoreCase("editformquestion")) {
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updateformquestion\" name=\"addform\">");
+						}
+	out.println("<table size=100% border=1>");
+	out.println("<tr><td>Form Question</td><td>");
+	out.println("<input type=\"text\" name=\"formquestion\" value=\""+formquestion+"\" size=\"60\"></td></tr>");
+	out.println("</table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"hidden\" NAME=\"formnum\" VALUE=\""+formnum+"\">");
+	out.println("<INPUT TYPE=\"hidden\" NAME=\"recnum\" VALUE=\""+recnum+"\">");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+
+		con.close();
+	}
+
+private void doAddForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+			String action = req.getParameter("action");
+			String formname=null;
+			String formdesc=null;
+			int c=0;
+			String formnum=null;
+			if (action.equalsIgnoreCase("addform"))
+                        {
+				formname="-";
+				formdesc="-";
+			}
+			if (action.equalsIgnoreCase("editform"))
+			{
+				formnum=req.getParameter("formnum");
+                		Vector v;
+                		v = FormList.getIndItem(con, formnum);
+                		for (int i = 0 ; i < v.size(); i++)
+                			{
+                       			FormList t = (FormList) v.elementAt(i);
+                        		formname = t.getFormName();
+					formdesc = t.getFormDesc();
+					}
+			}
+			
+				
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add Form or Edit Form</title>");
+	out.println("</head>");
+	if (action.equalsIgnoreCase("addform")) {
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=saveform\" name=\"addform\">");
+						}
+	if (action.equalsIgnoreCase("editform")) {
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updateform\" name=\"addform\">");
+						}
+	out.println("<table size=100% border=1>");
+	out.println("<tr><td>Form Name</td><td>");
+	out.println("<input type=\"text\" name=\"formname\" value=\""+formname+"\"></td>");
+	out.println("</tr>");
+	out.println("<tr><td>Form Description</td><td>");
+	out.println("<input type=\"text\" name=\"formdesc\" value=\""+formdesc+"\" size=\"60\"></td></tr>");
+	out.println("</table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"hidden\" NAME=\"formnum\" VALUE=\""+formnum+"\">");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+
+			if (action.equalsIgnoreCase("editform"))
+			{
+	out.println("<br><br><br><table border=\"1\" width=\"100%\">");
+	out.println("<tr><th>Question #</th><th>Question</th></tr>");
+		c=1;
+		Vector vp;
+                vp = FormParts.getAllItems(con,formnum);
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                FormParts tp = (FormParts) vp.elementAt(j);
+		out.println("<tr><td><a href="+classdir+"UniCash?action=editformquestion&formnum="+formnum+"&formquestion="+tp.getRecNum()+">"+c+"</a></td><td>"+tp.getFormQuestion()+"</td><td><a href="+classdir+"UniCash?action=delformquestion&formnum="+formnum+"&formquestion="+tp.getRecNum()+">Delete</a></tr>");
+		c++;
+			}
+		out.println("</table><br><br><br><a href="+classdir+"UniCash?action=addformquestion&formnum="+formnum+">Add a Question</a></body></html>");
+		}
+		con.close();
+	}
+
+  private void doDeleteForm (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
+                throws Exception
+        {
+	String formnum = req.getParameter("formnum");
+        FormParts.DeleteAllItems(con, formnum);
+	FormList.DeleteItem(con,formnum);
+		con.close();
+        res.sendRedirect(""+classdir+"UniCash?action=configforms");
+	}
+
+  private void doDeleteFormQuestion (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
+                throws Exception
+        {
+	String recnum = req.getParameter("formquestion");
+	String formnum = req.getParameter("formnum");
+        String formquestion = req.getParameter("formquestion");
+        FormParts.DeleteItem(con, recnum);
+		con.close();
+        res.sendRedirect(""+classdir+"UniCash?action=editform&formnum="+formnum+"");
+	}
+
+  private void doShowForms (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
+                throws Exception
+        {
+                out.println("<html><head><title>Show Forms</title></head><body><h1>Available Forms</h1><table width=95% border=0><br><br><br>");
+                out.println("<tr>");
+                out.println("<th align=\"left\">FormName</th><th align=\"left\">Form Description</th><th align=\"left\">");
+                out.println("</tr>");
+
+                Vector v;
+                v = FormList.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FormList t = (FormList) v.elementAt(i);
+                      	int formnum = t.getFormNum();
+                        String formname = t.getFormName();
+			String formdesc = t.getFormDesc();
+                        out.println("<td>");
+                        out.println("<a href="+classdir+"UniCash?action=editform&formnum="+formnum+">"+formname+"</a></td><td>"+formdesc+"</td><td><a href="+classdir+"UniCash?action=deleteform&formnum="+formnum+">Delete</a></td>");
+                        out.println("</tr>");
+                }
+
+                out.println("</table><br><br>");
+		out.println("<br><br><br><a href="+classdir+"UniCash?action=addform>Add a Form</a></body></html>");
+		out.println("<br><br><br><a href="+classdir+"UniCash?action=uploadform>Upload to Main Server (NEED INTERNET CONNECT)</a></body></html>");
 			con.close();
         }
 

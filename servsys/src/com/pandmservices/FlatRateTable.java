@@ -105,7 +105,7 @@ public class FlatRateTable
 	{	
 		Vector V = new Vector();
 		Statement stmt = c.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table where category between '"+servicestart+"' and '"+servicestop+"' order by category, part");
+		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table where category between '"+servicestart+"' and '"+servicestop+"' order by part");
 		while(rs.next())
 		{
 			
