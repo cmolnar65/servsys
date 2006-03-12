@@ -419,6 +419,10 @@ out.println("</CENTER>");
 	                        {
                                 doUpdateMasterWorkSheets(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("copyformtocust"))
+	                        {
+                                doCopyFormToCust(req, res, out, session, username);
+				}
                         else if (action.equalsIgnoreCase("uploadallforms"))
 	                        {
                                 doUploadForms(req, res, out, session, username);
@@ -576,6 +580,10 @@ out.println("</CENTER>");
 	                        {
                                 doAddFormQuestion(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("delcustformrec"))
+	                        {
+                                doDeleteCustForm(req, res, out, username);
+				}
                         else if (action.equalsIgnoreCase("deleteform"))
 	                        {
                                 doDeleteForm(req, res, out, username);
@@ -607,6 +615,10 @@ out.println("</CENTER>");
 					{
 				doLoginAdminUser(req, res, out, session, action, username);
 					}
+				}
+                        else if (action.equalsIgnoreCase("addcustform"))
+	                        {
+                                doShowForms(req, res, out, username);
 				}
                         else if (action.equalsIgnoreCase("edittimecats"))
 	                        {
@@ -5560,6 +5572,10 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result213a=stmtu2.executeUpdate("alter table configcompany add enabcustomer text after yearenddate;");
 			int result213b = stmtu2.executeUpdate("UPDATE version set vnumber='2.13';");
 		}
+		if (dbvnumber.equalsIgnoreCase("2.11")) {
+			Statement stmtu2 = con.createStatement();
+			int result210a = stmtu2.executeUpdate("UPDATE version set vnumber='2.12';");
+		}
 
                 v = UniVersion.getAllItems(con);
                 for (int i = 0 ; i < v.size(); i++)
@@ -7788,6 +7804,58 @@ private void doUpdateForms(HttpServletRequest req, HttpServletResponse res, Prin
 
 	}
 
+private void doCopyFormToCust(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+
+	Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String formdate = formatter.format(date);
+	String action = req.getParameter("action");
+	String custnum = req.getParameter("custnum");
+	String sitenum = req.getParameter("sitenum");
+	String custsite=req.getParameter("custsite");
+	String Sformnum=req.getParameter("formnum");
+	String formanswer=req.getParameter("formanswer");
+	int newformnum=0;
+
+                Vector v;
+                v = FormList.getIndItem(con, Sformnum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FormList t = (FormList) v.elementAt(i);
+                      	int formnum = t.getFormNum();
+                        String formname = t.getFormName();
+			String formdesc = t.getFormDesc();
+
+			CustFormList.AddItem(con, custsite,sitenum,formdate,username,formname,formdesc);
+			Vector vm;
+			vm = CustFormList.getMaxItem(con);
+			for (int im = 0 ; im < vm.size(); im++)
+				{
+				CustFormList tm = (CustFormList) vm.elementAt(im);
+				newformnum=tm.getFormNum();
+				}
+
+
+
+		Vector vp;
+                vp = FormParts.getAllItems(con,""+formnum+"");
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                FormParts tp = (FormParts) vp.elementAt(j);
+			formnum=tp.getFormNum();
+			String formquestion=tp.getFormQuestion();
+			CustFormParts.AddItem(con, custsite, sitenum, ""+newformnum+"", formquestion, formanswer);
+			}
+
+                }
+
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&csection=7");
+	}
+
 private void doUploadForms(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
@@ -7994,6 +8062,17 @@ private void doAddForm(HttpServletRequest req, HttpServletResponse res, PrintWri
 		con.close();
 	}
 
+  private void doDeleteCustForm (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
+                throws Exception
+        {
+	String formnum = req.getParameter("formnum");
+	String custnum = req.getParameter("custnum");
+        CustFormParts.DeleteAllItems(con, formnum);
+	CustFormList.DeleteItem(con,formnum);
+		con.close();
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+custnum+"&csection=7");
+	}
+
   private void doDeleteForm (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
                 throws Exception
         {
@@ -8018,8 +8097,13 @@ private void doAddForm(HttpServletRequest req, HttpServletResponse res, PrintWri
   private void doShowForms (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
                 throws Exception
         {
+		String action = req.getParameter("action");
+		String custsite=req.getParameter("custsite");
+		String sitenum=req.getParameter("sitenum");
+		String custnum=req.getParameter("custnum");
+
                 out.println("<html><head><title>Show Forms</title></head><body><h1>Available Forms</h1><table width=95% border=0><br><br><br>");
-                out.println("<tr>");
+                out.println("<br>action called: "+action+"<br><tr>");
                 out.println("<th align=\"left\">FormName</th><th align=\"left\">Form Description</th><th align=\"left\">");
                 out.println("</tr>");
 
@@ -8032,13 +8116,22 @@ private void doAddForm(HttpServletRequest req, HttpServletResponse res, PrintWri
                         String formname = t.getFormName();
 			String formdesc = t.getFormDesc();
                         out.println("<td>");
+			if (action.equalsIgnoreCase("configforms"))
+			{
                         out.println("<a href="+classdir+"UniCash?action=editform&formnum="+formnum+">"+formname+"</a></td><td>"+formdesc+"</td><td><a href="+classdir+"UniCash?action=deleteform&formnum="+formnum+">Delete</a></td>");
+			} else if (action.equalsIgnoreCase("addcustform"))
+			{
+                        out.println("<a href="+classdir+"UniCash?action=copyformtocust&formnum="+formnum+"&custsite="+custsite+"&sitenum="+sitenum+"&custnum="+custnum+">"+formname+"</a></td><td>"+formdesc+"</td>");
+			}
                         out.println("</tr>");
                 }
 
                 out.println("</table><br><br>");
+			if (action.equalsIgnoreCase("configforms"))
+			{
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=addform>Add a Form</a></body></html>");
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=uploadallforms>Upload to Main Server (NEED INTERNET CONNECT)</a></body></html>");
+			}
 			con.close();
         }
 

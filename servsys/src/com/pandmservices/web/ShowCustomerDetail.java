@@ -457,6 +457,33 @@ public class ShowCustomerDetail
 	out.println("<P><P>");
 
 	} else if (csection.equalsIgnoreCase("7")) {
+
+
+	out.println("<br><h3>Customer Forms</h3>");
+	
+	Vector vv;
+	vv = CustFormList.getAllItems(con,custsite, sitenum);
+	out.println("<table border=1 width=100%>");
+	out.println("<th>Form #</th><th>Date</th><th>Form Name</th><th>User</th><th>Form Description</th><th>Print</th><th>Email</th>");
+	counter=0;
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		CustFormList tt = (CustFormList) vv.elementAt(i);
+		String formname=tt.getFormName();
+		String fusername=tt.getUserName();
+		String formdesc=tt.getFormDesc();
+		int formnum=tt.getFormNum();
+		String formdate=doFormatDate(getDate(tt.getFormDate()));
+		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editcustform&formnum="+formnum+"&&custnum="+qcustnum+"\">"+formnum+"</a></td><td>"+formdate+"</td><td>"+formname+"</td><td>"+fusername+"</td><td>"+formdesc+"</td><td><a href="+classdir+"UniCash?action=printcustform&formnum="+formnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=sendsingleform&formnum="+formnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
+		//DELETE LINK	
+		if (AllowDelete==1) {
+			out.println("<td><a href="+classdir+"UniCash?action=delcustformrec&custnum="+custnum+"&formnum="+formnum+">Delete</a></td>");
+		}
+		out.println("</tr>");
+	}
+	out.println("</table><br><br>");
+	out.println("<a href="+classdir+"UniCash?action=addcustform&custnum="+custnum+"&custsite="+custsite+"&sitenum="+sitenum+">Add Form to Customer File</a>");
+
 	out.println("<h3>Site Survey</h3>");
 	Statement stmt5 = con.createStatement();
 	ResultSet rs5 = stmt5.executeQuery("SELECT * FROM custsurvey where custnum="+custnum+"");
@@ -495,12 +522,7 @@ public class ShowCustomerDetail
 		cdate=doFormatDate(getDate(tcdate));
 		creason=rscm.getString("reason");
 		
-		if (action.equalsIgnoreCase("showcustdetail_ide"))
-		{
-			out.println("<tr><td><a href="+classdir+"UniCash?action=editcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td><a href="+classdir+"UniCash?action=printcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecheckme&csrec="+ccrecnum+"&custnum="+ccustnum+">Email</a></td>");
-		} else {
 			out.println("<tr><td><a href="+classdir+"UniCash?action=editcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+"&callslip="+ccallslip+">"+ccallslip+"</a></td><td>"+cdate+"</td><td>"+creason+"</td><td><a href="+classdir+"UniCash?action=printcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Print Format</a></td><td><a href="+classdir+"UniCash?action=sendsinglecheckme&csrec="+ccrecnum+"&custnum="+ccustnum+" target=\"_blank\">Email</a></td>");
-		}
 		//DELETE LINK
 		if (AllowDelete==1) {
 			out.println("<td><a href="+classdir+"UniCash?action=delcheckme&crecnum="+ccrecnum+"&custnum="+ccustnum+">D</a>elete<td>");
@@ -510,10 +532,10 @@ public class ShowCustomerDetail
 	out.println("</table><br><br>");
 	
 	out.println("<a href="+classdir+"UniCash?action=addcheckme&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Equipment Check to Customer File</a>");
+
 	}
 	con.close();
 	return "true";
-	
 }
 	
 	

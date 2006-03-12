@@ -120,7 +120,7 @@ public class FlatRateTable
 	{	
 		Vector V = new Vector();
 		Statement stmt = c.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table where category >= '"+servicestart+"' order by category, part");
+		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table where category >= '"+servicestart+"' order by part");
 		while(rs.next())
 		{
 			
@@ -143,7 +143,7 @@ public class FlatRateTable
 		String newcat = rsc.getString("category");
 
 
-		ResultSet rs = stmt.executeQuery("SELECT code FROM flat_rate_table where category='"+newcat+"' order by category");
+		ResultSet rs = stmt.executeQuery("SELECT code, part FROM flat_rate_table where category='"+newcat+"' order by part");
 		while(rs.next())
 		{
 			
