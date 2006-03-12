@@ -185,6 +185,7 @@ public class MainMenu extends UniCash
 	if (menu.equalsIgnoreCase("update")) {
 		if (thismainserver.equalsIgnoreCase("no")) {
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updateinvkeycodetable target=phpmain>KeyCode Table</a><br>");
+        mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updateforms target=phpmain>Customer Forms</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updateflatrateprices target=phpmain>Flat Rates</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=updatepsprices target=phpmain>Planned Service</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadfrconfig target=phpmain>Flat Rate Config</a><br>");

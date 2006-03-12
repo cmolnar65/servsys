@@ -18,6 +18,7 @@
 =================================================================
 RELEASE 2.14
 =================================================================
+(N) Will now sync forms to and from server
 (N) Added form configuration - add, delete, edit forms and questions.
 (N) Added MainMenu class - seperater out the doMenu from the main UniCash class.
 (N) Added ShowCustDetail class - seperated out ShowCustDetail from the main UniCash class.

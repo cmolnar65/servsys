@@ -419,6 +419,14 @@ out.println("</CENTER>");
 	                        {
                                 doUpdateMasterWorkSheets(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("uploadallforms"))
+	                        {
+                                doUploadForms(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("updateforms"))
+	                        {
+                                doUpdateForms(req, res, out, session, username);
+				}
                         else if (action.equalsIgnoreCase("updateexpiredate"))
 	                        {
                                 doUpdateExpireDate(req, res, out, session, username);
@@ -7728,6 +7736,110 @@ out.println("<p><br><a href="+classdir+"UniCash?action=uploadpackagelist>Update 
         }
 
 
+private void doUpdateForms(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		Connection con2 = null;
+		String dbserver=doGetMainServer();
+		String dbpasswd=doGetMainPassword();
+		String dbuser=doMainDbUser();
+		String dbname=doMainDbName();
+		String protocol = (String) config.getInitParameter("db.protocol");
+		String subProtocol = (String) config.getInitParameter("db.subprotocol");
+		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
+
+// Check Connectivity
+			Statement stmtu = con.createStatement();
+			ResultSet rsu = stmtu.executeQuery("SELECT * FROM users");
+// Drop Remote Tables
+			Statement stmt = con2.createStatement();
+			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
+			result=stmtu.executeUpdate("DROP TABLE IF EXISTS formparts;");
+// Rebuild Remote Tables
+			result=stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
+			result=stmtu.executeUpdate("CREATE TABLE formlist (formnum int(11) NOT NULL auto_increment, formname text, formdescription text, PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum));");
+			result=stmtu.executeUpdate("DROP TABLE IF EXISTS formparts;");
+			result=stmtu.executeUpdate("CREATE TABLE formparts (recnum int(11) not null auto_increment, formnum int(11), formquestion text, primary key (recnum), unique key recnum(recnum));");
+
+
+                Vector v;
+                v = FormList.getAllItems(con2);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FormList t = (FormList) v.elementAt(i);
+                      	int formnum = t.getFormNum();
+                        String formname = t.getFormName();
+			String formdesc = t.getFormDesc();
+
+			FormList.AddItem(con, formname, formdesc);
+
+		Vector vp;
+                vp = FormParts.getAllItems(con2,""+formnum+"");
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                FormParts tp = (FormParts) vp.elementAt(j);
+			formnum=tp.getFormNum();
+			String formquestion=tp.getFormQuestion();
+			FormParts.AddItem(con, ""+formnum+"", formquestion);
+			}
+
+                }
+        res.sendRedirect(""+classdir+"UniCash?action=top");
+
+	}
+
+private void doUploadForms(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		Connection con2 = null;
+		String dbserver=doGetMainServer();
+		String dbpasswd=doGetMainPassword();
+		String dbuser=doMainDbUser();
+		String dbname=doMainDbName();
+		String protocol = (String) config.getInitParameter("db.protocol");
+		String subProtocol = (String) config.getInitParameter("db.subprotocol");
+		con2 = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
+
+// Check Connectivity
+			Statement stmtu = con2.createStatement();
+			ResultSet rsu = stmtu.executeQuery("SELECT * FROM users");
+// Drop Remote Tables
+			Statement stmt = con.createStatement();
+			int result=stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
+			result=stmtu.executeUpdate("DROP TABLE IF EXISTS formparts;");
+// Rebuild Remote Tables
+			result=stmtu.executeUpdate("DROP TABLE IF EXISTS formlist;");
+			result=stmtu.executeUpdate("CREATE TABLE formlist (formnum int(11) NOT NULL auto_increment, formname text, formdescription text, PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum));");
+			result=stmtu.executeUpdate("DROP TABLE IF EXISTS formparts;");
+			result=stmtu.executeUpdate("CREATE TABLE formparts (recnum int(11) not null auto_increment, formnum int(11), formquestion text, primary key (recnum), unique key recnum(recnum));");
+
+
+                Vector v;
+                v = FormList.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	FormList t = (FormList) v.elementAt(i);
+                      	int formnum = t.getFormNum();
+                        String formname = t.getFormName();
+			String formdesc = t.getFormDesc();
+
+			FormList.AddItem(con2, formname, formdesc);
+
+		Vector vp;
+                vp = FormParts.getAllItems(con,""+formnum+"");
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                FormParts tp = (FormParts) vp.elementAt(j);
+			formnum=tp.getFormNum();
+			String formquestion=tp.getFormQuestion();
+			FormParts.AddItem(con2, ""+formnum+"", formquestion);
+			}
+
+                }
+
+        res.sendRedirect(""+classdir+"UniCash?action=configforms");
+	}
+
 private void doSaveFormQuestion(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
              {
@@ -7926,7 +8038,7 @@ private void doAddForm(HttpServletRequest req, HttpServletResponse res, PrintWri
 
                 out.println("</table><br><br>");
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=addform>Add a Form</a></body></html>");
-		out.println("<br><br><br><a href="+classdir+"UniCash?action=uploadform>Upload to Main Server (NEED INTERNET CONNECT)</a></body></html>");
+		out.println("<br><br><br><a href="+classdir+"UniCash?action=uploadallforms>Upload to Main Server (NEED INTERNET CONNECT)</a></body></html>");
 			con.close();
         }
 
