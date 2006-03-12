@@ -7784,7 +7784,7 @@ private void doUpdateForms(HttpServletRequest req, HttpServletResponse res, Prin
 			}
 
                 }
-        res.sendRedirect(""+classdir+"UniCash?action=top");
+        res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
 
 	}
 
