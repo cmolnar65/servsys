@@ -16,8 +16,19 @@
   appropriate people.
 
 =================================================================
+RELEASE 2.15
+=================================================================
+(N) Added forms to customer file - can now add a form
+(N) Added forms to showcustdetail display. Added to screen-tab 7 (other)
+(N) Added Customer Form File
+(N) Editing and completion of forms is now available.
+(N) Delete forms now works as well.
+
+
+=================================================================
 RELEASE 2.14
 =================================================================
+(F) Fixed flat rate display - alphabetical order
 (N) Will now sync forms to and from server
 (N) Added form configuration - add, delete, edit forms and questions.
 (N) Added MainMenu class - seperater out the doMenu from the main UniCash class.

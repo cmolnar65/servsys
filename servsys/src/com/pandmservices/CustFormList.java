@@ -89,7 +89,7 @@ public class CustFormList
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Delete from formlist Where formnum=" + formnum + ";");
+      		stmt.executeUpdate("Delete from custformlist Where formnum=" + formnum + ";");
       	}
 
 

@@ -584,6 +584,10 @@ out.println("</CENTER>");
 	                        {
                                 doDeleteCustForm(req, res, out, username);
 				}
+                        else if (action.equalsIgnoreCase("deletecustform"))
+	                        {
+                                doDeleteCustForm(req, res, out, username);
+				}
                         else if (action.equalsIgnoreCase("deleteform"))
 	                        {
                                 doDeleteForm(req, res, out, username);
@@ -1438,6 +1442,14 @@ out.println("</CENTER>");
 			else if (action.equalsIgnoreCase("saveproposal"))
 	                        {
                                 doSaveProposal(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("editcustform"))
+	                        {
+                                doEditCForms(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("updatecustformquestion"))
+	                        {
+                                doEditCForms(req, res, out, session, username);
 	                        }
 			else if (action.equalsIgnoreCase("showcustdetail"))
 	                        {
@@ -5557,7 +5569,15 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.14";
+			vnumber = "2.15";
+		if (dbvnumber.equalsIgnoreCase("2.14")) {
+			Statement stmtu2 = con.createStatement();
+int result215a=stmtu2.executeUpdate("DROP TABLE IF EXISTS custformlist;");
+int result215b=stmtu2.executeUpdate("CREATE TABLE custformlist (formnum int(11) NOT NULL auto_increment, custsite text, sitenum text, formdate date default '2001-01-01', formname text, formdescription text, username text,  PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum));");
+int result215c=stmtu2.executeUpdate("DROP TABLE IF EXISTS custformparts;");
+int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) not null auto_increment, formnum int(11), custsite text, sitenum text,  formquestion text, formanswer text, primary key (recnum), unique key recnum(recnum));");
+			int result215e = stmtu2.executeUpdate("UPDATE version set vnumber='2.15';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.13")) {
 			Statement stmtu2 = con.createStatement();
 			int result214a=stmtu2.executeUpdate("DROP TABLE IF EXISTS formlist;");
@@ -5565,7 +5585,6 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result214c=stmtu2.executeUpdate("DROP TABLE IF EXISTS formparts;");
 			int result214d=stmtu2.executeUpdate("CREATE TABLE formparts (recnum int(11) not null auto_increment, formnum int(11), formquestion text, primary key (recnum), unique key recnum(recnum));");
 			int result214e = stmtu2.executeUpdate("UPDATE version set vnumber='2.14';");
-
 		}
 		if (dbvnumber.equalsIgnoreCase("2.12")) {
 			Statement stmtu2 = con.createStatement();
@@ -17877,6 +17896,43 @@ private void doWsToProposalOpt(HttpServletRequest req, HttpServletResponse res, 
 		con.close();
 	}
 
+private void doEditCForms(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		throws Exception
+        {
+		String tcustnum = req.getParameter("custnum");
+		String custstart = req.getParameter("custstart");
+		String custstop = req.getParameter("custstop");
+		String action = req.getParameter("action");
+		String csection = req.getParameter("csection");
+		String formnum = req.getParameter("formnum");
+		String questionnum=req.getParameter("questionnum");
+		String savenext=req.getParameter("save_next");
+		String formquestion=req.getParameter("formquestion");
+		String formanswer = req.getParameter("formanswer");
+		String recnum=req.getParameter("recnum");
+		int iquestionnum=Integer.parseInt(questionnum);
+		if (action.equalsIgnoreCase("updatecustformquestion"))
+		{
+			if (savenext.equalsIgnoreCase("Save-Next")) {
+				CustFormParts.UpdateItem(con,recnum,formnum,formquestion,formanswer);
+		iquestionnum++;	
+		String n = EditCustomerForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection, formnum, ""+iquestionnum+"");
+			} else 
+				if (savenext.equalsIgnoreCase("Save-Prev")) {
+				CustFormParts.UpdateItem(con,recnum,formnum,formquestion,formanswer);
+		iquestionnum--;
+		String n = EditCustomerForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection, formnum, ""+iquestionnum+"");
+		} else if (savenext.equalsIgnoreCase("Exit")) {
+			CustFormParts.UpdateItem(con,recnum,formnum,formquestion,formanswer);
+        		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&custnum="+tcustnum+"&csection=7");
+			}
+		}
+		if (action.equalsIgnoreCase("editcustform")) {
+		String n = EditCustomerForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection, formnum, ""+iquestionnum+"");
+		}	
+
+		}
+
 private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 		throws Exception
         {
@@ -17888,9 +17944,7 @@ private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, P
 		if (csection==null) {
 		       csection="1";
 		}	       
-		
 		String n = ShowCustomerDetail.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection);
-		
 		}
 
 

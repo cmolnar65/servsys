@@ -34,6 +34,21 @@ public class CustFormParts
 	}
 
 
+	public static Vector getIndItem(Connection c, String formnum, String recnum)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM custformparts where recnum="+recnum+";");
+		while(rs.next())
+		{
+			
+			CustFormParts t = new CustFormParts(c,rs.getInt("recnum"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
 	public static Vector getIndItem(Connection c, String recnum)
 		throws SQLException, TodoException
 	{	
@@ -97,5 +112,6 @@ public class CustFormParts
         public int getFormNum() { return formnum; }
         public int getRecNum() { return recnum; }
         public String getFormQuestion() { return formquestion; }
+	public String getFormAnswer() { return formanswer; }
 
 }

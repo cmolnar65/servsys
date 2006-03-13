@@ -474,7 +474,7 @@ public class ShowCustomerDetail
 		String formdesc=tt.getFormDesc();
 		int formnum=tt.getFormNum();
 		String formdate=doFormatDate(getDate(tt.getFormDate()));
-		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editcustform&formnum="+formnum+"&&custnum="+qcustnum+"\">"+formnum+"</a></td><td>"+formdate+"</td><td>"+formname+"</td><td>"+fusername+"</td><td>"+formdesc+"</td><td><a href="+classdir+"UniCash?action=printcustform&formnum="+formnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=sendsingleform&formnum="+formnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
+		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editcustform&formnum="+formnum+"&custnum="+custnum+"&questionnum=0\">"+formnum+"</a></td><td>"+formdate+"</td><td>"+formname+"</td><td>"+fusername+"</td><td>"+formdesc+"</td><td><a href="+classdir+"UniCash?action=printcustform&formnum="+formnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=sendsingleform&formnum="+formnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
 		//DELETE LINK	
 		if (AllowDelete==1) {
 			out.println("<td><a href="+classdir+"UniCash?action=delcustformrec&custnum="+custnum+"&formnum="+formnum+">Delete</a></td>");
