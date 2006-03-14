@@ -600,6 +600,10 @@ out.println("</CENTER>");
 	                        {
                                 doAddForm(req, res, out, session, username);
 				}
+                        else if (action.equalsIgnoreCase("printcustform"))
+	                        {
+                                doPrintCustForm(req, res, out, session, username);
+				}
                         else if (action.equalsIgnoreCase("addform"))
 	                        {
 				adminok = req.getParameter("adminok");
@@ -8113,6 +8117,93 @@ private void doAddForm(HttpServletRequest req, HttpServletResponse res, PrintWri
         res.sendRedirect(""+classdir+"UniCash?action=editform&formnum="+formnum+"");
 	}
 
+
+private void doPrintCustForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+	Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("MM-dd-yyyy");
+        String s = formatter.format(date);
+        int hour = now.get(Calendar.HOUR_OF_DAY); 
+        int second = now.get(Calendar.SECOND);
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int minute = now.get(Calendar.MINUTE);
+        int millisecond = now.get(Calendar.MILLISECOND);
+	String tcustnum = req.getParameter("custnum");
+	String formnum = req.getParameter("formnum");
+        int custnum = Integer.parseInt(tcustnum);
+	String cname=null;
+	String address1=null;
+	String address2=null;
+	String city =null;
+	String state=null;
+	String zip=null;
+	String homephone=null;
+	String altphone=null;
+	String cust_notes=null;
+	String etype="";
+		
+	String tech_init = doGetTechInfo_init(username);
+	String tech_name = doGetTechInfo_name(username);
+	String tech_truck = doGetTechInfo_truck(username);
+
+	out.println("<html><basefont size=-1>");
+	out.println("<html><head><title>AC Cover Disclaimer</title></head>");
+	doMHeader(req, res, out, session, username);
+
+ 	Statement stmt = con.createStatement();
+	ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
+		 while(rs.next())
+                {
+	cname=rs.getString("cname");
+	address1=rs.getString("address1");
+	address2=rs.getString("address2");
+	city =rs.getString("city");
+	state=rs.getString("state");
+	zip=rs.getString("zip");
+	homephone=rs.getString("homephone");
+	altphone=rs.getString("altphone");
+	cust_notes=rs.getString("cust_notes");
+	}	
+	out.println("<table width=\"100%\"><tr>");
+	out.println("<td width=\"50%\">");
+	out.println("<b>Customer:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;"+cname+"<br>&nbsp;&nbsp;&nbsp;&nbsp;"+address1+"<br>&nbsp;&nbsp;&nbsp;&nbsp;"+city+","+state+" ");
+	out.println("</td>");
+	out.println("<td>Dated: "+s+"</td></tr>");
+	out.println("</table>");
+
+                		Vector vf;
+                		vf = CustFormList.getIndItem(con, formnum);
+                       			CustFormList tf = (CustFormList) vf.elementAt(0);
+                        		String formname = tf.getFormName();
+					String userid = tf.getUserName();
+
+	tech_name = doGetTechInfo_name(userid);
+	out.println("<h4><ul>"+formname+"</ul></h4><br>");
+
+
+		Vector vp;
+                vp = CustFormParts.getAllItems(con,formnum);
+                for (int j = 0 ; j < vp.size(); j++)
+                {
+                CustFormParts tp = (CustFormParts) vp.elementAt(j);
+	out.println("<table width=\"75%\"><tr><td>"+tp.getFormQuestion());
+	out.println("</td></tr>");
+	out.println("<tr><td>"+tp.getFormAnswer());
+	out.println("</td></tr></table>");
+		}
+
+
+	out.println("<P></p><br><br>");
+	out.println("<table border=0><tr><td>Completed By:</td><td>"+tech_name+"</td>");
+	out.println("</tr></font></table>");
+	out.println("</body>");
+	out.println("</html>");
+		con.close();
+}
   private void doShowForms (HttpServletRequest req, HttpServletResponse res, PrintWriter out, String username)
                 throws Exception
         {

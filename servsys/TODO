@@ -18,6 +18,7 @@
 =================================================================
 RELEASE 2.15
 =================================================================
+(N) Added print to customer forms
 (N) Added forms to customer file - can now add a form
 (N) Added forms to showcustdetail display. Added to screen-tab 7 (other)
 (N) Added Customer Form File
