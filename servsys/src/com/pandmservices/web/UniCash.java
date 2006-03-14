@@ -5580,7 +5580,8 @@ int result215a=stmtu2.executeUpdate("DROP TABLE IF EXISTS custformlist;");
 int result215b=stmtu2.executeUpdate("CREATE TABLE custformlist (formnum int(11) NOT NULL auto_increment, custsite text, sitenum text, formdate date default '2001-01-01', formname text, formdescription text, username text,  PRIMARY KEY  (formnum), UNIQUE KEY formnum (formnum));");
 int result215c=stmtu2.executeUpdate("DROP TABLE IF EXISTS custformparts;");
 int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) not null auto_increment, formnum int(11), custsite text, sitenum text,  formquestion text, formanswer text, primary key (recnum), unique key recnum(recnum));");
-			int result215e = stmtu2.executeUpdate("UPDATE version set vnumber='2.15';");
+			int result215e = stmtu2.executeUpdate("alter table custformlist add servsync int(11) after username");
+			int result215f = stmtu2.executeUpdate("UPDATE version set vnumber='2.15';");
 		}
 		if (dbvnumber.equalsIgnoreCase("2.13")) {
 			Statement stmtu2 = con.createStatement();
