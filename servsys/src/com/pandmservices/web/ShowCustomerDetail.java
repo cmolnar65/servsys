@@ -395,7 +395,7 @@ public class ShowCustomerDetail
 	Vector vv;
 	vv = UniQuotes.getAllItems(con,intcustnum);
 	out.println("<table border=1 width=100%>");
-	out.println("<th>Proposal #</th><th>Date</th><th>Summary</th><th>Cost</th><th>Status</th><th>Print</th><th>Email</th>");
+	out.println("<th>Proposal #</th><th>Date</th><th>Summary</th><th>Cost</th><th>Status</th><th>Print</th><th>Compare</th><th>Email</th>");
 	counter=0;
 	for (int i = 0 ; i < vv.size(); i++)
 	{
@@ -415,7 +415,7 @@ public class ShowCustomerDetail
 			totinvestment=totinvestment+ptotal;
 		}
 		
-		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editproposal&quotenum="+propnum+"&&custnum="+qcustnum+"\">"+propnum+"</a></td><td>"+pdate+"</td><td>"+psummary+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"</td><td><a href="+classdir+"UniCash?action=printproposal&propnum="+propnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=sendsingleproposals&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
+		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editproposal&quotenum="+propnum+"&&custnum="+qcustnum+"\">"+propnum+"</a></td><td>"+pdate+"</td><td>"+psummary+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"</td><td><a href="+classdir+"UniCash?action=printproposal&propnum="+propnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=printcompare&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Compare</a></td><td><a href="+classdir+"UniCash?action=sendsingleproposals&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
 		
 		//DELETE LINK	
 		if (AllowDelete==1) {

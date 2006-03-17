@@ -1078,6 +1078,10 @@ out.println("</CENTER>");
 	                        {
                                 doPrintServProposal(req, res, out, session, username);
 				}
+			else if (action.equalsIgnoreCase("printcompare"))
+	                        {
+                               doShowPropCompair(req, res, out, session, username);
+				}
 			else if (action.equalsIgnoreCase("printproposal"))
 	                        {
                                 doPrintProposal(req, res, out, session, username);
@@ -5252,7 +5256,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                         return partmult;                       
         }
 
-	public String doGetPropPrice()
+	public static String doGetPropPrice()
         throws Exception
         {
                 Vector v;
@@ -5573,7 +5577,11 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.15";
+			vnumber = "2.16";
+		if (dbvnumber.equalsIgnoreCase("2.15")) {
+			Statement stmtu2 = con.createStatement();
+			int result216a = stmtu2.executeUpdate("UPDATE version set vnumber='2.16';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.14")) {
 			Statement stmtu2 = con.createStatement();
 int result215a=stmtu2.executeUpdate("DROP TABLE IF EXISTS custformlist;");
@@ -16089,7 +16097,7 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 		con.close();
 	}
 
-  public void doMHeader(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+  public static void doMHeader(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
 		String imagename = null;
@@ -18023,6 +18031,21 @@ private void doEditCForms(HttpServletRequest req, HttpServletResponse res, Print
 		String n = EditCustomerForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection, formnum, ""+iquestionnum+"");
 		}	
 
+		}
+
+private void doShowPropCompair(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		throws Exception
+        {
+		String tcustnum = req.getParameter("custnum");
+		String custstart = req.getParameter("custstart");
+		String custstop = req.getParameter("custstop");
+		String propnum = req.getParameter("csrec");
+		String action = req.getParameter("action");
+		String csection = req.getParameter("csection");
+		if (csection==null) {
+		       csection="1";
+		}	       
+		String n = PackageCompare.getIndividualItem (con, req, res, out, session, username, classdir, action, propnum, tcustnum);
 		}
 
 private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -26293,7 +26316,7 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		qtotal=tx.getQuoteTotal();
 		double subtot=Double.parseDouble(tx.getInvestment())*itemquant;
 		ototinvestment=ototinvestment+subtot;
-		out.println("<li>"+itemname+"; "+mannum+"</li>");
+		out.println("<li>"+itemname+"</li>");
 		}
 	out.println("</ul><br>");
 
