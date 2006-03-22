@@ -24,6 +24,7 @@ public class UniQuotes
 	private String custsite=null;
 	private String sitenum=null;
 	private String techid=null;
+	private int combineopts=0;
 	private int servsync;
     
 
@@ -52,6 +53,7 @@ public class UniQuotes
 		this.sitenum=rs.getString("sitenum");
 		this.techid=rs.getString("techid");
 		this.servsync=rs.getInt("servsync");
+		this.combineopts=rs.getInt("combineopts");
 	}
 
 
@@ -128,20 +130,21 @@ public class UniQuotes
 	}
 	  
 
-	public static void UpdateItem(Connection con, int quotenum, int crecnum, String qdate, String qdescription, String qpayterms, String qnotes,String qdisc, String qadditionalserv, String qstatus, String solddate, String jobnum,String antstart )
+	public static void UpdateItem(Connection con, int quotenum, int crecnum, String qdate, String qdescription, String qpayterms, String qnotes,String qdisc, String qadditionalserv, String qstatus, String solddate, String jobnum,String antstart, int combineopts )
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
 	String tqnotes = qnotes.replaceAll("'","''");
-      		stmt.executeUpdate("Update quotes Set crecnum='" +crecnum+ "',qdate = '"+qdate+"',qdescription = '"+qdescription +"',qpayterms = '"+qpayterms +"',qnotes = '"+tqnotes +"', qdisc = '"+qdisc+"', qadditionalserv='"+qadditionalserv+"', status='"+qstatus+"', solddate='"+solddate+"', jobnum='"+jobnum+"', antstart='"+antstart+"', servsync='9' Where quotenum=" + quotenum + ";");
+      		//stmt.executeUpdate("Update quotes Set crecnum='" +crecnum+ "',qdate = '"+qdate+"',qdescription = '"+qdescription +"',qpayterms = '"+qpayterms +"',qnotes = '"+tqnotes +"', qdisc = '"+qdisc+"', qadditionalserv='"+qadditionalserv+"', status='"+qstatus+"', solddate='"+solddate+"', jobnum='"+jobnum+"', antstart='"+antstart+"', servsync='0', combineopts='"+combineopts+"' Where quotenum=" + quotenum + ";");
+      		stmt.executeUpdate("Update quotes Set crecnum='" +crecnum+ "',qdate = '"+qdate+"',qdescription = '"+qdescription +"',qpayterms = '"+qpayterms +"',qnotes = '"+tqnotes +"', qdisc = '"+qdisc+"', qadditionalserv='"+qadditionalserv+"', status='"+qstatus+"', solddate='"+solddate+"', jobnum='"+jobnum+"', antstart='"+antstart+"', combineopts='"+combineopts+"' Where quotenum=" + quotenum + ";");
       	}
 
-public static void AddItem(Connection con, int crecnum, String qdate, String qdescription, String qpayterms, String qnotes, String qdisc, String qadditionalserv, String qstatus, String solddate, String antstart, String custsite, String sitenum, String techid, int servsync)
+public static void AddItem(Connection con, int crecnum, String qdate, String qdescription, String qpayterms, String qnotes, String qdisc, String qadditionalserv, String qstatus, String solddate, String antstart, String custsite, String sitenum, String techid, int servsync, int combineopts)
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
 			String tqnotes = qnotes.replaceAll("'","''");
-	                stmt.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync) Values ('"+crecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"' )");
+	                stmt.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync, combineopts) Values ('"+crecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"', '"+combineopts+"' )");
 		        }
 
         public int getId() { return id; }
@@ -162,4 +165,5 @@ public static void AddItem(Connection con, int crecnum, String qdate, String qde
 	public String getSiteNum() { return sitenum; }
 	public String getTechId() { return techid; }
 	public int getServSync() { return servsync; }
+	public int getCombineOpts() { return combineopts; }
 }

@@ -305,6 +305,18 @@ out.println("</CENTER>");
 	                        {
                                 doEditCustomer(req, res, out, session, username);
 	                        }
+			else if (action.equalsIgnoreCase("savepackagecompareform"))
+	                        {
+                                doSavePackageCompare(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("delpackcomprec"))
+	                        {
+                                doDelPackageCompare(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("addpackcompare"))
+	                        {
+                                doAddPackCompare(req, res, out, session, username);
+	                        }
 			else if (action.equalsIgnoreCase("addsurvey"))
 	                        {
                                 doAddSurvey(req, res, out, session, username);
@@ -414,6 +426,10 @@ out.println("</CENTER>");
                         else if (action.equalsIgnoreCase("updatephone_list"))
 	                        {
                                 doUpdatePhoneList(req, res, out, session, username);
+				}
+                        else if (action.equalsIgnoreCase("updatemainworksheet"))
+	                        {
+                                doUpdateMainWorksheet(req, res, out, session, username);
 				}
                         else if (action.equalsIgnoreCase("updatemasterworksheet"))
 	                        {
@@ -1077,6 +1093,10 @@ out.println("</CENTER>");
 			else if (action.equalsIgnoreCase("printservproposal"))
 	                        {
                                 doPrintServProposal(req, res, out, session, username);
+				}
+			else if (action.equalsIgnoreCase("printcompareform"))
+	                        {
+                               doPrintPackageCompare(req, res, out, session, username);
 				}
 			else if (action.equalsIgnoreCase("printcompare"))
 	                        {
@@ -5577,7 +5597,18 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.16";
+			vnumber = "2.18";
+		if (dbvnumber.equalsIgnoreCase("2.17")) {
+			Statement stmtu2 = con.createStatement();
+			int result218a = stmtu2.executeUpdate("alter table quotes add combineopts tinyint(4) default 0 after techid");
+			int result218b = stmtu2.executeUpdate("UPDATE quotes set combineopts='0';");
+			int result218c = stmtu2.executeUpdate("UPDATE version set vnumber='2.18';");
+		}
+		if (dbvnumber.equalsIgnoreCase("2.16")) {
+			Statement stmtu2 = con.createStatement();
+			int result217a = stmtu2.executeUpdate("create table packcompare (recnum int(11) not null auto_increment, description text, packdate date default '2001-01-01', custsitenum text, sitenum text, username text, best1 int(11), best2 int(11), best3 int(11), best4 int(11), best5 int(11),better1 int(11), better2 int(11), better3 int(11), better4 int(11), better5 int(11),good1 int(11), good2 int(11), good3 int(11), good4 int(11), good5 int(11), desc1 text, desc2 text, desc3 text, primary key (recnum), unique key recnum(recnum));");
+			int result217b = stmtu2.executeUpdate("UPDATE version set vnumber='2.17';");
+		}
 		if (dbvnumber.equalsIgnoreCase("2.15")) {
 			Statement stmtu2 = con.createStatement();
 			int result216a = stmtu2.executeUpdate("UPDATE version set vnumber='2.16';");
@@ -5662,7 +5693,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
                 //        vdate  = t.getVDate();
                // }
 //RELEASE_DATE			
-			vdate="2006-03-01";
+			vdate="2006-03-21";
 
                         return vdate;                       
         }
@@ -17932,6 +17963,7 @@ private void doWsToProposalOpt(HttpServletRequest req, HttpServletResponse res, 
 		String printorder=req.getParameter("printorder");
 
 		int pcontnum=0;
+		int combineopts=0;
 		int counter=0;
 		double totinvestment=0.00;
 		String pcustnum=null;
@@ -17972,6 +18004,8 @@ private void doWsToProposalOpt(HttpServletRequest req, HttpServletResponse res, 
 		psummary=tt.getQDescription();
 		qstatus=tt.getQStatus();
 		totinvestment=0.00;
+		combineopts=tt.getCombineOpts();
+
                 Vector vp;
                 vp = UniQuoteParts.getAllItems(con,propnum);
                 for (int j = 0 ; j < vp.size(); j++)
@@ -18033,6 +18067,21 @@ private void doEditCForms(HttpServletRequest req, HttpServletResponse res, Print
 
 		}
 
+private void doPrintPackageCompare(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		throws Exception
+        {
+		String tcustnum = req.getParameter("custnum");
+		String custstart = req.getParameter("custstart");
+		String custstop = req.getParameter("custstop");
+		String propnum = req.getParameter("recnum");
+		String action = req.getParameter("action");
+		String csection = req.getParameter("csection");
+		if (csection==null) {
+		       csection="6";
+		}	       
+		String n = PackageCompare2.getIndividualItem (con, req, res, out, session, username, classdir, action, propnum, tcustnum);
+		}
+
 private void doShowPropCompair(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 		throws Exception
         {
@@ -18062,6 +18111,26 @@ private void doShowCustDetail(HttpServletRequest req, HttpServletResponse res, P
 		String n = ShowCustomerDetail.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custstart, custstop, action, csection);
 		}
 
+
+private void doAddPackCompare(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		throws Exception
+        {
+		String tcustnum = req.getParameter("custnum");
+		String custsitenum = req.getParameter("custsitenum");
+		String sitenum = req.getParameter("sitenum");
+		String action = req.getParameter("action");
+		String csection = req.getParameter("csection");
+
+	Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String packdate = formatter.format(date);
+		if (csection==null) {
+		       csection="1";
+		}	       
+		String n = AddPackCompareForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custsitenum, sitenum, packdate);
+		}
 
 private void doEditEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -21768,9 +21837,25 @@ private void doDeleteMasterWsRecY(HttpServletRequest req, HttpServletResponse re
        		 int wsnum = Integer.parseInt(twsrec);
                 UniMasterWorksheet.deleteItem(con2, twsrec);
                 out.println("Your item has been deleted from the database<br>");
+		String thismainserver=doGetThisMainServer();
+		if (!thismainserver.equalsIgnoreCase("yes")) {
+                res.sendRedirect(""+classdir+"UniCash?action=updatemasterworksheet");
+		}
 		con.close();
 		con2.close();
-                res.sendRedirect(""+classdir+"UniCash?action=updatemasterworksheet");
+            }
+
+private void doDelPackageCompare(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String tcustnum = req.getParameter("custnum");
+       		 int custnum = Integer.parseInt(tcustnum);
+		String twsrec = req.getParameter("recnum");
+       		 int wsnum = Integer.parseInt(twsrec);
+                PackCompare.deleteItem(con, twsrec);
+                out.println("Your item has been deleted from the database<br>");
+		con.close();
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"");
             }
 
 private void doDeleteWsRecY(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -21815,6 +21900,49 @@ private void doDeleteCallslip(HttpServletRequest req, HttpServletResponse res, P
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=2&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
+		
+private void doSavePackageCompare(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String tcustnum = req.getParameter("custnum");
+       		 int custnum = Integer.parseInt(tcustnum);
+                String description = req.getParameter("description");
+                String best1 = req.getParameter("best1");
+                String best2= req.getParameter("best2");
+                String best3= req.getParameter("best3");
+                String best4= req.getParameter("best4");
+                String best5= req.getParameter("best5");
+                String better1= req.getParameter("better1");
+                String better2= req.getParameter("better2");
+                String better3= req.getParameter("better3");
+                String better4= req.getParameter("better4");
+                String better5= req.getParameter("better5");
+                String good1= req.getParameter("good1");
+                String good2= req.getParameter("good2");
+                String good3= req.getParameter("good3");
+                String good4= req.getParameter("good4");
+                String good5= req.getParameter("good5");
+                String desc1= req.getParameter("desc1");
+                String desc2= req.getParameter("desc2");
+                String desc3= req.getParameter("desc3");
+                String packdate= req.getParameter("packdate");
+
+		String CustNum=null;
+		String SiteNum=null;
+                Vector v;
+                v = UniCustomer.getIndItem(con, custnum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+			CustNum=t.getCustSite();
+			SiteNum=t.getSiteNum();
+		}
+			
+                PackCompare.AddItem(con,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3 );
+                out.println("Your item has been updated in the database<br>");
+		con.close();
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart=A&custstop=A");
+			}
 		
 private void doSaveEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -22137,6 +22265,21 @@ private void doUpdateWorksheet(HttpServletRequest req, HttpServletResponse res, 
         res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 
+	
+private void doUpdateMainWorksheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+             {
+	String trecnum = req.getParameter("contnum");
+	String wsmult = req.getParameter("wsmult");
+       	int recnum = Integer.parseInt(trecnum);
+        String wsdescription = req.getParameter("wsdescription");
+        String wsdate = req.getParameter("wsdate");
+        UniMasterWorksheet.UpdateItem(con, recnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult);
+        out.println("Your item has been updated in the database<br>");
+		con.close();
+        res.sendRedirect(""+classdir+"UniCash?action=showworksheet&recnum="+recnum+"");
+            }
+
 private void doUpdateProposal(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
              {
@@ -22145,6 +22288,7 @@ private void doUpdateProposal(HttpServletRequest req, HttpServletResponse res, P
  	String custstart = req.getParameter("custstart");
 	String custstop = req.getParameter("custstop");
        	int custnum = Integer.parseInt(tcustnum);
+	int combineopts=0;
        	int quotenum = Integer.parseInt(tquotenum);
         String qadditionalserv  = req.getParameter("qadditionalserv");
         String qpayterms = req.getParameter("qpayterms");
@@ -22157,9 +22301,15 @@ private void doUpdateProposal(HttpServletRequest req, HttpServletResponse res, P
         String jobnum = req.getParameter("jobnum");
 	String antstart = req.getParameter("antstart");
         String action = req.getParameter("action");
+	String scombineopts=req.getParameter("combineopts");
+		if (scombineopts != null) {
+       		combineopts = 1;
+		} else {
+		combineopts =0;
+			}
 	if (action.equalsIgnoreCase("updateproposal")) 
 	{
-        UniQuotes.UpdateItem(con, quotenum, custnum, doFormatDateDb(getDateDb(qdate)), qdescription, qpayterms, qnotes, qdisc, qadditionalserv, qstatus, doFormatDateDb(getDateDb(solddate)),jobnum ,doFormatDateDb(getDateDb(antstart)) );
+        UniQuotes.UpdateItem(con, quotenum, custnum, doFormatDateDb(getDateDb(qdate)), qdescription, qpayterms, qnotes, qdisc, qadditionalserv, qstatus, doFormatDateDb(getDateDb(solddate)),jobnum ,doFormatDateDb(getDateDb(antstart)), combineopts );
 	}
 	if (action.equalsIgnoreCase("updateservproposal")) 
 	{
@@ -22206,6 +22356,7 @@ private void doSaveProposal(HttpServletRequest req, HttpServletResponse res, Pri
         String qdisc = req.getParameter("qdisc");
         String qdate = req.getParameter("qdate");
         String qstatus = req.getParameter("qstatus");
+	String scombineopts=req.getParameter("combineopts");
         String solddate = "2099-12-31"; 
         String antstart  = "2099-12-31";
 	String custsite = doGetCustSite(custnum);
@@ -22215,7 +22366,8 @@ private void doSaveProposal(HttpServletRequest req, HttpServletResponse res, Pri
         String jobnum = "";
 	if (action.equalsIgnoreCase("saveproposal"))
 	{
-        UniQuotes.AddItem(con, custnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, qstatus , solddate, antstart, custsite, sitenum, login, servsync);
+	int combineopts=Integer.parseInt(scombineopts);
+        UniQuotes.AddItem(con, custnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, qstatus , solddate, antstart, custsite, sitenum, login, servsync, combineopts);
 	}
 	if (action.equalsIgnoreCase("saveservproposal"))
 	{
@@ -23308,7 +23460,13 @@ private void doEditMasterWorksheet(HttpServletRequest req, HttpServletResponse r
 	out.println("<head>");
 	out.println("<title>Edit Worksheet</title>");
 	out.println("</head>");
+	String thismainserver=doGetThisMainServer();
+	if (!thismainserver.equalsIgnoreCase("yes")) {
 	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=noactionallowed\" name=\"addcust\">");
+							} else
+							{
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updatemainworksheet\" name=\"addcust\">");
+							}
 	out.println("<table size=100% border=1>");
 	out.println("<tr><td>Date</td><td>");
 	out.println("<input type=\"text\" name=\"wsdate\" value=\""+doFormatDate(getDate(wsdate))+"\"></td>");
@@ -23836,7 +23994,7 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
 		con.close();
 		con2.close();
 
-		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=5&custnum="+crecnum+"");
+		res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+crecnum+"");
 	out.println("<html>");
 	out.println("Got to finish</html>");
 		}
@@ -24219,7 +24377,7 @@ private void doWsToProposal(HttpServletRequest req, HttpServletResponse res, Pri
 	String custsite = doGetCustSite(crecnum);
 			String login=(String)session.getAttribute("login");
 	String sitenum = doGetSiteNum(crecnum);
-        	UniQuotes.AddItem(con, crecnum, wsdate, wsdescription, "50% Down - Remainder Upon Completion", qnotes, qdisc, qadditionalserv, "New", "2099-12-31", "2099-12-31", custsite, sitenum, login, 0);
+        	UniQuotes.AddItem(con, crecnum, wsdate, wsdescription, "50% Down - Remainder Upon Completion", qnotes, qdisc, qadditionalserv, "New", "2099-12-31", "2099-12-31", custsite, sitenum, login, 0,0);
 
 
                 Vector v;
@@ -24716,6 +24874,8 @@ private void doEditProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		String solddate=null;
 		String jobnum=null;
 		String antstart=null;
+		int combineopts=0;
+		String scombineopts=null;
 		double qtotal=0.00;
                 Vector vv;
 		if (action.equalsIgnoreCase("editproposal"))
@@ -24743,6 +24903,13 @@ private void doEditProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		antstart=tt.getQAntStart();
 		jobnum=tt.getQJobNum();
 		solddate=tt.getQSoldDate();
+		combineopts=tt.getCombineOpts();
+		if (combineopts==1)
+			{
+			scombineopts=null;
+			} else {
+			scombineopts="0";
+			}
 		}
 		if (action.equalsIgnoreCase("editservproposal"))
 		{
@@ -24779,6 +24946,16 @@ private void doEditProposal(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("<tr><td>Summary</td><td>");
 	out.println("<input type=\"text\" name=\"qdescription\" value=\""+qdescription +"\" size=\"60\" ></td>");
 	out.println("</tr>");
+		if (action.equalsIgnoreCase("editproposal"))
+		{
+	out.println("<tr><td>Combine Options</td><td>");
+	if (combineopts==0)
+		{
+	out.println("<input type=\"checkbox\" name=\"combineopts\" value="+scombineopts +"></td></tr>");
+		} else {
+	out.println("<input type=\"checkbox\" name=\"combineopts\" value="+scombineopts +" checked></td></tr>");
+	}
+		}
 	out.println("<tr><td>Payment Terms</td><td>");
 	out.println("<input type=\"text\" name=\"qpayterms\" value=\""+qpayterms +"\" size=\"60\"></td></tr>");
 		if (action.equalsIgnoreCase("editproposal"))
@@ -25579,6 +25756,7 @@ private String doSendSingleProposalsC(int qnumber, int custrec, String username)
 		int itemquant=0;
 		int itemnum=0;
 		int counter = 0;
+		int combineopts=0;
 		double totinvestment=0.00;
 		String investment=null;
 		String qdate=null;
@@ -25598,6 +25776,7 @@ private String doSendSingleProposalsC(int qnumber, int custrec, String username)
 		tcustnum=tt.getCrecNum();
 		qpayterms=tt.getQPayterms();
 		qadditionalserv=tt.getQAdditionalServ();
+		combineopts=tt.getCombineOpts();
 
  		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
@@ -25738,6 +25917,7 @@ private void doSendSingleProposals(HttpServletRequest req, HttpServletResponse r
 		double totinvestment=0.00;
 		String investment=null;
 		double qtotal=0.00;
+		int combineopts=0;
             String tcsrec = req.getParameter("csrec");
             String ttcustnum = req.getParameter("custnum");
 	int csrec = Integer.parseInt(tcsrec);
@@ -25755,6 +25935,7 @@ private void doSendSingleProposals(HttpServletRequest req, HttpServletResponse r
 		tcustnum=tt.getCrecNum();
 		qpayterms=tt.getQPayterms();
 		qadditionalserv=tt.getQAdditionalServ();
+		combineopts=tt.getCombineOpts();
 
  		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
@@ -25897,6 +26078,7 @@ private void doSendProposals(HttpServletRequest req, HttpServletResponse res, Pr
 		int counter = 0;
 		double totinvestment=0.00;
 		String investment=null;
+		int combineopts=0;
 		double qtotal=0.00;
                 Vector vv;
                 vv = UniQuotes.getAllDateItems(con,doFormatDateDb(getDateDb(qdate)));
@@ -25914,7 +26096,7 @@ private void doSendProposals(HttpServletRequest req, HttpServletResponse res, Pr
 		tcustnum=tt.getCrecNum();
 		qpayterms=tt.getQPayterms();
 		qadditionalserv=tt.getQAdditionalServ();
-
+		combineopts=tt.getCombineOpts();
  		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
 		 while(rs.next())
@@ -26058,6 +26240,7 @@ private void doPrintJobFlow(HttpServletRequest req, HttpServletResponse res, Pri
 		double totinvestment=0.00;
 		String investment=null;
 		double qtotal=0.00;
+		int combineopts=0;
                 Vector vv;
                 vv = UniQuotes.getIndItem(con,custnum,propnum);
 		counter=0;
@@ -26072,6 +26255,7 @@ private void doPrintJobFlow(HttpServletRequest req, HttpServletResponse res, Pri
 		antstart=tt.getQAntStart();
 		solddate=tt.getQSoldDate();
 		jobnum=tt.getQJobNum();
+		combineopts=tt.getCombineOpts();
 	}
 
  		Statement stmt = con.createStatement();
@@ -26189,7 +26373,9 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		int itemquant=0;
 		int itemnum=0;
 		int counter = 0;
+		int combineopts=0;
 		double totinvestment=0.00;
+		double ototinvestment=0.00;
 		String investment=null;
 		double qtotal=0.00;
                 Vector vv;
@@ -26204,6 +26390,7 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		qdisc=tt.getQDisc();
 		qpayterms=tt.getQPayterms();
 		qadditionalserv=tt.getQAdditionalServ();
+		combineopts=tt.getCombineOpts();
 	}
 
  		Statement stmt = con.createStatement();
@@ -26249,17 +26436,24 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		qtotal=tp.getQuoteTotal();
 		double subtot=Double.parseDouble(tp.getInvestment())*itemquant;
 		totinvestment=totinvestment+subtot;
+		if (combineopts==1) {
+		ototinvestment=ototinvestment+subtot;
+			}
 	//out.println("<li> "+itemname+"; "+mannum+"</li>");
 	out.println("<li> "+itemname+"</li>");
 		}
+		if (combineopts==0) {
 	out.println("</ul>");
+			}
 
 	//String stotinvestment= NumberFormat.getIntegerInstance().format(totinvestment);
 	//int itotinvestment=Integer.parseInt(stotinvestment);
 	//double dtotinvestment=Double.parseDouble(""+itotinvestment+"");
 	//out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
 	//out.println("<p align=\"right\">Total Investment: $"+dtotinvestment+"<br></p>");
+		if (combineopts==0) {
 	out.println("<br><br>");
+			}
 
 	 Locale[] locales = NumberFormat.getAvailableLocales();
 	  double myNumber = totinvestment;
@@ -26270,10 +26464,12 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
          //  System.out.println(" -> " + form.parse(form.format(myNumber)));
 
 	//out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
+	if (combineopts==0) {
 	if (propprice.equalsIgnoreCase("y")) {
 	out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(myNumber)))+"<br></p>");
 	} else {
 	out.println("<p align=\"right\">Total Investment: $____________________________<br></p>");
+		}
 		}
 
 // GET OPTIONS:
@@ -26295,14 +26491,16 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		qdescription=tz.getQDescription();
 		}
 // PRINT OPTION LINE
-
+	if (combineopts==0) {
 	out.println("<p align=\"left\"><b>Option: "+qdescription+"</b></p>");
 	out.println("<br>");
+		ototinvestment=0.00;
+			}
 
 // GET AND PRINT OPTION LIST
-		double ototinvestment=0.00;
-
+		if (combineopts==0) {
 	out.println("<ul>");
+				}
                 Vector vx;
                 vx = UniQuoteParts.getAllItems(con,quoteoption);
                 for (int jj = 0 ; jj < vx.size(); jj++)
@@ -26318,8 +26516,8 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 		ototinvestment=ototinvestment+subtot;
 		out.println("<li>"+itemname+"</li>");
 		}
+		if (combineopts==0) {
 	out.println("</ul><br>");
-
 	 Locale[] olocales = NumberFormat.getAvailableLocales();
 	  double OmyNumber = ototinvestment;
 	   NumberFormat oform;
@@ -26329,9 +26527,21 @@ private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, Pr
 	} else {
 	out.println("<p align=\"right\">Optional Investment: $____________________________<br></p>");
 		}
-
+		}
 		}
 
+		if (combineopts==1) {
+	out.println("</ul><br>");
+	 Locale[] olocales = NumberFormat.getAvailableLocales();
+	  double OmyNumber = ototinvestment;
+	   NumberFormat oform;
+	  oform = NumberFormat.getIntegerInstance(olocales[1]);
+	if (propprice.equalsIgnoreCase("y")) {
+	out.println("<p align=\"right\">Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(OmyNumber)))+"<br></p>");
+	} else {
+	out.println("<p align=\"right\">Investment: $____________________________<br></p>");
+		}
+			}
 // NOW COMPLETE QUOTE
 
 

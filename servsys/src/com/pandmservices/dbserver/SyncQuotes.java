@@ -28,6 +28,7 @@ public class SyncQuotes
 	private String remotecrecnum=null;
 	private int custnum=0;
 	private int servsync;
+	private int combineopts=0;
     
 
         public SyncQuotes (Connection con, Connection conu)
@@ -91,6 +92,7 @@ public class SyncQuotes
 		this.sitenum=rs2.getString("sitenum");
 		this.techid=rs2.getString("techid");
 		this.servsync=rs2.getInt("servsync");
+		this.combineopts=rs2.getInt("combineopts");
 
 
                                 //////////////////////////////////////////////
@@ -113,7 +115,7 @@ String ID=null;
 
 			String acolumns= new String("quotenum");
 			String tqnotes = qnotes.replaceAll("'","''");
-	       int recordset = stmtu.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync) Values ('"+remotecrecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"')",keyColumn);
+	       int recordset = stmtu.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync,combineopts) Values ('"+remotecrecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"','"+combineopts+"')",keyColumn);
 
 		ResultSet rsKeyColumn = stmtu.getGeneratedKeys(); 
 		if(rsKeyColumn.next()) { // ADD THIS LINE! IMPORTANT! 

@@ -456,6 +456,32 @@ public class ShowCustomerDetail
 	out.println("<a href="+classdir+"UniCash?action=addworksheet&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Worksheet to Customer File</a>");
 	out.println("<P><P>");
 
+	out.println("<h3>Proposal Compare Forms</h3>");
+	
+	Vector vp;
+	vp = PackCompare.getAllItems(con,custsite, sitenum);
+	out.println("<table border=1 width=100%>");
+	out.println("<th>Form  #</th><th>Date</th><th>Summary</th><th>Print</th><th>Delete</th>");
+	counter=0;
+	for (int i = 0 ; i < vp.size(); i++)
+	{
+		PackCompare tp = (PackCompare) vp.elementAt(i);
+		 int recnum=tp.getRecNum();
+		 
+		//wsnum=tw.getWsRec();
+		wsdate=doFormatDate(getDate(tp.getPackDate()));
+		wssummary=tp.getDescription();
+		
+		
+		out.println("<tr><td>"+recnum+"</td><td>"+wsdate+"</td><td>"+wssummary+"</td><td><a href="+classdir+"UniCash?action=printcompareform&recnum="+recnum+"&custnum="+wscustnum+" target=_blank>Print Format</a></td>");
+			out.println("<td><a href="+classdir+"UniCash?action=delpackcomprec&custnum="+custnum+"&recnum="+recnum+">Delete</a></td>");
+		out.println("</tr>");
+	}
+
+	out.println("</table><br><br>");
+	out.println("<a href="+classdir+"UniCash?action=addpackcompare&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsite="+custsite+"&sitenum="+sitenum+">Add Package Compare Form to Customer File</a>");
+	out.println("<P><P>");
+
 	} else if (csection.equalsIgnoreCase("7")) {
 
 
