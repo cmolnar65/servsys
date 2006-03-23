@@ -423,21 +423,21 @@ public class PackageCompare2 extends UniCash
 	out.println("<td width=\"33%\" >");
 	out.println("<p align=\"left\"><b>"+bestdesc+"</b></p><ul>");
 	if (description1.length()>1) {
-	out.println("<p align=\"left\">"+description1+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment1+"</p><br>");
+	out.println("<p align=\"left\">"+description1+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment1)+"</p><br>");
 				}
 	if (description2.length()>1) {
-	out.println("<p align=\"left\">"+description2+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment2+"</p><br>");
+	out.println("<p align=\"left\">"+description2+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment2)+"</p><br>");
 			}
 	if (description3.length()>1) {
-	out.println("<p align=\"left\">"+description3+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment3+"</p><br>");
+	out.println("<p align=\"left\">"+description3+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment3)+"</p><br>");
 			}
 	if (description4.length()>1) {
-	out.println("<p align=\"left\">"+description4+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment4+"</p><br>");
+	out.println("<p align=\"left\">"+description4+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment4)+"</p><br>");
 			}
 	if (description5.length()>1) {
-	out.println("<p align=\"left\">"+description5+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment5+"</p><br></ul>");
+	out.println("<p align=\"left\">"+description5+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment5)+"</p><br></ul>");
 			}
-	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+besttotal+"</p></b><br>");
+	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(besttotal)+"</p></b><br>");
 	out.println("</td>");
 		}	
 	// Better Package Here
@@ -446,21 +446,21 @@ public class PackageCompare2 extends UniCash
 	out.println("<p align=\"left\"><b>"+betterdesc+"</b></p><ul>");
 
 	if (description6.length()>1) {
-	out.println("<p align=\"left\">"+description6+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment6+"</p><br>");
+	out.println("<p align=\"left\">"+description6+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment6)+"</p><br>");
 				}
 	if (description7.length()>1) {
-	out.println("<p align=\"left\">"+description7+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment7+"</p><br>");
+	out.println("<p align=\"left\">"+description7+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment7)+"</p><br>");
 			}
 	if (description8.length()>1) {
-	out.println("<p align=\"left\">"+description8+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment8+"</p><br>");
+	out.println("<p align=\"left\">"+description8+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment8)+"</p><br>");
 			}
 	if (description9.length()>1) {
-	out.println("<p align=\"left\">"+description9+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment9+"</p><br>");
+	out.println("<p align=\"left\">"+description9+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment9)+"</p><br>");
 			}
 	if (description10.length()>1) {
-	out.println("<p align=\"left\">"+description10+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment10+"</p><br></ul>");
+	out.println("<p align=\"left\">"+description10+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment10)+"</p><br></ul>");
 			}
-	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+bettertotal+"</p></b><br>");
+	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(bettertotal)+"</p></b><br>");
 	out.println("</td>");
 		}
 
@@ -469,21 +469,21 @@ public class PackageCompare2 extends UniCash
 	out.println("<td width=\"33%\" >");
 	out.println("<p align=\"left\"><b>"+gooddesc+"</b></p><ul>");
 	if (description11.length()>1) {
-	out.println("<p align=\"left\">"+description11+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment11+"</p><br>");
+	out.println("<p align=\"left\">"+description11+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment11)+"</p><br>");
 				}
 	if (description12.length()>1) {
-	out.println("<p align=\"left\">"+description12+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment12+"</p><br>");
+	out.println("<p align=\"left\">"+description12+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment12)+"</p><br>");
 			}
 	if (description13.length()>1) {
-	out.println("<p align=\"left\">"+description13+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment13+"</p><br>");
+	out.println("<p align=\"left\">"+description13+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment13)+"</p><br>");
 			}
 	if (description14.length()>1) {
-	out.println("<p align=\"left\">"+description14+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment14+"</p><br>");
+	out.println("<p align=\"left\">"+description14+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment14)+"</p><br>");
 			}
 	if (description15.length()>1) {
-	out.println("<p align=\"left\">"+description15+"&nbsp;&nbsp;&nbsp;&nbsp;"+totinvestment15+"</p><br></ul>");
+	out.println("<p align=\"left\">"+description15+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment15)+"</p><br></ul>");
 			}
-	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+goodtotal+"</p></b><br>");
+	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(goodtotal)+"</p></b><br>");
 	out.println("</td>");
 	}
 	out.println("</tr>");

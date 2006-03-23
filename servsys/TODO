@@ -14,6 +14,23 @@
   customer is presented with a pre-filled form or requested for information. Customer is asked to complete
   information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
   appropriate people.
+
+=================================================================
+RELEASE 2.18
+=================================================================
+(F) fixed rounding issue on package compare sheets - prices where way wrong.
+(N) Added combineoption flag into quotes file. This combines quote options into a single quote.
+
+=================================================================
+RELEASE 2.17
+=================================================================
+(N) Package Compare Database and Forms - now save the compare item - up to 5 packages per 
+    column.
+(F) Fix delete master worksheet if on server
+(F) Fixed return from upload to master server - send to screen 6 instead of 5.
+(F) Edit description and multiplier now OK on master server. Non-Main server machines are still the same - you must
+    update in a customer package and then wove it to the server.
+
 =================================================================
 RELEASE 2.16
 =================================================================
