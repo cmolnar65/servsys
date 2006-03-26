@@ -222,7 +222,7 @@ public class PackageCompare extends UniCash
 	return "true";
 }
 	
-	public String doGetTechInfo_init(String iusername)
+	public static String doGetTechInfo_init(String iusername)
         throws Exception
         {
                 Vector v;

@@ -39,10 +39,10 @@ public class UniCash extends HttpServlet
 	String phpdir=null;
 	String menu = null;
 	String headerimage=null;
-        String emailsendaddress=null;
-	String adminok = "0";
-        String emailserver=null;
-	String techemailaddress=null;
+        static String emailsendaddress=null;
+	static String adminok = "0";
+        static String emailserver=null;
+	static String techemailaddress=null;
 	static String TRUE =  "TRUE";
 	public static long MS_SECOND = 1000L; 
 	public static long MS_MINUTE = 60L * MS_SECOND; 
@@ -4945,7 +4945,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		return expire_date;
 	}
 
-	public String doGetTechInfo_name(String iusername)
+	public static String doGetTechInfo_name(String iusername)
 	throws Exception
 	{
                 Vector v;
@@ -4961,7 +4961,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 	}
 
 
-	public String doGetSmtpPassword(String lusername)
+	public static String doGetSmtpPassword(String lusername)
         throws Exception
         {
                 Vector v;
@@ -4976,7 +4976,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                         return smtppassword;                       
         }
 
-	public String doGetSmtpUser(String lusername)
+	public static String doGetSmtpUser(String lusername)
         throws Exception
         {
                 Vector v;
@@ -5506,7 +5506,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                         return username;                       
         }
 
-	public String doGetTech_Email(String lusername)
+	public static String doGetTech_Email(String lusername)
         throws Exception
         {
                 Vector v;
@@ -5582,7 +5582,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                         return svc_email;                       
         }
 
-	public String doVersionInfo_VNumber()
+	public static String doVersionInfo_VNumber()
         throws Exception
         {
                 Vector v;
@@ -5597,7 +5597,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.18";
+			vnumber = "2.19";
 		if (dbvnumber.equalsIgnoreCase("2.17")) {
 			Statement stmtu2 = con.createStatement();
 			int result218a = stmtu2.executeUpdate("alter table quotes add combineopts tinyint(4) default 0 after techid");
@@ -5650,7 +5650,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
                         return vnumber;                       
         }
 
-	public String doGetCompanyName()
+	public static String doGetCompanyName()
 	throws Exception
 	{
 		String imagename=null;
@@ -5698,7 +5698,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
                         return vdate;                       
         }
 
-	public String doGetTime_Email(String lusername)
+	public static String doGetTime_Email(String lusername)
         throws Exception
         {
                 Vector v;
@@ -5812,7 +5812,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
                         return enabcustomer;                       
         }
 
-	public String doGetTechInfo_init(String iusername)
+	public static String doGetTechInfo_init(String iusername)
         throws Exception
         {
                 Vector v;
@@ -6014,7 +6014,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
 
 
 
-	public String doGetTechInfo_truck(String iusername)
+	public static String doGetTechInfo_truck(String iusername)
         throws Exception
         {
                 Vector v;
@@ -9893,7 +9893,7 @@ private void doSaveCustomerEntry(HttpServletRequest req, HttpServletResponse res
 
 //Format Date to MySql Form
 
-public String doFormatDateDb(Date visited)
+public static String doFormatDateDb(Date visited)
 		throws Exception
 		{
 	Date tdate;
@@ -9903,7 +9903,7 @@ public String doFormatDateDb(Date visited)
 	return newdate;
 		}
 
-      public Date getDateDb( String token ) {
+      public static Date getDateDb( String token ) {
               Date visited; 
               SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy"); 
               ParsePosition pos;
@@ -9920,7 +9920,7 @@ public String doFormatDateDb(Date visited)
 
 //Format date to human form
 
-public String doFormatDate(Date visited)
+public static String doFormatDate(Date visited)
 		throws Exception
 		{
 	Date tdate;
@@ -9942,7 +9942,7 @@ public int doFormatDateComp(Date visited)
 	return inewdate;
 		}
 
-public Date getDate( String token ) {
+public static Date getDate( String token ) {
               Date visited; 
               SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
               ParsePosition pos;
@@ -14175,148 +14175,11 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
   private void doSendDailyTimeEntry(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, int sall, String username)
                 throws Exception
         {
-            String mbody = "";
-            String timesheetdate = req.getParameter("listdate");
-	    
-		long lstart, lend, lunch_time, sstart, send, shop_time, day_shoptime, travel_time, day_jobtime, day_travel, paid_time, elapsed, end, jend, disp_time, jstart, job_time, start, dispatch;
-		double day_billed, day_collected, day_commission;
-		String day_end_time, day_start_time, work_time;
-		int jobtime = 0;
-		int tottime = 0;
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-		mbody = combinestring(mbody,"Date:"+ timesheetdate+"<br>Service Tech:"+ tech_name+"<br><br>");
-		mbody = combinestring(mbody,"Software Version:"+ doVersionInfo_VNumber()+"<br><br>");
-                Vector v;
-                v = UniTimeSheet.getAllItems(con,doFormatDateDb(getDateDb(timesheetdate)), username);
-		int counter=0;
-		job_time=0;
-		jstart=0;
-		jend=0;
-		disp_time=0;
-		travel_time=0;
-		day_collected=0;
-		day_commission=0;
-		day_billed=0;
-		day_travel=0;
-		day_shoptime=0;
-		lunch_time=0;
-		day_jobtime=0;
-		day_start_time=null;
-		day_end_time=null;
-		int counter1=0;
-                mbody = combinestring(mbody,"<table border=1><th>Callslip</th><th>Customer</th><th>Dispatched</th><th>Time In</th><th>Time Out</th><th>Job Time</th><th>Travel Time</th><th>NC Item Sold</th><th>NC Amount</th><th>Com Item Sold</th><th>Com Amount</th><th>Amount Collected</th><th>Paid By<th><th>Commision</th><th>Code</th>");
-	if (v.size()!=0) {
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                       	UniTimeSheet t = (UniTimeSheet) v.elementAt(i);
-			int tsid  = t.getId();
-                        String  callslip= t.CallSlip();
-			String customer = t.Customer();
-			String time_in = t.TimeIn();
-			String time_out = t.TimeOut();
-			String dispatch_time = t.DispatchTime();
-			String item_sold = t.ItemSold();
-			String amount = t.Amount();
-			String citem_sold = t.CItemSold();
-			String camount = t.CAmount();
-			String amount_collected = t.AmountCollected();
-			String commision = t.Commision();
-			String tdate = t.TDate();
-			String ctype = t.CType();
-			String paytype = t.TPayType();
-			counter++;
-			
-			double iamount = Double.parseDouble(amount);
-			double ciamount= Double.parseDouble(camount);
-			double iamount_collected = Double.parseDouble(amount_collected);
-			double icommission = Double.parseDouble(commision);
-			dispatch = strtotime(dispatch_time);
-			jstart = strtotime(time_in);
-			jend = strtotime(time_out);
-			job_time = jend - jstart;
-			
+        String action = req.getParameter("action");
+        String menu = req.getParameter("action");
+  
+ ServsysTimeSheet.getIndividualItem (con, req,res, out, session, username, classdir, action,  menu);     
 
-		 if (counter1==0) 
-			{
-			day_start_time=dispatch_time;
-			day_travel=0;
-			day_jobtime=0;
-			day_shoptime=0;
-			day_billed=0;
-			day_commission=0;
-			day_collected=0;
-			} 
-		if (customer.equalsIgnoreCase("Lunch")||callslip.equalsIgnoreCase("LUNCH")) {
-			lstart=strtotime(time_in);
-			lend=strtotime(time_out);
-			lunch_time=lend-lstart;
-			}
-		if (callslip.equalsIgnoreCase("Shop")&&customer.equalsIgnoreCase("Shop")) {
-			sstart=strtotime(time_in);
-			send=strtotime(time_out);
-			shop_time=send-sstart;
-			day_shoptime=day_shoptime+shop_time;
-			}
-			day_jobtime=day_jobtime+job_time;
-			travel_time=jstart-dispatch;
-			day_travel=day_travel+travel_time;
-			day_billed=day_billed+iamount+ciamount;
-			day_commission=day_commission+icommission;
-			day_collected=day_collected+iamount_collected;
-
-                mbody = combinestring(mbody,"<tr><td>"+callslip+"</td><td>"+customer+"</td><td>"+formatATimeString(dispatch)+"</td><td>"+formatATimeString(jstart)+"</td><td>"+formatATimeString(jend)+"</td><td>"+formatTimeString(job_time)+"</td><td>"+formatTimeString(travel_time)+"</td><td>"+item_sold+"</td><td>"+amount+"</td><td>"+citem_sold+"</td><td>"+camount+"</td><td>"+amount_collected+"</td><td>"+paytype+"</td><td>"+commision+"</td><td>"+ctype+"</td><tr>");
-		counter1++;
-		day_end_time=time_out;
-		}
-	
-		mbody=combinestring(mbody,"</table>");
-start = strtotime(day_start_time);
-end = strtotime(day_end_time);
-elapsed = end - start;
-	mbody = combinestring(mbody,"<br><br>SUMMARY SECTION:<br>");
-        work_time=formatTimeString(elapsed);
-	mbody = combinestring(mbody,"<table><tr><td>Hours Worked:</td><td>"+work_time+"</td></tr>");
-	mbody = combinestring(mbody,"<tr><td>Lunch:</td><td>"+formatTimeString(lunch_time)+"</td></tr>");
-	paid_time=elapsed-lunch_time;
-	mbody = combinestring(mbody,"<tr><td>Paid Time:</td><td>"+formatTimeString(paid_time)+"</td></tr>");
-	mbody = combinestring(mbody,"<tr><td>Job Time:</td><td>"+formatTimeString(day_jobtime-lunch_time-day_shoptime)+"</td></tr>");
-	mbody = combinestring(mbody,"<tr><td>Travel Time:</td><td>"+formatTimeString(day_travel)+"</td></tr>");
-	mbody = combinestring(mbody,"<tr><td>Unassigned Time:</td><td>"+formatTimeString(elapsed-lunch_time-day_jobtime-day_travel)+"</td></tr><tr><td>Billed:</td><td>"+day_billed+"</td></tr><tr><td>Collected:</td><td>"+day_collected+"</td></tr></tr><tr><td>Commission:</td><td>"+day_commission+"</td></tr></table><br><br>");        
-
-	mbody= combinestring(mbody,"<h4>Summary Section</h4>");
-	mbody= combinestring(mbody,"<table border=1 width=\"50%\" align=\"left\">");
-	mbody= combinestring(mbody,"<th>Call Type</th><th>Count</th><th>Total Collected</th><th>Non-Commision<br>Billed</th><th>Commision<br>Billed</th><th>Commision</th><th>Time</th><th>Time Without Travel</th>");
-                v = TimeSheetSummary.getAllItems(con,doFormatDateDb(getDateDb(timesheetdate)));
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                       	TimeSheetSummary ts = (TimeSheetSummary) v.elementAt(i);
-			String tamount = ts.Amount();
-			String tcamount = ts.CAmount();
-			String tamount_collected = ts.AmountCollected();
-			String tcommision = ts.Commision();
-			String ctype=ts.CType();
-			String callcount=ts.CallCount();
-			String timewithtravel=ts.TimeWithTravel();
-			String timenotravel=ts.TimeNoTravel();
-	mbody= combinestring(mbody,"<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-		}
-	mbody= combinestring(mbody,"</table>");
-	mbody= combinestring(mbody,"</font></html>");
-
-	emailsendaddress=doGetTime_Email(username);
-	techemailaddress=doGetTech_Email(username);	
-	emailserver = doGetSmtpServer(username);
-      String smtpuser = doGetSmtpUser(username);
-      String smtppassword = doGetSmtpPassword(username);
-        doMailSend(emailserver, emailsendaddress, techemailaddress, "Time Sheet - "+timesheetdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
-        out.println(emailserver+"<br>"+emailsendaddress+"<br>"+ techemailaddress+"<br>Time Sheet - "+timesheetdate+" - "+ tech_name+"<br><br>"+mbody);
-	} else
-	{
-		out.println("No Timesheet data found - did you enter any?</html>");
-	}
-		con.close();
   }
 
 
@@ -16244,7 +16107,10 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
   private void doPrintTimeSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
-		String timesheetdate = req.getParameter("listdate");
+            String action = req.getParameter("action");
+             ServsysTimeSheet.getIndividualItem (con, req,res, out, session, username, classdir, action,  menu);     
+
+		/*String timesheetdate = req.getParameter("listdate");
 		long lstart, lend, lunch_time, sstart, send, shop_time, day_shoptime, travel_time, day_jobtime, day_travel, paid_time, elapsed, end, jend, disp_time, jstart, job_time, start, dispatch;
 		double day_billed, day_collected;
 		String day_end_time, day_start_time, work_time;
@@ -16339,7 +16205,7 @@ out.println("<tr><td>"+callslip+"</td><td>"+customer+"</td><td>"+formatATimeStri
 		}
 
 /* Free resultset */
-out.println("</table>");
+/*out.println("</table>");
 out.println("<br><br>");
 out.println("<table align=\"center\"><tr>");
 out.println("<td>Signature:</td><td>______________________________________</td></tr>");
@@ -16383,7 +16249,7 @@ elapsed = end - start;
 	
 	out.println("</table></td></tr>");
 	out.println("</table>");
-	out.println("</font></html>");
+	out.println("</font></html>"); */
 		con.close();
 	}
 
@@ -26314,263 +26180,8 @@ private void doPrintJobFlow(HttpServletRequest req, HttpServletResponse res, Pri
 private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
-		String tcustnum = req.getParameter("custnum");
-		String tcontnum = req.getParameter("propnum");
-       		 int custnum = Integer.parseInt(tcustnum);
-       		 int propnum = Integer.parseInt(tcontnum);
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
-		String propprice = doGetPropPrice();
-
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                int enum10 =0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
-		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-
-                String qdate  = null;
-                String qdescription  = null;
-                String qpayterms  = null;
-                String qnotes  = null;
-                String qdisc  = null;
-                String qadditionalserv  = null;
-		int qpartnum=0;
-		String itemname=null;
-		String mannum=null;
-		int itemquant=0;
-		int itemnum=0;
-		int counter = 0;
-		int combineopts=0;
-		double totinvestment=0.00;
-		double ototinvestment=0.00;
-		String investment=null;
-		double qtotal=0.00;
-                Vector vv;
-                vv = UniQuotes.getIndItem(con,custnum,propnum);
-		counter=0;
-                for (int i = 0 ; i < vv.size(); i++)
-                {
-                UniQuotes tt = (UniQuotes) vv.elementAt(i);
-		qdate=tt.getQDate();
-		qdescription=tt.getQDescription();
-		qnotes=tt.getQNotes();
-		qdisc=tt.getQDisc();
-		qpayterms=tt.getQPayterms();
-		qadditionalserv=tt.getQAdditionalServ();
-		combineopts=tt.getCombineOpts();
-	}
-
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
+		ServsysProposal.getIndividualItem (con, req,res, out, session, username, classdir); 
 	
-	out.println("<html><head><title>Proposal</title>");
-	doStyleSheet(req, res, out, session, username);
-	out.println("</head><body>");
-	doMHeader(req, res, out, session, username); 
-	out.println("<h2 align=CENTER>Proposal</h2>");
-	out.println("<P ALIGN=LEFT><table><tr>");
-	out.println("<td>This proposal is issued to:</td><td>"+cname+" </td></tr> ");
-	out.println("<tr><td></td><td>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" <br><br>Home Phone: "+homephone+"</td></tr>");
-	out.println("<tr><td></td><td></td></tr>");
-	out.println("<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+doFormatDate(getDate(qdate))+" </td></tr> ");
-	out.println("</table></p> ");
-	out.println("<p>Thank you for the opportunity to quote on "+qdescription+".<br>");
-	out.println("<br>For your <b>Comfort, Good Health, Peace of Mind, and Safety</b> "+doGetCompanyName()+" is recommending:<br>");
-	out.println("<ul>");
-                Vector vp;
-                vp = UniQuoteParts.getAllItems(con,propnum);
-                for (int j = 0 ; j < vp.size(); j++)
-                {
-                UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
-		qpartnum=tp.getQPartnum();
-		itemname=tp.getItemName();
-		mannum=tp.getManNum();
-		itemquant=tp.getItemQuant();
-		investment=tp.getInvestment();
-		qtotal=tp.getQuoteTotal();
-		double subtot=Double.parseDouble(tp.getInvestment())*itemquant;
-		totinvestment=totinvestment+subtot;
-		if (combineopts==1) {
-		ototinvestment=ototinvestment+subtot;
-			}
-	//out.println("<li> "+itemname+"; "+mannum+"</li>");
-	out.println("<li> "+itemname+"</li>");
-		}
-		if (combineopts==0) {
-	out.println("</ul>");
-			}
-
-	//String stotinvestment= NumberFormat.getIntegerInstance().format(totinvestment);
-	//int itotinvestment=Integer.parseInt(stotinvestment);
-	//double dtotinvestment=Double.parseDouble(""+itotinvestment+"");
-	//out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
-	//out.println("<p align=\"right\">Total Investment: $"+dtotinvestment+"<br></p>");
-		if (combineopts==0) {
-	out.println("<br><br>");
-			}
-
-	 Locale[] locales = NumberFormat.getAvailableLocales();
-	  double myNumber = totinvestment;
-	   NumberFormat form;
-	  form = NumberFormat.getIntegerInstance(locales[1]);
-           //  out.println(": " + ((DecimalFormat) form).toPattern());
-          // out.println(" -> " + form.format(myNumber));
-         //  System.out.println(" -> " + form.parse(form.format(myNumber)));
-
-	//out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
-	if (combineopts==0) {
-	if (propprice.equalsIgnoreCase("y")) {
-	out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(myNumber)))+"<br></p>");
-	} else {
-	out.println("<p align=\"right\">Total Investment: $____________________________<br></p>");
-		}
-		}
-
-// GET OPTIONS:
-
-                Vector vo;
-                vo = UniQuoteOptions.getAllItems(con,propnum);
-                for (int j = 0 ; j < vo.size(); j++)
-                {
-                UniQuoteOptions to = (UniQuoteOptions) vo.elementAt(j);
-
-// GET OPTION PROPOSAL # AND PRINT
-		int quoteoption = to.getQuoteOption();	
-                Vector vz;
-                vz = UniQuotes.getIndItem(con,custnum,quoteoption);
-		counter=0;
-                for (int i = 0 ; i < vz.size(); i++)
-                {
-                UniQuotes tz = (UniQuotes) vz.elementAt(i);
-		qdescription=tz.getQDescription();
-		}
-// PRINT OPTION LINE
-	if (combineopts==0) {
-	out.println("<p align=\"left\"><b>Option: "+qdescription+"</b></p>");
-	out.println("<br>");
-		ototinvestment=0.00;
-			}
-
-// GET AND PRINT OPTION LIST
-		if (combineopts==0) {
-	out.println("<ul>");
-				}
-                Vector vx;
-                vx = UniQuoteParts.getAllItems(con,quoteoption);
-                for (int jj = 0 ; jj < vx.size(); jj++)
-                {
-                UniQuoteParts tx = (UniQuoteParts) vx.elementAt(jj);
-		qpartnum=tx.getQPartnum();
-		itemname=tx.getItemName();
-		mannum=tx.getManNum();
-		itemquant=tx.getItemQuant();
-		investment=tx.getInvestment();
-		qtotal=tx.getQuoteTotal();
-		double subtot=Double.parseDouble(tx.getInvestment())*itemquant;
-		ototinvestment=ototinvestment+subtot;
-		out.println("<li>"+itemname+"</li>");
-		}
-		if (combineopts==0) {
-	out.println("</ul><br>");
-	 Locale[] olocales = NumberFormat.getAvailableLocales();
-	  double OmyNumber = ototinvestment;
-	   NumberFormat oform;
-	  oform = NumberFormat.getIntegerInstance(olocales[1]);
-	if (propprice.equalsIgnoreCase("y")) {
-	out.println("<p align=\"right\">Optional Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(OmyNumber)))+"<br></p>");
-	} else {
-	out.println("<p align=\"right\">Optional Investment: $____________________________<br></p>");
-		}
-		}
-		}
-
-		if (combineopts==1) {
-	out.println("</ul><br>");
-	 Locale[] olocales = NumberFormat.getAvailableLocales();
-	  double OmyNumber = ototinvestment;
-	   NumberFormat oform;
-	  oform = NumberFormat.getIntegerInstance(olocales[1]);
-	if (propprice.equalsIgnoreCase("y")) {
-	out.println("<p align=\"right\">Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(OmyNumber)))+"<br></p>");
-	} else {
-	out.println("<p align=\"right\">Investment: $____________________________<br></p>");
-		}
-			}
-// NOW COMPLETE QUOTE
-
-
-	out.println("<br><br>");
-	out.println("Payment to be made as follows:<br>");
-	out.println("<p align=center>"+qpayterms+"</p><br>");
-	out.println("All material is guaranteed to be as specified.  All work completed within Massachusetts code specification. Please be aware that any hidden work which may be discovered or changed work orders will alter the cost of this project. Anticipated Install Dates are not guaranteed. "+doGetCompanyName()+" will strive to meet the anticipated dates, but equipment orders, and scheduling of other jobs sometimes make it necessary to adjust dates by a day or two. The Installation Coordinator will contact you to schedule the install date and time. All agreements contingent upon strikes, accidents or delays beyond our control.  Owner to carry fire, tornado and other necessary insurance.  Our workers are fully covered by Workmen's Compensation Insurance.  "+doGetCompanyName()+" wishes to thank you for your time and consideration on this project.  You may be assured of quality, professionalism and complete satisfaction with our work.<br>");
-
-		if (qdisc.length()>1) {
-	out.println("<br><br>");
-	out.println("<b>The following Disclaimers apply to this proposal:<br>");
-	out.println(""+qdisc+"<br></b>");
-		}
-
-
-	out.println("<p align=center>Authorized Signature ___________________________________________________________________________<br><b>Note: This proposal may be withdrawn by us if not accepted within 10 days.</b></p>");
-
-	out.println("<br><br><p align=center><b>Acceptance of Proposal</b></p>");
-	out.println("The above prices, specifications and conditions are satisfactory and are hereby accepted.  You are authorized to do the work as specified.  Payment will be made as outlined above.  Cancellation of this proposal will result in a 10% retainer.<br><br>");
-	out.println("</p><table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	out.println("<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
-	out.println("<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
-	out.println("<br><br><br><br>");
-
-	//out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
-	if (propprice.equalsIgnoreCase("n")) {
-	out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(myNumber)))+"<br></p>");
-			}
-		con.close();
     }
 
 
@@ -26793,7 +26404,8 @@ private void doAddChargeMenu(HttpServletRequest req, HttpServletResponse res, Pr
                 
                 out.println("<html>");
                 out.println("<body bgcolor=\"#FFFFFF\" >");
-                out.println("<br><br><br>");
+		// need to insert a table here to put categories on one side and alphabetical on second side
+                out.println("<br><br><br><table width=\"75%\"><th>Charges By Category</th><th>Charges by Service</th><tr><td>");
 
 		int catnum=0;
 		String category="";
@@ -26806,7 +26418,16 @@ private void doAddChargeMenu(HttpServletRequest req, HttpServletResponse res, Pr
                         category = t.Category();
                 out.println("<a href="+classdir+"UniCash?action=showchargeselect&servicestart=a&serviceend=d&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+"&catnum="+catnum+" target=phpmain>"+category+"</a><br>");
                 }
-                out.println("<br><br><br>");
+		out.println("</td><td valign=\"top\">");
+		String mbody="";
+			mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=a&serviceend=d&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>A-C</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=d&serviceend=g&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>D-E</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=f&serviceend=j&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>F-I</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=j&serviceend=n&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>J-M</a><br>");	
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=n&serviceend=r&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>N-Q</a><br>");	
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=r&serviceend=v&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>R-U</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=showchargeselect&servicestart=v&serviceend=ZZ&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+psource+" target=phpmain>V-Z</a><br>");
+                out.println(mbody+"</td></tr></table><br><br><br>");
 
                 out.println("<a href="+classdir+"UniCash?action="+psource+"&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+" target=phpmain>Return To Call Slip</a><br>");
 		int frcode=0;
@@ -27344,7 +26965,7 @@ else if (action.equalsIgnoreCase("showservpchargeselect")) {
                         out.println ("<th>Category</th><th>Service</th><th>T/M Primary</th><th>T/M Additional</th><th>S/C Primary</th><th>S/C Additional</th><th>Commercial</th>");
 			}
 }
-        
+			if ((catnum==null)) { catnum=""; }
                         Vector v;
 			if (catnum.equalsIgnoreCase("0")) {
 				v = FlatRateTable.getAllItems(con);
