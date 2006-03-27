@@ -104,7 +104,18 @@ public class MainMenu extends UniCash
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=listprevprice target=_blank>Planned Service Pricing</a><br>");
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=calcprice target=_blank>Calculate Price</a><br>");
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=reminders target=_blank>Reminders</a><br>");
-	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=flatrate-cat target=nav>Flat Rate Prices</a><br>");
+	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=flatrate-alph target=nav>Flat Rate - Alpha</a><br>");
+if (menu.equalsIgnoreCase("flatrate-alph"))  {
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=a&serviceend=d target=phpmain>A-C</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=d&serviceend=g target=phpmain>D-E</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=f&serviceend=j target=phpmain>F-I</a><br>");
+mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=j&serviceend=n target=phpmain>J-M</a><br>");	
+mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=n&serviceend=r target=phpmain>N-Q</a><br>");	
+mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=r&serviceend=v target=phpmain>R-U</a><br>");
+mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listflatrate&servicestart=v&serviceend=ZZ target=phpmain>V-Z</a><br>");
+
+}	
+	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=flatrate-cat target=nav>Flat Rate - Category</a><br>");
 	menu = req.getParameter("menu");
 	if (menu.equalsIgnoreCase("flatrate-cat")) {
                 Vector v;

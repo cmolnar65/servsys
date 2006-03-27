@@ -15990,6 +15990,55 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 	out.println("</CENTER>");
 		con.close();
 	}
+	
+  public static String doMHeaderString(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username, String mbody)
+                throws Exception
+        {
+		String imagename = null;
+		String imagewidth = null;
+		String imagehight = null;
+		String compname = null;
+		String complogo = null;
+		String compaddress = null;
+		String compphone = null;
+		String useletterhead = null;
+
+                Vector v;
+                v = UniCompConfig.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniCompConfig t = (UniCompConfig) v.elementAt(i);
+			imagename=t.getImage();
+			imagewidth=t.getImageWidth();
+			imagehight=t.getImageHight();
+			compname=t.getCoName();
+			complogo=t.getCoLogo();
+			compaddress=t.getCoAddress();
+			compphone=t.getCoPhone();
+			useletterhead=t.getUseLetterHead();
+		}
+	if (useletterhead.equalsIgnoreCase("no")) 
+	{
+	mbody=combinestring(mbody,"<table align=\"center\" border=0 cellpadding=10 cols=3 width=\"95%\">");
+	mbody=combinestring(mbody,"<tr><td> ");
+	mbody=combinestring(mbody,"<IMG SRC=\""+imagename+"\" NAME=\"CompLogo\" ALIGN=LEFT WIDTH="+imagewidth+" HEIGHT="+imagehight+" BORDER=0><BR CLEAR=LEFT>");
+	mbody=combinestring(mbody,"</td>");
+	mbody=combinestring(mbody,"<font size=2><td><P ALIGN=CENTER ><b>"+compname+"<br>");
+	mbody=combinestring(mbody,complogo);
+	mbody=combinestring(mbody,compaddress);
+	mbody=combinestring(mbody,compphone+"</b>");
+	mbody=combinestring(mbody,"</font></td>");
+	mbody=combinestring(mbody,"</tr>");
+	mbody=combinestring(mbody,"</table>");
+	}
+	else 
+	{
+	mbody=combinestring(mbody,"<br><br><br>");
+	}
+	return mbody;
+	}
+
 
   public static void doMHeader(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -17807,6 +17856,16 @@ private void doAddSurvey(HttpServletRequest req, HttpServletResponse res, PrintW
 	out.println("--> </style>");
 	}
 
+	 public static String doStyleSheetString(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username, String mbody)
+                throws Exception
+        {
+	mbody=combinestring(mbody,"<style type=\"text/css\"><!-- body,table { color: #000000; background-color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; font-size: .9em; font-family: Arial, Helvetica, sans-serif; } ");
+	mbody=combinestring(mbody," .tableoffcolor { font-family: Arial, Helvetica, sans-serif; font-size: 1em; background-color: #A0B8C8; height: auto; width: auto; margin: 1em; padding: 1em; border: thin solid; } ");
+	mbody=combinestring(mbody," .tableoffcolor2 { font-family: Arial, Helvetica, sans-serif; font-size: 1em; background-color: #grey; height: auto; width: auto; margin: 1em; padding: 1em; border: thin solid; } ");
+	mbody=combinestring(mbody,"--> </style>");
+	return mbody;
+	}
+	
 public static void doMenuStyleSheet(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 	      throws Exception
       {
