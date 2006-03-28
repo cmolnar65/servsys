@@ -309,11 +309,19 @@ out.println("</CENTER>");
 	                        {
                                 doSavePackageCompare(req, res, out, session, username);
 	                        }
+			else if (action.equalsIgnoreCase("updatepackagecompareform"))
+	                        {
+                                doSavePackageCompare(req, res, out, session, username);
+	                        }
 			else if (action.equalsIgnoreCase("delpackcomprec"))
 	                        {
                                 doDelPackageCompare(req, res, out, session, username);
 	                        }
 			else if (action.equalsIgnoreCase("addpackcompare"))
+	                        {
+                                doAddPackCompare(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("editpackcompare"))
 	                        {
                                 doAddPackCompare(req, res, out, session, username);
 	                        }
@@ -5044,7 +5052,24 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                         return custtype;                       
 
 		}
+	public String doGetCustName(int custnum)
+		throws Exception
+		{
 
+                Vector v;
+                v = UniCustomer.getIndItem(con, custnum);
+                int counter=0;
+		String custname= null;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+                        custname = t.getCustomerName();
+                }
+                        return custname;                       
+
+		}
+
+		
 	public double doSitemLowPrice()
         throws Exception
         {
@@ -10170,7 +10195,7 @@ throws Exception
             
 	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=sendproposals\" name=\"addcat\">");
 	out.println("<p>Transmit Proposals for Date :");
-	out.println("<input type=\"date\" name=\"qdate\" value=\""+s+"\">");
+	out.println("<input type=\"date\" name=\"listdate\" value=\""+s+"\">");
 	out.println("</p>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Transmit\">");
 	out.println("<INPUT TYPE=\"reset\">");
@@ -21829,8 +21854,10 @@ private void doDeleteCallslip(HttpServletRequest req, HttpServletResponse res, P
 private void doSavePackageCompare(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
+		String action=req.getParameter("action");
 		String tcustnum = req.getParameter("custnum");
        		 int custnum = Integer.parseInt(tcustnum);
+		 String propnum=req.getParameter("propnum");
                 String description = req.getParameter("description");
                 String best1 = req.getParameter("best1");
                 String best2= req.getParameter("best2");
@@ -21862,8 +21889,12 @@ private void doSavePackageCompare(HttpServletRequest req, HttpServletResponse re
 			CustNum=t.getCustSite();
 			SiteNum=t.getSiteNum();
 		}
-			
+		if (action.equalsIgnoreCase("savepackagecompareform")) {
                 PackCompare.AddItem(con,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3 );
+		} else if (action.equalsIgnoreCase("updatepackagecompareform")) {
+		
+		PackCompare.UpdateItem(con,propnum,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3 );	
+		}
                 out.println("Your item has been updated in the database<br>");
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart=A&custstop=A");
@@ -25781,160 +25812,18 @@ private void doSendSingleProposals(HttpServletRequest req, HttpServletResponse r
                 throws Exception
                         {
 		String qdate = req.getParameter("qdate");
-		int tcustnum = 0;
-		String tcontnum = null;
-            String mbody = "";
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
-
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
-		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-        	String emailserver = null;
-        	String emailsendaddress= null;
-        	String techemailaddress= null;
-
-                String qdescription  = null;
-                String qpayterms  = null;
-		int propnum = 0;
-                String qnotes  = null;
-                String qadditionalserv  = null;
-		int qpartnum=0;
-		String itemname=null;
-		String mannum=null;
-		int itemquant=0;
-		int itemnum=0;
-		int counter = 0;
-		double totinvestment=0.00;
-		String investment=null;
-		double qtotal=0.00;
-		int combineopts=0;
+		String mbody=ServsysProposal.getIndividualItem (con, req,res, out, session, username, classdir);
             String tcsrec = req.getParameter("csrec");
             String ttcustnum = req.getParameter("custnum");
-	int csrec = Integer.parseInt(tcsrec);
-	int custnum = Integer.parseInt(ttcustnum);
-                Vector vv;
-                vv = UniQuotes.getIndItem(con,custnum, csrec);
-		counter=0;
-                for (int i = 0 ; i < vv.size(); i++)
-                {
-                UniQuotes tt = (UniQuotes) vv.elementAt(i);
-		qdate=tt.getQDate();
-		propnum = tt.getQuoteNum();
-		qdescription=tt.getQDescription();
-		qnotes=tt.getQNotes();
-		tcustnum=tt.getCrecNum();
-		qpayterms=tt.getQPayterms();
-		qadditionalserv=tt.getQAdditionalServ();
-		combineopts=tt.getCombineOpts();
-
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
-	mbody="";	
-	mbody=combinestring(mbody,"<html><basefont size=2>");
-	mbody=combinestring(mbody,"<html><head><title>Proposal</title></head>");
-	mbody=combinestring(mbody,"<h2 align=CENTER>Proposal</h2>");
-	mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
-	mbody=combinestring(mbody,"<td>This proposal is issued to:</td><td>"+cname+" </td></tr> ");
-	mbody=combinestring(mbody,"<tr><td></td><td>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
-	mbody=combinestring(mbody,"<tr><td></td><td></td></tr>");
-	mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+doFormatDate(getDate(qdate))+" </td></tr> ");
-	mbody=combinestring(mbody,"</table></p> ");
-	mbody=combinestring(mbody,"<p><font size=3>Thank you for the oppurtunity to quote on "+qdescription+".<br>");
-	mbody=combinestring(mbody,"<br>This work will consist of:<br>");
-	mbody=combinestring(mbody,"<ul>");
-	
-                Vector vp;
-                vp = UniQuoteParts.getAllItems(con,propnum);
-                for (int j = 0 ; j < vp.size(); j++)
-                {
-                UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
-		qpartnum=tp.getQPartnum();
-		itemname=tp.getItemName();
-		mannum=tp.getManNum();
-		itemquant=tp.getItemQuant();
-		investment=tp.getInvestment();
-		qtotal=tp.getQuoteTotal();
-		double subtot=Double.parseDouble(tp.getInvestment())*itemquant;
-		totinvestment=totinvestment+subtot;
-	mbody=combinestring(mbody,"<li>"+itemquant+" - "+itemname+"; "+mannum+"</li>");
-	
-		}
-		
-	
-	mbody=combinestring(mbody,"</ul>");
-
-	mbody=combinestring(mbody,"<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
-	mbody=combinestring(mbody,"<br><br>");
-
-	mbody=combinestring(mbody,"Payment to be made as follows:<br>");
-	mbody=combinestring(mbody,"<p align=center>"+qpayterms+"</p><br>");
-	mbody=combinestring(mbody,"All material is guaranteed to be as specified.  All work completed within Massachusetts code specification. Please be aware that any hidden work which may be discovered or changed work orders will alter the cost of this project. All agreements contingent upon strikes, accidents or delays beyond our control.  Owner to carry fire, tornado and other necessary insurance.  Our workers are fully covered by Workmen's Compensation Insurance.  "+doGetCompanyName()+" wishes to thank you for your time and consideration on this project.  You may be assured of quality, professionalism and complete satisfaction with our work.<br><br>");
-	mbody=combinestring(mbody,"<p align=center>Authorized Signature ___________________________________________________________________________<br><b>Note: This proposal may be withdrawn by us if not accepted within 10 days.</b></p>");
-
-	mbody=combinestring(mbody,"<br><br><p align=center><b>Acceptance of Proposal</b></p>");
-	mbody=combinestring(mbody,"The above prices, specifications and conditions are satisfactory and are hereby accepted.  You are authorized to do the work as specified.  Payment will be made as outlined above.  Cancellation of this proposal will result in a 10% retainer.<br><br>");
-	mbody=combinestring(mbody,"</p><table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
-	mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr> ");
-	// END OF SINGLE QUOTE HERE
-out.println(mbody);	
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetProp_Email(username);
+	String tech_name = doGetTechInfo_name(username);
         techemailaddress=doGetTech_Email(username);
       String smtpuser = doGetSmtpUser(username);
       String smtppassword = doGetSmtpPassword(username);
+      String cname=doGetCustName(Integer.parseInt(ttcustnum));
 	doMailSend(emailserver, emailsendaddress, techemailaddress, "Proposal For: "+cname+" - "+qdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
-mbody=null;
-		}
-		
+	mbody=null;		
 		con.close();
     }
 
@@ -25942,161 +25831,33 @@ private void doSendProposals(HttpServletRequest req, HttpServletResponse res, Pr
                 throws Exception
                         {
 		String qdate = req.getParameter("listdate");
-		int tcustnum = 0;
-		String tcontnum = null;
-            String mbody = "";
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
-
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                int enum10 =0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
-		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-        	String emailserver = null;
-        	String emailsendaddress= null;
-        	String techemailaddress= null;
-
-                String qdescription  = null;
-                String qpayterms  = null;
-		int propnum = 0;
-                String qnotes  = null;
-                String qadditionalserv  = null;
-		int qpartnum=0;
-		String itemname=null;
-		String mannum=null;
-		int itemquant=0;
-		int itemnum=0;
-		int counter = 0;
-		double totinvestment=0.00;
-		String investment=null;
-		int combineopts=0;
-		double qtotal=0.00;
-                Vector vv;
+		String mbody="";
+		//String qdate = req.getParameter("qdate");
+		Vector vv;
                 vv = UniQuotes.getAllDateItems(con,doFormatDateDb(getDateDb(qdate)));
-		counter=0;
                 for (int i = 0 ; i < vv.size(); i++)
                 {
-		totinvestment=0.00;
-		qtotal=0.00;
-		itemquant=0;
                 UniQuotes tt = (UniQuotes) vv.elementAt(i);
-		qdate=tt.getQDate();
-		propnum = tt.getQuoteNum();
-		qdescription=tt.getQDescription();
-		qnotes=tt.getQNotes();
-		tcustnum=tt.getCrecNum();
-		qpayterms=tt.getQPayterms();
-		qadditionalserv=tt.getQAdditionalServ();
-		combineopts=tt.getCombineOpts();
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
-	mbody="";	
-	mbody=combinestring(mbody,"<html><basefont size=2>");
-	mbody=combinestring(mbody,"<html><head><title>Proposal</title></head>");
-	mbody=combinestring(mbody,"<h2 align=CENTER>Proposal</h2>");
-	mbody=combinestring(mbody,"<P ALIGN=LEFT><table><tr>");
-	mbody=combinestring(mbody,"<td>This proposal is issued to:</td><td>"+cname+" </td></tr> ");
-	mbody=combinestring(mbody,"<tr><td></td><td>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
-	mbody=combinestring(mbody,"<tr><td></td><td></td></tr>");
-	mbody=combinestring(mbody,"<tr><td>By <b>"+doGetCompanyName()+"</b> on:</td><td>"+doFormatDate(getDate(qdate))+" </td></tr> ");
-	mbody=combinestring(mbody,"</table></p> ");
-	mbody=combinestring(mbody,"<p><font size=3>Thank you for the oppurtunity to quote on "+qdescription+".<br>");
-	mbody=combinestring(mbody,"<br>This work will consist of:<br>");
-	mbody=combinestring(mbody,"<ul>");
-	
-                Vector vp;
-                vp = UniQuoteParts.getAllItems(con,propnum);
-                for (int j = 0 ; j < vp.size(); j++)
-                {
-                UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
-		qpartnum=tp.getQPartnum();
-		itemname=tp.getItemName();
-		mannum=tp.getManNum();
-		itemquant=tp.getItemQuant();
-		investment=tp.getInvestment();
-		qtotal=tp.getQuoteTotal();
-		double subtot=Double.parseDouble(tp.getInvestment())*itemquant;
-		totinvestment=totinvestment+subtot;
-	mbody=combinestring(mbody,"<li>"+itemquant+" - "+itemname+"; "+mannum+"</li>");
-	
-		}
-		
-	
-	mbody=combinestring(mbody,"</ul>");
-
-	mbody=combinestring(mbody,"<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(totinvestment)+"<br></p>");
-	mbody=combinestring(mbody,"<br><br>");
-
-	mbody=combinestring(mbody,"Payment to be made as follows:<br>");
-	mbody=combinestring(mbody,"<p align=center>"+qpayterms+"</p><br>");
-	mbody=combinestring(mbody,"All material is guaranteed to be as specified.  All work completed within Massachusetts code specification. Please be aware that any hidden work which may be discovered or changed work orders will alter the cost of this project. All agreements contingent upon strikes, accidents or delays beyond our control.  Owner to carry fire, tornado and other necessary insurance.  Our workers are fully covered by Workmen's Compensation Insurance.  "+doGetCompanyName()+" wishes to thank you for your time and consideration on this project.  You may be assured of quality, professionalism and complete satisfaction with our work.<br><br>");
-	mbody=combinestring(mbody,"<p align=center>Authorized Signature ___________________________________________________________________________<br><b>Note: This proposal may be withdrawn by us if not accepted within 10 days.</b></p>");
-
-	mbody=combinestring(mbody,"<br><br><p align=center><b>Acceptance of Proposal</b></p>");
-	mbody=combinestring(mbody,"The above prices, specifications and conditions are satisfactory and are hereby accepted.  You are authorized to do the work as specified.  Payment will be made as outlined above.  Cancellation of this proposal will result in a 10% retainer.<br><br>");
-	mbody=combinestring(mbody,"</p><table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	mbody=combinestring(mbody,"<tr><td>Customer Signature</td><td>Date</td><td>The Company</td><td>Date</td></tr> ");
-	mbody=combinestring(mbody,"<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr> ");
-	// END OF SINGLE QUOTE HERE
-out.println(mbody);	
+		int tcontnum=tt.getQuoteNum();
+		int custnum=tt.getCrecNum();
+		mbody=ServsysProposal.getAllDateItems(con, req,res, out, session, username, classdir, custnum, tcontnum);
+		//mbody=combinestring(mbody,"<br>Quotenum="+tcontnum+" Custnum="+custnum+"<br>");
+		//String tcsrec = req.getParameter("csrec");
+            //String ttcustnum = req.getParameter("custnum");
         emailserver = doGetSmtpServer(username);
         emailsendaddress=doGetProp_Email(username);
+	String tech_name = doGetTechInfo_name(username);
         techemailaddress=doGetTech_Email(username);
       String smtpuser = doGetSmtpUser(username);
       String smtppassword = doGetSmtpPassword(username);
-	doMailSend(emailserver, emailsendaddress, techemailaddress, "Proposal For: "+cname+" - "+qdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
-mbody=null;
+      String cname=doGetCustName(custnum);
+      doMailSend(emailserver, emailsendaddress, techemailaddress, "Proposal For: "+cname+" - "+qdate+" - "+ tech_name , mbody, smtpuser, smtppassword);
+	out.println(mbody+"<br>");
+	mbody="";
+	
 		}
-
-		
-    }
+		con.close();
+			}
 //
 //
 private void doPrintJobFlow(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -26239,7 +26000,8 @@ private void doPrintJobFlow(HttpServletRequest req, HttpServletResponse res, Pri
 private void doPrintProposal(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
-		ServsysProposal.getIndividualItem (con, req,res, out, session, username, classdir); 
+		String mbody=ServsysProposal.getIndividualItem (con, req,res, out, session, username, classdir); 
+		con.close();
 	
     }
 

@@ -415,7 +415,7 @@ public class ShowCustomerDetail
 			totinvestment=totinvestment+ptotal;
 		}
 		
-		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editproposal&quotenum="+propnum+"&&custnum="+qcustnum+"\">"+propnum+"</a></td><td>"+pdate+"</td><td>"+psummary+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"</td><td><a href="+classdir+"UniCash?action=printproposal&propnum="+propnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=printcompare&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Compare</a></td><td><a href="+classdir+"UniCash?action=sendsingleproposals&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
+		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editproposal&quotenum="+propnum+"&propnum="+propnum+"&custnum="+qcustnum+"\">"+propnum+"</a></td><td>"+pdate+"</td><td>"+psummary+"</td><td>"+NumberFormat.getCurrencyInstance().format(totinvestment)+"</td><td>"+qstatus+"</td><td><a href="+classdir+"UniCash?action=printproposal&propnum="+propnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=printcompare&csrec="+propnum+"&custnum="+custnum+" target=\"_blank\">Compare</a></td><td><a href="+classdir+"UniCash?action=sendsingleproposals&csrec="+propnum+"&propnum="+propnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
 		
 		//DELETE LINK	
 		if (AllowDelete==1) {
@@ -473,7 +473,7 @@ public class ShowCustomerDetail
 		wssummary=tp.getDescription();
 		
 		
-		out.println("<tr><td>"+recnum+"</td><td>"+wsdate+"</td><td>"+wssummary+"</td><td><a href="+classdir+"UniCash?action=printcompareform&recnum="+recnum+"&custnum="+wscustnum+" target=_blank>Print Format</a></td>");
+		out.println("<tr><td><a href="+classdir+"UniCash?action=editpackcompare&propnum="+recnum+"&custnum="+wscustnum+" >"+recnum+"</a></td><td>"+wsdate+"</td><td>"+wssummary+"</td><td><a href="+classdir+"UniCash?action=printcompareform&recnum="+recnum+"&custnum="+wscustnum+" target=_blank>Print Format</a></td>");
 			out.println("<td><a href="+classdir+"UniCash?action=delpackcomprec&custnum="+custnum+"&recnum="+recnum+">Delete</a></td>");
 		out.println("</tr>");
 	}
@@ -560,7 +560,7 @@ public class ShowCustomerDetail
 	out.println("<a href="+classdir+"UniCash?action=addcheckme&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+">Add Equipment Check to Customer File</a>");
 
 	}
-	con.close();
+	//con.close();
 	return "true";
 }
 	

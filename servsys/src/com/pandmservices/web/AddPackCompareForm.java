@@ -54,6 +54,8 @@ public class AddPackCompareForm
 	public static String getIndividualItem (Connection con, HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username, String classdir, String tcustnum, String custsitenum, String sitenum, String packdate)
 	throws SQLException, TodoException, Exception
 {
+	String action=req.getParameter("action");
+	String tpropnum=req.getParameter("propnum");
 	int custnum=Integer.parseInt(tcustnum);
 	int propnum=0;
 	int qcustnum=0;
@@ -63,7 +65,38 @@ public class AddPackCompareForm
 	double totinvestment=0.00;
 	double ptotal=0.00;
 	int counter=0;
-	
+	if (action.equalsIgnoreCase("editpackcompare")) {
+		propnum=Integer.parseInt(tpropnum);
+	Vector vp1;
+	vp1 = PackCompare. getIndItems(con,propnum);
+	counter=0;
+	for (int t = 0 ; t < vp1.size(); t++)
+	{
+		PackCompare tp1 = (PackCompare) vp1.elementAt(t);
+		 int recnum=tp1.getRecNum();
+		 
+		//wsdate=doFormatDate(getDate(tp.getPackDate()));
+		description=tp1.getDescription();
+		best1=tp1.getBest1();
+		best2=tp1.getBest2();
+		best3=tp1.getBest3();
+		best4=tp1.getBest4();
+		best5=tp1.getBest5();
+		better1=tp1.getBetter1();
+		better2=tp1.getBetter2();
+		better3=tp1.getBetter3();
+		better4=tp1.getBetter4();
+		better5=tp1.getBetter5();
+		good1=tp1.getGood1();
+		good2=tp1.getGood2();
+		good3=tp1.getGood3();
+		good4=tp1.getGood4();
+		good5=tp1.getGood5();
+		desc1=tp1.getDesc1();
+		desc2=tp1.getDesc2();
+		desc3=tp1.getDesc3();
+	}
+	}
 	out.println("<html>");
 	out.println("<head>");
 	out.println("<title>Add Package Compare Form</title>");
@@ -97,8 +130,11 @@ public class AddPackCompareForm
 		out.println("</tr>");
 	}
 	out.println("</table></td><td><h3>Proposals to Compare</h3>");
-	
-	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=savepackagecompareform\" name=\"addform\">");
+	if (action.equalsIgnoreCase("editpackcompare")) {
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updatepackagecompareform&propnum="+tpropnum+"\" name=\"addform\">");
+	} else {
+		out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=savepackagecompareform\" name=\"addform\">");
+	}
 	out.println("<table size=100% border=1>");
 	out.println("<tr><td>Description:</td><td>");
 	out.println("<INPUT TYPE=\"text\" NAME=\"description\" VALUE=\""+description+"\"></td></tr>");

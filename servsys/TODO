@@ -15,6 +15,18 @@
   information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
   appropriate people.
 
+
+=================================================================
+RELEASE 2.19
+=================================================================
+(F) Moved Send Time Sheet to external routine.
+(F) Changed version number.
+(F) Put List Flat rate by Alphabet back in - along with Category (Scott Request)
+(F) Fixed Time Sheet Columns for both Printed Form and Email (Bug on Email)
+(N) Added edit package compare forms (Scott Request)
+(F) Moved print proposal and send proposal to external class. Part of code cleanup.
+
+
 =================================================================
 RELEASE 2.18
 =================================================================

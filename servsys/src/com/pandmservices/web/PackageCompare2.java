@@ -420,7 +420,7 @@ public class PackageCompare2 extends UniCash
 	out.println("<tr>");
 	// Best Package Here
 	if (bestdesc.length()>1) {
-	out.println("<td width=\"33%\" >");
+	out.println("<td width=\"33%\" valign=\"top\">");
 	out.println("<p align=\"left\"><b>"+bestdesc+"</b></p><ul>");
 	if (description1.length()>1) {
 	out.println("<p align=\"left\">"+description1+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment1)+"</p><br>");
@@ -442,7 +442,7 @@ public class PackageCompare2 extends UniCash
 		}	
 	// Better Package Here
 	if (betterdesc.length()>1) {
-	out.println("<td width=\"33%\" >");
+	out.println("<td width=\"33%\"  valign=\"top\">");
 	out.println("<p align=\"left\"><b>"+betterdesc+"</b></p><ul>");
 
 	if (description6.length()>1) {
@@ -466,7 +466,7 @@ public class PackageCompare2 extends UniCash
 
 	// Good Package Here
 	if (gooddesc.length()>1) {
-	out.println("<td width=\"33%\" >");
+	out.println("<td width=\"33%\"  valign=\"top\">");
 	out.println("<p align=\"left\"><b>"+gooddesc+"</b></p><ul>");
 	if (description11.length()>1) {
 	out.println("<p align=\"left\">"+description11+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment11)+"</p><br>");
