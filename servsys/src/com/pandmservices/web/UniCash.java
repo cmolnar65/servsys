@@ -5623,6 +5623,67 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 
 //RELEASE_VERSION
 			vnumber = "2.19";
+		if (dbvnumber.equalsIgnoreCase("2.18")) {
+			Statement stmtu2 = con.createStatement();
+			int result218a = stmtu2.executeUpdate("alter table quotes add combineopts tinyint(4) default 0 after techid");
+			int result218b = stmtu2.executeUpdate("UPDATE quotes set combineopts='0';");
+			
+			result218a = stmtu2.executeUpdate("DROP TABLE IF EXISTS heatloads;");
+			result218a = stmtu2.executeUpdate("CREATE TABLE heatloads (recnum int(11) NOT NULL auto_increment, ceilingsqft int(11), wallsqft int(11),nwinsqft int(11),swinsqft int(11),ewinsqft int(11),wwinsqft int(11),nsldoor int(11),ssldoor int(11),esldoor int(11),wsldoor int(11),doorsqft int(11),totglasssqft int(11),nframewall int(11),nmaswall int(11),nmasbwall int(11),basfloorsqft int(11),slabnoperim int(11),slabwperim int(11),flooruncond int(11),mechvent int(11),numpeople int(11),PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
+
+result218a = stmtu2.executeUpdate("drop table if exists wintype;");
+result218a = stmtu2.executeUpdate("create table wintype(wintype text not null);");
+result218a = stmtu2.executeUpdate("insert into wintype values ('Single');");
+result218a = stmtu2.executeUpdate("insert into wintype values ('Double');");
+result218a = stmtu2.executeUpdate("insert into wintype values ('Triple');");
+result218a = stmtu2.executeUpdate("drop table if exists ceiltype;");
+result218a = stmtu2.executeUpdate("create table ceiltype(ceiltype text not null);");
+result218a = stmtu2.executeUpdate("insert into ceiltype values ('R11 - 3inch');");
+result218a = stmtu2.executeUpdate("insert into ceiltype values ('R19 - 6inch');");
+result218a = stmtu2.executeUpdate("insert into ceiltype values ('R30 - 10inch');");
+result218a = stmtu2.executeUpdate("drop table if exists sldoortype;");
+result218a = stmtu2.executeUpdate("create table sldoortype(sldoortype text not null);");
+result218a = stmtu2.executeUpdate("insert into sldoortype values ('Single');");
+result218a = stmtu2.executeUpdate("insert into sldoortype values ('Double');");
+result218a = stmtu2.executeUpdate("insert into sldoortype values ('Triple');");
+result218a = stmtu2.executeUpdate("drop table if exists doortype;");
+result218a = stmtu2.executeUpdate("create table doortype(doortype text not null);");
+result218a = stmtu2.executeUpdate("insert into doortype values ('Wood');");
+result218a = stmtu2.executeUpdate("insert into doortype values ('With Storm');");
+result218a = stmtu2.executeUpdate("insert into doortype values ('Urethane');");
+result218a = stmtu2.executeUpdate("drop table if exists fwalltype;");
+result218a = stmtu2.executeUpdate("create table fwalltype(fwalltype text not null);");
+result218a = stmtu2.executeUpdate("insert into fwalltype values ('R13 - 3inch');");
+result218a = stmtu2.executeUpdate("insert into fwalltype values ('R19 - 6inch');");
+result218a = stmtu2.executeUpdate("drop table if exists masawalltype;");
+result218a = stmtu2.executeUpdate("create table masawalltype(masawalltype text not null);");
+result218a = stmtu2.executeUpdate("insert into masawalltype values ('0inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into masawalltype values ('1inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into masawalltype values ('3inch Insulation');");
+result218a = stmtu2.executeUpdate("drop table if exists masbwalltype;");
+result218a = stmtu2.executeUpdate("create table masbwalltype(masbwalltype text not null);");
+result218a = stmtu2.executeUpdate("insert into masbwalltype values ('0inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into masbwalltype values ('1inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into masbwalltype values ('3inch Insulation');");
+result218a = stmtu2.executeUpdate("drop table if exists slabnotype;");
+result218a = stmtu2.executeUpdate("create table slabnotype(slabnotype text not null);");
+result218a = stmtu2.executeUpdate("insert into slabnotype values ('0inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into slabnotype values ('1inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into slabnotype values ('2inch Insulation');");
+result218a = stmtu2.executeUpdate("drop table if exists slabperimtype;");
+result218a = stmtu2.executeUpdate("create table slabperimtype(slabperimtype text not null);");
+result218a = stmtu2.executeUpdate("insert into slabperimtype values ('0inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into slabperimtype values ('1inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into slabperimtype values ('2inch Insulation');");
+result218a = stmtu2.executeUpdate("drop table if exists uncondfloortype;");
+result218a = stmtu2.executeUpdate("create table uncondfloortype(uncondfloortype text not null);");
+result218a = stmtu2.executeUpdate("insert into uncondfloortype values ('0inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into uncondfloortype values ('1inch Insulation');");
+result218a = stmtu2.executeUpdate("insert into uncondfloortype values ('2inch Insulation');");
+int result219z = stmtu2.executeUpdate("UPDATE version set vnumber='2.19';");
+		}
+
+			
 		if (dbvnumber.equalsIgnoreCase("2.17")) {
 			Statement stmtu2 = con.createStatement();
 			int result218a = stmtu2.executeUpdate("alter table quotes add combineopts tinyint(4) default 0 after techid");
