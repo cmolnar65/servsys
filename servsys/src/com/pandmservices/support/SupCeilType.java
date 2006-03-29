@@ -19,7 +19,7 @@ public class SupCeilType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from ceiltype where wintype='"+ceiltype+"';");
+	ResultSet rs = stmt.executeQuery("select * from ceiltype where ceiltype='"+ceiltype+"';");
 	
 		if (!rs.next())
 		{
@@ -45,6 +45,6 @@ public class SupCeilType
 	}
 	
 	
-        public String CeilType() { return ceiltype; }
+        public String SupCeilingType() { return ceiltype; }
 
 }

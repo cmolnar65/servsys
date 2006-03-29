@@ -19,7 +19,7 @@ public class SlabPerimType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from slabperimtype where wintype='"+slabperimtype+"';");
+	ResultSet rs = stmt.executeQuery("select * from slabperimtype where slabperimtype='"+slabperimtype+"';");
 	
 		if (!rs.next())
 		{

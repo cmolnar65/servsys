@@ -19,7 +19,7 @@ public class FWallType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from fwalltype where wintype='"+fwalltype+"';");
+	ResultSet rs = stmt.executeQuery("select * from fwalltype where fwalltype='"+fwalltype+"';");
 	
 		if (!rs.next())
 		{
@@ -45,6 +45,6 @@ public class FWallType
 	}
 	
 	
-        public String DoorType() { return fwalltype; }
+        public String FWallType() { return fwalltype; }
 
 }

@@ -528,6 +528,10 @@ public class ShowCustomerDetail
 	out.println("</body>");
 	out.println("</html>");
 	
+	out.println("<P><P>");
+	out.println("<h3>Heat Loads</h3>");
+		out.println("<br><br><a href="+classdir+"UniCash?action=addheatload&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsite="+custsite+"&sitenum="+sitenum+">Add Heat/Cool Load to Customer File</a>");
+	out.println("<P><P>");
 	
 	out.println("<P><P>");
 	out.println("<h3>Equipment Check Record</h3>");

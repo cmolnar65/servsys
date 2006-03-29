@@ -321,6 +321,10 @@ out.println("</CENTER>");
 	                        {
                                 doAddPackCompare(req, res, out, session, username);
 	                        }
+			else if (action.equalsIgnoreCase("addheatload"))
+	                        {
+                                doAddHeatLoad(req, res, out, session, username);
+	                        }
 			else if (action.equalsIgnoreCase("editpackcompare"))
 	                        {
                                 doAddPackCompare(req, res, out, session, username);
@@ -5625,12 +5629,8 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			vnumber = "2.19";
 		if (dbvnumber.equalsIgnoreCase("2.18")) {
 			Statement stmtu2 = con.createStatement();
-			int result218a = stmtu2.executeUpdate("alter table quotes add combineopts tinyint(4) default 0 after techid");
-			int result218b = stmtu2.executeUpdate("UPDATE quotes set combineopts='0';");
-			
-			result218a = stmtu2.executeUpdate("DROP TABLE IF EXISTS heatloads;");
+			int result218a = stmtu2.executeUpdate("DROP TABLE IF EXISTS heatloads;");
 			result218a = stmtu2.executeUpdate("CREATE TABLE heatloads (recnum int(11) NOT NULL auto_increment, ceilingsqft int(11), wallsqft int(11),nwinsqft int(11),swinsqft int(11),ewinsqft int(11),wwinsqft int(11),nsldoor int(11),ssldoor int(11),esldoor int(11),wsldoor int(11),doorsqft int(11),totglasssqft int(11),nframewall int(11),nmaswall int(11),nmasbwall int(11),basfloorsqft int(11),slabnoperim int(11),slabwperim int(11),flooruncond int(11),mechvent int(11),numpeople int(11),PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
-
 result218a = stmtu2.executeUpdate("drop table if exists wintype;");
 result218a = stmtu2.executeUpdate("create table wintype(wintype text not null);");
 result218a = stmtu2.executeUpdate("insert into wintype values ('Single');");
@@ -18138,11 +18138,32 @@ private void doAddPackCompare(HttpServletRequest req, HttpServletResponse res, P
         formatter = new SimpleDateFormat("yyyy-MM-dd");
         String packdate = formatter.format(date);
 		if (csection==null) {
-		       csection="1";
+		       csection="6";
 		}	       
 		String n = AddPackCompareForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custsitenum, sitenum, packdate);
 		}
+		
+private void doAddHeatLoad(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		throws Exception
+        {
+		String tcustnum = req.getParameter("custnum");
+		String custsitenum = req.getParameter("custsitenum");
+		String sitenum = req.getParameter("sitenum");
+		String action = req.getParameter("action");
+		String csection = req.getParameter("csection");
 
+	Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String packdate = formatter.format(date);
+		if (csection==null) {
+		       csection="7";
+		}	       
+		String n = HeatLoadForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custsitenum, sitenum, packdate);
+		out.println(n+"<br>");
+		}
+		
 private void doEditEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {

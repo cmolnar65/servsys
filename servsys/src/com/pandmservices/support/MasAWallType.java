@@ -19,7 +19,7 @@ public class MasAWallType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from masawalltype where wintype='"+masawalltype+"';");
+	ResultSet rs = stmt.executeQuery("select * from masawalltype where masawalltype='"+masawalltype+"';");
 	
 		if (!rs.next())
 		{

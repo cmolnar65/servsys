@@ -19,7 +19,7 @@ public class DoorType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from doortype where wintype='"+doortype+"';");
+	ResultSet rs = stmt.executeQuery("select * from doortype where doortype='"+doortype+"';");
 	
 		if (!rs.next())
 		{

@@ -19,7 +19,7 @@ public class SupSlDoorType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from sldoortype where wintype='"+sldoortype+"';");
+	ResultSet rs = stmt.executeQuery("select * from sldoortype where sldoortype='"+sldoortype+"';");
 	
 		if (!rs.next())
 		{

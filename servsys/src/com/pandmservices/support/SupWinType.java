@@ -45,6 +45,6 @@ public class SupWinType
 	}
 	
 	
-        public String WinType() { return wintype; }
+        public String SupWinType() { return wintype; }
 
 }

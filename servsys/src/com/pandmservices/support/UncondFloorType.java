@@ -19,7 +19,7 @@ public class UncondFloorType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from uncondfloortype where wintype='"+uncondfloortype+"';");
+	ResultSet rs = stmt.executeQuery("select * from uncondfloortype where uncondfloortype='"+uncondfloortype+"';");
 	
 		if (!rs.next())
 		{

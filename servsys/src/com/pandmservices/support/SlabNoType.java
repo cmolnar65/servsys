@@ -19,7 +19,7 @@ public class SlabNoType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from slabnotype where wintype='"+slabnotype+"';");
+	ResultSet rs = stmt.executeQuery("select * from slabnotype where slabnotype='"+slabnotype+"';");
 	
 		if (!rs.next())
 		{

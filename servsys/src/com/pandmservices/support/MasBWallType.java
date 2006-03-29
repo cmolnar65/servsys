@@ -19,13 +19,13 @@ public class MasBWallType
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select * from massbwalltype where wintype='"+massbwalltype+"';");
+	ResultSet rs = stmt.executeQuery("select * from masbwalltype where masbwalltype='"+massbwalltype+"';");
 	
 		if (!rs.next())
 		{
 			throw new TodoException("Record not found, id = " + massbwalltype);
 		}
-		this.massbwalltype = rs.getString("massbwalltype");
+		this.massbwalltype = rs.getString("masbwalltype");
 	}
 
 
@@ -34,11 +34,11 @@ public class MasBWallType
 	{	
 		Vector V = new Vector();
 		Statement stmt = c.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM massbwalltype order by massbwalltype");
+		ResultSet rs = stmt.executeQuery("SELECT * FROM masbwalltype order by masbwalltype");
 		while(rs.next())
 		{
 			
-			MasBWallType t = new MasBWallType(c,rs.getString("massbwalltype"));
+			MasBWallType t = new MasBWallType(c,rs.getString("masbwalltype"));
 			V.addElement(t);
 		}
 		return V;
