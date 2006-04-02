@@ -206,9 +206,9 @@ public static void AddItem(Connection con, int code, String category, String par
 			//String tservice = service.replaceAll("'","''");
 	                Statement stmt = con.createStatement();
 			if (code!=0) {
-	                stmt.executeUpdate("INSERT INTO flat_rate_table (code, category, part, keycode, hours, partcost, custnotes, nodiscount,  specitem) Values ('" + code + "','" +category+ "','"+tpart+"','"+keycode+"','"+hours+"',round('"+partcost+"',2),'"+custnotes+"', '"+nodiscount+"','"+specitem+"')");
+	                stmt.executeUpdate("INSERT INTO flat_rate_table (code, category, part, keycode, hours, partcost, custnotes, nodiscount,  specitem) Values ('" + code + "','" +category+ "','"+tpart+"','"+keycode+"','"+hours+"',round("+partcost+",2),'"+custnotes+"', '"+nodiscount+"','"+specitem+"')");
 			} else {
-	                stmt.executeUpdate("INSERT INTO flat_rate_table (category, part, keycode, hours, partcost, custnotes, nodiscount, specitem) Values ('" +category+ "','"+tpart+"','"+keycode+"','"+hours+"',round('"+partcost+"',2),'"+custnotes+"', '"+nodiscount+"','"+specitem+"')");
+	                stmt.executeUpdate("INSERT INTO flat_rate_table (category, part, keycode, hours, partcost, custnotes, nodiscount, specitem) Values ('" +category+ "','"+tpart+"','"+keycode+"','"+hours+"',round("+partcost+",2),'"+custnotes+"', '"+nodiscount+"','"+specitem+"')");
 				}
 		        }
 

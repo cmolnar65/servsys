@@ -126,7 +126,7 @@ public static void AddItem(Connection con, int crec, String wsdate, String wsdes
 		        {
 	       	        Statement stmt = con.createStatement();
 	                //System.out.println("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult) Values ('"+crec+"','" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"')");
-	                stmt.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult, custsite, sitenum, techid, servsync) Values ('"+crec+"','" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"', '"+custsite+"','"+sitenum+"','"+techid+"','"+servsync+"')");
+	                stmt.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult, custsite, sitenum, techid, servsync, wsnotes) Values ('"+crec+"','" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"', '"+custsite+"','"+sitenum+"','"+techid+"','"+servsync+"','-')");
 		        }
 
 	public static Vector getMaxItem(Connection c)

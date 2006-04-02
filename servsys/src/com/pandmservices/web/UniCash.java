@@ -305,13 +305,25 @@ out.println("</CENTER>");
 	                        {
                                 doEditCustomer(req, res, out, session, username);
 	                        }
-			else if (action.equalsIgnoreCase("savepackagecompareform"))
+			else if (action.equalsIgnoreCase("saveheatload"))
+	                        {
+                                doSaveHeatLoad(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("updateheatload"))
+	                        {
+                                doSaveHeatLoad(req, res, out, session, username);
+	                        }
+				else if (action.equalsIgnoreCase("savepackagecompareform"))
 	                        {
                                 doSavePackageCompare(req, res, out, session, username);
 	                        }
 			else if (action.equalsIgnoreCase("updatepackagecompareform"))
 	                        {
                                 doSavePackageCompare(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("deleteheatload"))
+	                        {
+                                doDelHeatLoad(req, res, out, session, username);
 	                        }
 			else if (action.equalsIgnoreCase("delpackcomprec"))
 	                        {
@@ -322,6 +334,14 @@ out.println("</CENTER>");
                                 doAddPackCompare(req, res, out, session, username);
 	                        }
 			else if (action.equalsIgnoreCase("addheatload"))
+	                        {
+                                doAddHeatLoad(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("printheatload"))
+	                        {
+                                doPrintHeatLoad(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("editheatload"))
 	                        {
                                 doAddHeatLoad(req, res, out, session, username);
 	                        }
@@ -5626,60 +5646,124 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.19";
+			vnumber = "2.20";
+			if (dbvnumber.equalsIgnoreCase("2.19")) {
+			Statement stmtu2 = con.createStatement();
+// Fix some database values since I dont have the updates in yet.
+//int result220a = stmtu2.executeUpdate(fieldname text, fieldselection text, heatvalue text, coolvalue text)
+int result220b = stmtu2.executeUpdate("update heatloadvalues set coolvalue='33', heatvalue='103' where fieldname='nwintype' and fieldselection='Single';");
+int result220c = stmtu2.executeUpdate("update heatloadvalues set coolvalue='48',heatvalue='103' where fieldname='swintype' and fieldselection='Single';");
+int result220d = stmtu2.executeUpdate("update heatloadvalues set coolvalue='90',heatvalue='103' where fieldname='ewintype' and fieldselection='Single';");
+int result220e = stmtu2.executeUpdate("update heatloadvalues set coolvalue='90',heatvalue='103'  where fieldname='wwintype' and fieldselection='Single';");
+int result220f = stmtu2.executeUpdate("update heatloadvalues set coolvalue='24',heatvalue='73' where fieldname='nwintype' and fieldselection='Double';");
+int result220g = stmtu2.executeUpdate("update heatloadvalues set coolvalue='39',heatvalue='73' where fieldname='swintype' and fieldselection='Double';");
+int result220h = stmtu2.executeUpdate("update heatloadvalues set coolvalue='74',heatvalue='73' where fieldname='ewintype' and fieldselection='Double';");
+int result220i = stmtu2.executeUpdate("update heatloadvalues set coolvalue='74',heatvalue='73' where fieldname='wwintype' and fieldselection='Double';");
+int result220j = stmtu2.executeUpdate("update heatloadvalues set coolvalue='18',heatvalue='42' where fieldname='nwintype' and fieldselection='Triple';");
+int result220k = stmtu2.executeUpdate("update heatloadvalues set coolvalue='29',heatvalue='42' where fieldname='swintype' and fieldselection='Triple';");
+int result220l = stmtu2.executeUpdate("update heatloadvalues set coolvalue='58',heatvalue='42' where fieldname='ewintype' and fieldselection='Triple';");
+int result220m = stmtu2.executeUpdate("update heatloadvalues set coolvalue='58',heatvalue='42' where fieldname='wwintype' and fieldselection='Triple';");
+
+			int result220x = stmtu2.executeUpdate("UPDATE version set vdate='2006-03-31';");
+			int result220z = stmtu2.executeUpdate("UPDATE version set vnumber='2.20';");
+			}
+
 		if (dbvnumber.equalsIgnoreCase("2.18")) {
 			Statement stmtu2 = con.createStatement();
 			int result218a = stmtu2.executeUpdate("DROP TABLE IF EXISTS heatloads;");
-			result218a = stmtu2.executeUpdate("CREATE TABLE heatloads (recnum int(11) NOT NULL auto_increment, ceilingsqft int(11), wallsqft int(11),nwinsqft int(11),swinsqft int(11),ewinsqft int(11),wwinsqft int(11),nsldoor int(11),ssldoor int(11),esldoor int(11),wsldoor int(11),doorsqft int(11),totglasssqft int(11),nframewall int(11),nmaswall int(11),nmasbwall int(11),basfloorsqft int(11),slabnoperim int(11),slabwperim int(11),flooruncond int(11),mechvent int(11),numpeople int(11),PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
-result218a = stmtu2.executeUpdate("drop table if exists wintype;");
-result218a = stmtu2.executeUpdate("create table wintype(wintype text not null);");
-result218a = stmtu2.executeUpdate("insert into wintype values ('Single');");
-result218a = stmtu2.executeUpdate("insert into wintype values ('Double');");
-result218a = stmtu2.executeUpdate("insert into wintype values ('Triple');");
-result218a = stmtu2.executeUpdate("drop table if exists ceiltype;");
-result218a = stmtu2.executeUpdate("create table ceiltype(ceiltype text not null);");
-result218a = stmtu2.executeUpdate("insert into ceiltype values ('R11 - 3inch');");
-result218a = stmtu2.executeUpdate("insert into ceiltype values ('R19 - 6inch');");
-result218a = stmtu2.executeUpdate("insert into ceiltype values ('R30 - 10inch');");
-result218a = stmtu2.executeUpdate("drop table if exists sldoortype;");
-result218a = stmtu2.executeUpdate("create table sldoortype(sldoortype text not null);");
-result218a = stmtu2.executeUpdate("insert into sldoortype values ('Single');");
-result218a = stmtu2.executeUpdate("insert into sldoortype values ('Double');");
-result218a = stmtu2.executeUpdate("insert into sldoortype values ('Triple');");
-result218a = stmtu2.executeUpdate("drop table if exists doortype;");
-result218a = stmtu2.executeUpdate("create table doortype(doortype text not null);");
-result218a = stmtu2.executeUpdate("insert into doortype values ('Wood');");
-result218a = stmtu2.executeUpdate("insert into doortype values ('With Storm');");
-result218a = stmtu2.executeUpdate("insert into doortype values ('Urethane');");
-result218a = stmtu2.executeUpdate("drop table if exists fwalltype;");
-result218a = stmtu2.executeUpdate("create table fwalltype(fwalltype text not null);");
-result218a = stmtu2.executeUpdate("insert into fwalltype values ('R13 - 3inch');");
-result218a = stmtu2.executeUpdate("insert into fwalltype values ('R19 - 6inch');");
-result218a = stmtu2.executeUpdate("drop table if exists masawalltype;");
-result218a = stmtu2.executeUpdate("create table masawalltype(masawalltype text not null);");
-result218a = stmtu2.executeUpdate("insert into masawalltype values ('0inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into masawalltype values ('1inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into masawalltype values ('3inch Insulation');");
-result218a = stmtu2.executeUpdate("drop table if exists masbwalltype;");
-result218a = stmtu2.executeUpdate("create table masbwalltype(masbwalltype text not null);");
-result218a = stmtu2.executeUpdate("insert into masbwalltype values ('0inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into masbwalltype values ('1inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into masbwalltype values ('3inch Insulation');");
-result218a = stmtu2.executeUpdate("drop table if exists slabnotype;");
-result218a = stmtu2.executeUpdate("create table slabnotype(slabnotype text not null);");
-result218a = stmtu2.executeUpdate("insert into slabnotype values ('0inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into slabnotype values ('1inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into slabnotype values ('2inch Insulation');");
-result218a = stmtu2.executeUpdate("drop table if exists slabperimtype;");
-result218a = stmtu2.executeUpdate("create table slabperimtype(slabperimtype text not null);");
-result218a = stmtu2.executeUpdate("insert into slabperimtype values ('0inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into slabperimtype values ('1inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into slabperimtype values ('2inch Insulation');");
-result218a = stmtu2.executeUpdate("drop table if exists uncondfloortype;");
-result218a = stmtu2.executeUpdate("create table uncondfloortype(uncondfloortype text not null);");
-result218a = stmtu2.executeUpdate("insert into uncondfloortype values ('0inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into uncondfloortype values ('1inch Insulation');");
-result218a = stmtu2.executeUpdate("insert into uncondfloortype values ('2inch Insulation');");
+			int result218a1 = stmtu2.executeUpdate("CREATE TABLE heatloads (recnum int(11) NOT NULL auto_increment, custsitenum text, sitenum text, loaddate date default '2006-01-01',  ceilingsqft int(11), ceiltype text, wallsqft int(11),walltype text, nwinsqft int(11), nwintype text, swinsqft int(11), swintype text, ewinsqft int(11), ewintype text, wwinsqft int(11), wwintype text, nsldoorsqft int(11), nsldoortype text, ssldoorsqft int(11), ssldoortype text, esldoorsqft int(11), esldoortype text, wsldoorsqft int(11), wsldoortype text, doorsqft int(11), doortype text, totglasssqft int(11),nframewall int(11), nframewalltype text, nmasawall int(11), nmasawalltype text, nmasbwall int(11), nmasbwalltype text, basfloorsqft int(11),slabnoperim int(11), slabnoperimtype text, slabwperim int(11), slabwperimtype text, flooruncond int(11), flooruncondtype text, mechvent int(11),numpeople int(11), bldlength int(11), bldwidth int(11), bldheight int(11),PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
+int result218a2 = stmtu2.executeUpdate("drop table if exists wintype;");
+int result218a3 = stmtu2.executeUpdate("create table wintype(wintype text not null);");
+int result218a4 = stmtu2.executeUpdate("insert into wintype values ('Single');");
+int result218a5 = stmtu2.executeUpdate("insert into wintype values ('Double');");
+int result218a6 = stmtu2.executeUpdate("insert into wintype values ('Triple');");
+int result218a7 = stmtu2.executeUpdate("drop table if exists ceiltype;");
+int result218a8 = stmtu2.executeUpdate("create table ceiltype(ceiltype text not null);");
+int result218a9 = stmtu2.executeUpdate("insert into ceiltype values ('R11_3inch');");
+int result218a10 = stmtu2.executeUpdate("insert into ceiltype values ('R19_6inch');");
+int result218a11 = stmtu2.executeUpdate("insert into ceiltype values ('R30_10inch');");
+int result218a13 = stmtu2.executeUpdate("drop table if exists sldoortype;");
+int result218a14 = stmtu2.executeUpdate("create table sldoortype(sldoortype text not null);");
+int result218a15 = stmtu2.executeUpdate("insert into sldoortype values ('Single');");
+int result218a16 = stmtu2.executeUpdate("insert into sldoortype values ('Double');");
+int result218a17 = stmtu2.executeUpdate("insert into sldoortype values ('Triple');");
+int result218a18 = stmtu2.executeUpdate("drop table if exists doortype;");
+int result218a19 = stmtu2.executeUpdate("create table doortype(doortype text not null);");
+int result218a20 = stmtu2.executeUpdate("insert into doortype values ('Wood');");
+int result218a21 = stmtu2.executeUpdate("insert into doortype values ('With_Storm');");
+int result218a22 = stmtu2.executeUpdate("insert into doortype values ('Urethane');");
+int result218a23 = stmtu2.executeUpdate("drop table if exists fwalltype;");
+int result218a24 = stmtu2.executeUpdate("create table fwalltype(fwalltype text not null);");
+int result218a25 = stmtu2.executeUpdate("insert into fwalltype values ('R13_3inch');");
+int result218a26 = stmtu2.executeUpdate("insert into fwalltype values ('R19_6inch');");
+int result218a27 = stmtu2.executeUpdate("drop table if exists masawalltype;");
+int result218a28 = stmtu2.executeUpdate("create table masawalltype(masawalltype text not null);");
+int result218a29 = stmtu2.executeUpdate("insert into masawalltype values ('0inch_Insulation');");
+int result218a30 = stmtu2.executeUpdate("insert into masawalltype values ('1inch_Insulation');");
+int result218a31 = stmtu2.executeUpdate("insert into masawalltype values ('3inch_Insulation');");
+int result218a32 = stmtu2.executeUpdate("drop table if exists masbwalltype;");
+int result218a33 = stmtu2.executeUpdate("create table masbwalltype(masbwalltype text not null);");
+int result218a34 = stmtu2.executeUpdate("insert into masbwalltype values ('0inch_Insulation');");
+int result218a35 = stmtu2.executeUpdate("insert into masbwalltype values ('1inch_Insulation');");
+int result218a36 = stmtu2.executeUpdate("insert into masbwalltype values ('3inch_Insulation');");
+int result218a37 = stmtu2.executeUpdate("drop table if exists slabnotype;");
+int result218a38 = stmtu2.executeUpdate("create table slabnotype(slabnotype text not null);");
+int result218a39 = stmtu2.executeUpdate("insert into slabnotype values ('0inch_Insulation');");
+int result218a40 = stmtu2.executeUpdate("insert into slabnotype values ('1inch_Insulation');");
+int result218a41 = stmtu2.executeUpdate("insert into slabnotype values ('2inch_Insulation');");
+int result218a42 = stmtu2.executeUpdate("drop table if exists slabperimtype;");
+int result218a43 = stmtu2.executeUpdate("create table slabperimtype(slabperimtype text not null);");
+int result218a44 = stmtu2.executeUpdate("insert into slabperimtype values ('0inch_Insulation');");
+int result218a45 = stmtu2.executeUpdate("insert into slabperimtype values ('1inch_Insulation');");
+int result218a46 = stmtu2.executeUpdate("insert into slabperimtype values ('2inch_Insulation');");
+int result218a47 = stmtu2.executeUpdate("drop table if exists uncondfloortype;");
+int result218a48 = stmtu2.executeUpdate("create table uncondfloortype(uncondfloortype text not null);");
+int result218a49 = stmtu2.executeUpdate("insert into uncondfloortype values ('0inch_Insulation');");
+int result218a50 = stmtu2.executeUpdate("insert into uncondfloortype values ('1inch_Insulation');");
+int result218a51 = stmtu2.executeUpdate("insert into uncondfloortype values ('2inch_Insulation');");
+int result218a52 = stmtu2.executeUpdate("drop table if exists heatloadvalues;");
+int result218a53 = stmtu2.executeUpdate("create table heatloadvalues (fieldname text, fieldselection text, heatvalue text, coolvalue text);");
+int result218a54 = stmtu2.executeUpdate("INSERT INTO heatloadvalues VALUES ('ceiltype','R11_3inch','7','3.7'),('ceiltype','R19_6inch','4.2','2.3'),('ceiltype','R30_10inch','2.6','1.5'),('nwintype','Single','33','103'),('swintype','Single','48','103'),('ewintype','Single','90','103'),('wwintype','Single','90','103'),('nwintype','Double','24','73'),('swintype','Double','39','73'),('ewintype','Double','74','73'),('wwintype','Double','74','73'),('nwintype','Triple','18','42'),('swintype','Triple','29','42'),('ewintype','Triple','58','42'),('wwintype','Triple','58','42'),('nsldoor','Single','33','110'),('ssldoor','Single','48','110'),('esldoor','Single','90','110'),('wsldoor','Single','90','110'),('nsldoor','Double','24','59'),('ssldoor','Double','39','59'),('esldoor','Double','74','59'),('wsldoor','Double','74','59'),('nsldoor','Triple','18','77'),('ssldoor','Triple','29','77'),('esldoor','Triple','58','77'),('wsldoor','Triple','58','77'),('nframewall','R13_3inch','5.6','1.9'),('nframewall','R19_6inch','4.4','1.3'),('nmasawall','0inch_Insulation','41','8.3'),('nmasawall','1inch_Insulation','11.5','2.3'),('nmasawall','3inch_Insulation','6.2','1.3'),('nmasbwall','0inch_Insulation','11.8','0'),('nmasbwall','1inch_Insulation','7','0'),('nmasbwall','3inch_Insulation','4.8','0'),('basfloor','All','2.2','0'),('slabnoperim','0inch_Insulation','65','0'),('slabnoperim','1inch_Insulation','33','0'),('slabnoperim','2inch_Insulation','16.8','0'),('slabwperim','0inch_Insulation','152','0'),('slabwperim','1inch_Insulation','91','0'),('slabwperim','2inch_Insulation','75','0'),('flooruncond','0inch_Insulation','25','5.8'),('flooruncond','3inch_Insulation','6.4','1.3'),('flooruncond','6inch_Insulation','4.2','0.8'),('mechventcfm','All','88','22'),('infiltration','All','88','22'),('kitchen','All','0','1200'),('doortype','Wood','82','10.9'),('doortype','With_Storm','47','7.3'),('doortype','Urethane','60','4.5'),('tempdiffs','All','80','20');");
+
+int result219a1 = stmtu2.executeUpdate("alter table inspection add im_cleanbin text after parts");
+int result219a2 = stmtu2.executeUpdate("alter table inspection add im_limeaway text after im_cleanbin");
+int result219a3 = stmtu2.executeUpdate("alter table inspection add im_bleach text after im_limeaway");
+int result219a4 = stmtu2.executeUpdate("alter table inspection add im_watercomp text after im_bleach");
+int result219a5 = stmtu2.executeUpdate("alter table inspection add im_icecomp text after im_watercomp");
+int result219a6 = stmtu2.executeUpdate("alter table inspection add im_filter text after im_icecomp");
+int result219a7 = stmtu2.executeUpdate("alter table inspection add im_float text after im_filter");
+int result219a8 = stmtu2.executeUpdate("alter table inspection add im_wpump text after im_float");
+int result219a9 = stmtu2.executeUpdate("alter table inspection add im_binsensor text after im_wpump");
+int result219a10 = stmtu2.executeUpdate("alter table inspection add im_testdump text after im_binsensor");
+int result219a11 = stmtu2.executeUpdate("alter table inspection add im_electrical text after im_testdump");
+int result219a12 = stmtu2.executeUpdate("alter table inspection add im_comprated text after im_electrical");
+int result219a13 = stmtu2.executeUpdate("alter table inspection add im_compactual text after im_comprated");
+
+int result219b1 = stmtu2.executeUpdate("alter table inspection add ref_condcoilcond text after im_compactual");
+int result219b2 = stmtu2.executeUpdate("alter table inspection add ref_condcoilcleaned text after ref_condcoilcond");
+int result219b3 = stmtu2.executeUpdate("alter table inspection add ref_evapcoilcond text after ref_condcoilcleaned");
+int result219b4 = stmtu2.executeUpdate("alter table inspection add ref_evapcoilcleaned text after ref_evapcoilcond");
+int result219b5 = stmtu2.executeUpdate("alter table inspection add ref_fanbladecond text after ref_evapcoilcleaned");
+int result219b6 = stmtu2.executeUpdate("alter table inspection add ref_fanbladecleaned text after ref_fanbladecond");
+int result219b7 = stmtu2.executeUpdate("alter table inspection add ref_condensateline text after ref_fanbladecleaned");
+int result219b8 = stmtu2.executeUpdate("alter table inspection add ref_condfan text after ref_condensateline");
+int result219b9 = stmtu2.executeUpdate("alter table inspection add ref_doorgasket text after ref_condfan");
+int result219b10 = stmtu2.executeUpdate("alter table inspection add ref_doorsclose text after ref_doorgasket");
+int result219b11 = stmtu2.executeUpdate("alter table inspection add ref_productboxcond text after ref_doorsclose");
+int result219b12 = stmtu2.executeUpdate("alter table inspection add ref_checkscrews text after ref_productboxcond");
+int result219b13 = stmtu2.executeUpdate("alter table inspection add ref_evaptempin text after ref_checkscrews");
+int result219b14 = stmtu2.executeUpdate("alter table inspection add ref_evaptempout text after ref_evaptempin");
+int result219b15 = stmtu2.executeUpdate("alter table inspection add ref_boxtemp text after ref_evaptempout");
+int result219b16 = stmtu2.executeUpdate("alter table inspection add ref_sightglasslevel text after ref_boxtemp");
+int result219b17 = stmtu2.executeUpdate("alter table inspection add ref_refrigerant text after ref_sightglasslevel");
+int result219b18 = stmtu2.executeUpdate("alter table inspection add ref_defrostclock text after ref_refrigerant");
+int result219b19 = stmtu2.executeUpdate("alter table inspection add ref_defrosttimes text after ref_defrostclock");
+int result219b20 = stmtu2.executeUpdate("alter table inspection add ref_doorheater text after ref_defrosttimes");
+int result219b21 = stmtu2.executeUpdate("alter table inspection add ref_electrical text after ref_doorheater");
+int result219b22 = stmtu2.executeUpdate("alter table inspection add ref_compamprated text after ref_electrical");
+int result219b23 = stmtu2.executeUpdate("alter table inspection add ref_compampactual text after ref_compamprated");
+int result219b24 = stmtu2.executeUpdate("UPDATE inspection SET im_cleanbin='-', im_limeaway='-', im_bleach='-',  im_watercomp='-',  im_icecomp='-',  im_filter='-',  im_float='-',  im_wpump='-',  im_binsensor='-',  im_testdump='-',  im_electrical='-',  im_comprated='-',  im_compactual='-',  ref_condcoilcond='-',  ref_condcoilcleaned='-',  ref_evapcoilcond='-',  ref_evapcoilcleaned='-',  ref_fanbladecond='-',  ref_fanbladecleaned='-',  ref_condensateline='-',  ref_condfan='-',  ref_doorgasket='-',  ref_doorsclose='-',  ref_productboxcond='-',  ref_checkscrews='-',  ref_evaptempin='-',  ref_evaptempout='-',  ref_boxtemp='-',  ref_sightglasslevel='-',  ref_refrigerant='-',  ref_defrostclock='-',  ref_defrosttimes='-',  ref_doorheater='-',  ref_electrical='-',  ref_compamprated='-',  ref_compampactual='-';");
+int result219x = stmtu2.executeUpdate("UPDATE version set vdate='2006-03-31';");
 int result219z = stmtu2.executeUpdate("UPDATE version set vnumber='2.19';");
 		}
 
@@ -5769,17 +5853,17 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
 	public String doVersionInfo_VDate()
         throws Exception
         {
-                //Vector v;
-                //v = UniVersion.getAllItems(con);
-                //int counter=0;
+                Vector v;
+                v = UniVersion.getAllItems(con);
+                int counter=0;
 		String vdate  = null;
-                //for (int i = 0 ; i < v.size(); i++)
-                //{
-                //        UniVersion t = (UniVersion) v.elementAt(i);
-                //        vdate  = t.getVDate();
-               // }
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniVersion t = (UniVersion) v.elementAt(i);
+                        vdate  = t.getVDate();
+                }
 //RELEASE_DATE			
-			vdate="2006-03-21";
+			//vdate="2006-03-31";
 
                         return vdate;                       
         }
@@ -5801,7 +5885,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
 
 
 
-	public String doGetTechInfo_nateid(String iusername)
+	public static String doGetTechInfo_nateid(String iusername)
         throws Exception
         {
                 Vector v;
@@ -10406,6 +10490,43 @@ throws Exception
 	String mcfm=null;
 	String out_temp=null;
 	int servsync=0;
+			String  im_cleanbin=null;
+		String  im_limeaway=null;
+		String  im_bleach=null;
+		String  im_watercomp=null;
+		String  im_icecomp=null;
+		String  im_filter=null;
+		String  im_float=null;
+		String  im_wpump=null;
+		String  im_binsensor=null;
+		String  im_testdump=null;
+		String  im_electrical=null;
+		String  im_comprated=null;
+		String  im_compactual=null;
+		String  ref_condcoilcond=null;
+		String  ref_condcoilcleaned=null;
+		String  ref_evapcoilcond=null;
+		String  ref_evapcoilcleaned=null;
+		String  ref_fanbladecond=null;
+		String  ref_fanbladecleaned=null;
+		String  ref_condensateline=null;
+		String  ref_condfan=null;
+		String  ref_doorgasket=null;
+		String  ref_doorsclose=null;
+		String  ref_productboxcond=null;
+		String  ref_checkscrews=null;
+		String  ref_evaptempin=null;
+		String  ref_evaptempout=null;
+		String  ref_boxtemp=null;
+		String  ref_sightglasslevel=null;
+		String  ref_refrigerant=null;
+		String  ref_defrostclock=null;
+		String  ref_defrosttimes=null;
+		String  ref_doorheater=null;
+		String  ref_electrical=null;
+		String  ref_compamprated=null;
+		String  ref_compampactual=null;
+
 		String cname=null;
 		String address1=null;
 		String address2=null;
@@ -10534,6 +10655,42 @@ throws Exception
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
 		parts=t.getParts();
+		im_cleanbin=t.im_cleanbin();
+		im_limeaway=t.im_limeaway();
+		im_bleach=t.im_bleach();
+		im_watercomp=t.im_watercomp();
+		im_icecomp=t.im_icecomp();
+		im_filter=t.im_filter();
+		im_float=t.im_float();
+		im_wpump=t.im_wpump();
+		im_binsensor=t.im_binsensor();
+		im_testdump=t.im_testdump();
+		im_electrical=t.im_electrical();
+		im_comprated=t.im_comprated();
+		im_compactual=t.im_compactual();
+		ref_condcoilcond=t.ref_condcoilcond();
+		ref_condcoilcleaned=t.ref_condcoilcleaned();
+		ref_evapcoilcond=t.ref_evapcoilcond();
+		ref_evapcoilcleaned=t.ref_evapcoilcleaned();
+		ref_fanbladecond=t.ref_fanbladecond();
+		ref_fanbladecleaned=t.ref_fanbladecleaned();
+		ref_condensateline=t.ref_condensateline();
+		ref_condfan=t.ref_condfan();
+		ref_doorgasket=t.ref_doorgasket();
+		ref_doorsclose=t.ref_doorsclose();
+		ref_productboxcond=t.ref_productboxcond();
+		ref_checkscrews=t.ref_checkscrews();
+		ref_evaptempin=t.ref_evaptempin();
+		ref_evaptempout=t.ref_evaptempout();
+		ref_boxtemp=t.ref_boxtemp();
+		ref_sightglasslevel=t.ref_sightglasslevel();
+		ref_refrigerant=t.ref_refrigerant();
+		ref_defrostclock=t.ref_defrostclock();
+		ref_defrosttimes=t.ref_defrosttimes();
+		ref_doorheater=t.ref_doorheater();
+		ref_electrical=t.ref_electrical();
+		ref_compamprated=t.ref_compamprated();
+		ref_compampactual=t.ref_compampactual();
 
  		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
@@ -10725,6 +10882,54 @@ if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_
 	mbody=combinestring(mbody,"Blower Amps Rated: "+g_bampr+", <br>");
 	mbody=combinestring(mbody,"Blower Amps Actual: "+g_bampa+", <br>");
 }
+
+if ((!im_watercomp.equalsIgnoreCase("-"))||!(im_cleanbin.equalsIgnoreCase("-"))||(!im_electrical.equalsIgnoreCase("-")))
+        {		
+	mbody=combinestring(mbody,"Ice Machine Checked: <br>");
+	mbody=combinestring(mbody,"Clean Ice Bin: "+im_cleanbin+"<br>");
+	mbody=combinestring(mbody,"Clean With LimeAway: "+im_limeaway+"<br>");
+	mbody=combinestring(mbody,"Clean With Bleach: "+im_bleach+"<br>");
+	mbody=combinestring(mbody,"Clean All Water Components: "+im_watercomp+"<br>");
+	mbody=combinestring(mbody,"Clean All Ice Components: "+im_icecomp+"<br>");
+	mbody=combinestring(mbody,"Clean / Check Water Filter: "+im_filter+"<br>");
+	mbody=combinestring(mbody,"Clean Float: "+im_float+"<br>");
+	mbody=combinestring(mbody,"Clean Water Pump: "+im_wpump+"<br>");
+	mbody=combinestring(mbody,"Check Bin Sensor: "+im_binsensor+"<br>");
+	mbody=combinestring(mbody,"Run 3 Batches and Dump: "+im_testdump+"<br>");
+	mbody=combinestring(mbody,"Check Electrical: "+im_electrical+"<br>");
+	mbody=combinestring(mbody,"Compressor Amps Rated: "+im_comprated+"<br>");
+	mbody=combinestring(mbody,"Compressor Amps Actual: "+im_compactual+"<br>");
+	mbody=combinestring(mbody,"<br>");
+	}
+if ((!ref_condcoilcond.equalsIgnoreCase("-"))||!(ref_condcoilcleaned.equalsIgnoreCase("-"))||(!ref_electrical.equalsIgnoreCase("-")))
+        {
+
+	mbody=combinestring(mbody,"<th><h3>Refrigeration</h3></th><th></th>");
+	mbody=combinestring(mbody,"Condensor Coil Condition: "+ref_condcoilcond+"<br>");
+	mbody=combinestring(mbody,"Condensor Coil Cleaned: "+ref_condcoilcleaned+"<br>");
+	mbody=combinestring(mbody,"Evaperator Coil Condition: "+ref_evapcoilcond+"<br>");
+	mbody=combinestring(mbody,"Evaperator Coil Cleaned: "+ref_evapcoilcleaned+"<br>");
+	mbody=combinestring(mbody,"Fan Blade Condition: "+ref_fanbladecond+"<br>");
+	mbody=combinestring(mbody,"Fan Blade Cleaned: "+ref_fanbladecleaned+"<br>");
+	mbody=combinestring(mbody,"Cleaned Condensate Line: "+ref_condensateline+"<br>");
+	mbody=combinestring(mbody,"Condensor Fan: "+ref_condfan+"<br>");
+	mbody=combinestring(mbody,"Door Gaskets: "+ref_doorgasket+"<br>");
+	mbody=combinestring(mbody,"Doors Close Properly: "+ref_doorsclose+"<br>");
+	mbody=combinestring(mbody,"Product Box Condition: "+ref_productboxcond+"<br>");
+	mbody=combinestring(mbody,"Check Screws: "+ref_checkscrews+"<br>");
+	mbody=combinestring(mbody,"Evaporator Air Temp In: "+ref_evaptempin+"<br>");
+	mbody=combinestring(mbody,"Evaporator Air Temp Out: "+ref_evaptempout+"<br>");
+	mbody=combinestring(mbody,"Box Temp: "+ref_boxtemp+"<br>");
+	mbody=combinestring(mbody,"Sight Glass Level: "+ref_sightglasslevel+"<br>");
+	mbody=combinestring(mbody,"Refrigerant: "+ref_refrigerant+"<br>");
+	mbody=combinestring(mbody,"Defrost Clock: "+ref_defrostclock+"<br>");
+	mbody=combinestring(mbody,"Defrost Times: "+ref_defrosttimes+"<br>");
+	mbody=combinestring(mbody,"Check Electrical: "+ref_electrical+"<br>");
+	mbody=combinestring(mbody,"Compressor Amp Rated: "+ref_compamprated+"<br>");
+	mbody=combinestring(mbody,"Compressor Amp Actual: "+ref_compampactual+"<br>");	
+	}	
+
+
 ////////////////////////////////////////////////////
 //Print Recommendations 
 ///////////////////////////////////////////////////	
@@ -10933,6 +11138,42 @@ int frcode=0;
 	String mcfm=null;
 	String out_temp=null;
 	int servsync=0;
+		String  im_cleanbin=null;
+		String  im_limeaway=null;
+		String  im_bleach=null;
+		String  im_watercomp=null;
+		String  im_icecomp=null;
+		String  im_filter=null;
+		String  im_float=null;
+		String  im_wpump=null;
+		String  im_binsensor=null;
+		String  im_testdump=null;
+		String  im_electrical=null;
+		String  im_comprated=null;
+		String  im_compactual=null;
+		String  ref_condcoilcond=null;
+		String  ref_condcoilcleaned=null;
+		String  ref_evapcoilcond=null;
+		String  ref_evapcoilcleaned=null;
+		String  ref_fanbladecond=null;
+		String  ref_fanbladecleaned=null;
+		String  ref_condensateline=null;
+		String  ref_condfan=null;
+		String  ref_doorgasket=null;
+		String  ref_doorsclose=null;
+		String  ref_productboxcond=null;
+		String  ref_checkscrews=null;
+		String  ref_evaptempin=null;
+		String  ref_evaptempout=null;
+		String  ref_boxtemp=null;
+		String  ref_sightglasslevel=null;
+		String  ref_refrigerant=null;
+		String  ref_defrostclock=null;
+		String  ref_defrosttimes=null;
+		String  ref_doorheater=null;
+		String  ref_electrical=null;
+		String  ref_compamprated=null;
+		String  ref_compampactual=null;
 
 
 		String cname=null;
@@ -11073,7 +11314,42 @@ int frcode=0;
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
 		parts=t.getParts();
-
+im_cleanbin=t.im_cleanbin();
+		im_limeaway=t.im_limeaway();
+		im_bleach=t.im_bleach();
+		im_watercomp=t.im_watercomp();
+		im_icecomp=t.im_icecomp();
+		im_filter=t.im_filter();
+		im_float=t.im_float();
+		im_wpump=t.im_wpump();
+		im_binsensor=t.im_binsensor();
+		im_testdump=t.im_testdump();
+		im_electrical=t.im_electrical();
+		im_comprated=t.im_comprated();
+		im_compactual=t.im_compactual();
+		ref_condcoilcond=t.ref_condcoilcond();
+		ref_condcoilcleaned=t.ref_condcoilcleaned();
+		ref_evapcoilcond=t.ref_evapcoilcond();
+		ref_evapcoilcleaned=t.ref_evapcoilcleaned();
+		ref_fanbladecond=t.ref_fanbladecond();
+		ref_fanbladecleaned=t.ref_fanbladecleaned();
+		ref_condensateline=t.ref_condensateline();
+		ref_condfan=t.ref_condfan();
+		ref_doorgasket=t.ref_doorgasket();
+		ref_doorsclose=t.ref_doorsclose();
+		ref_productboxcond=t.ref_productboxcond();
+		ref_checkscrews=t.ref_checkscrews();
+		ref_evaptempin=t.ref_evaptempin();
+		ref_evaptempout=t.ref_evaptempout();
+		ref_boxtemp=t.ref_boxtemp();
+		ref_sightglasslevel=t.ref_sightglasslevel();
+		ref_refrigerant=t.ref_refrigerant();
+		ref_defrostclock=t.ref_defrostclock();
+		ref_defrosttimes=t.ref_defrosttimes();
+		ref_doorheater=t.ref_doorheater();
+		ref_electrical=t.ref_electrical();
+		ref_compamprated=t.ref_compamprated();
+		ref_compampactual=t.ref_compampactual();
 ////////////////////////////////////////////////////
 //Get Customer Data 
 ///////////////////////////////////////////////////	
@@ -11267,6 +11543,54 @@ if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_
 	mbody=combinestring(mbody,"Blower Amps Rated: "+g_bampr+", <br>");
 	mbody=combinestring(mbody,"Blower Amps Actual: "+g_bampa+", <br>");
 }
+
+if ((!im_watercomp.equalsIgnoreCase("-"))||!(im_cleanbin.equalsIgnoreCase("-"))||(!im_electrical.equalsIgnoreCase("-")))
+        {		
+	mbody=combinestring(mbody,"Ice Machine Checked: <br>");
+	mbody=combinestring(mbody,"Clean Ice Bin: "+im_cleanbin+"<br>");
+	mbody=combinestring(mbody,"Clean With LimeAway: "+im_limeaway+"<br>");
+	mbody=combinestring(mbody,"Clean With Bleach: "+im_bleach+"<br>");
+	mbody=combinestring(mbody,"Clean All Water Components: "+im_watercomp+"<br>");
+	mbody=combinestring(mbody,"Clean All Ice Components: "+im_icecomp+"<br>");
+	mbody=combinestring(mbody,"Clean / Check Water Filter: "+im_filter+"<br>");
+	mbody=combinestring(mbody,"Clean Float: "+im_float+"<br>");
+	mbody=combinestring(mbody,"Clean Water Pump: "+im_wpump+"<br>");
+	mbody=combinestring(mbody,"Check Bin Sensor: "+im_binsensor+"<br>");
+	mbody=combinestring(mbody,"Run 3 Batches and Dump: "+im_testdump+"<br>");
+	mbody=combinestring(mbody,"Check Electrical: "+im_electrical+"<br>");
+	mbody=combinestring(mbody,"Compressor Amps Rated: "+im_comprated+"<br>");
+	mbody=combinestring(mbody,"Compressor Amps Actual: "+im_compactual+"<br>");
+	mbody=combinestring(mbody,"<br>");
+	}
+if ((!ref_condcoilcond.equalsIgnoreCase("-"))||!(ref_condcoilcleaned.equalsIgnoreCase("-"))||(!ref_electrical.equalsIgnoreCase("-")))
+        {
+
+	mbody=combinestring(mbody,"<th><h3>Refrigeration</h3></th><th></th>");
+	mbody=combinestring(mbody,"Condensor Coil Condition: "+ref_condcoilcond+"<br>");
+	mbody=combinestring(mbody,"Condensor Coil Cleaned: "+ref_condcoilcleaned+"<br>");
+	mbody=combinestring(mbody,"Evaperator Coil Condition: "+ref_evapcoilcond+"<br>");
+	mbody=combinestring(mbody,"Evaperator Coil Cleaned: "+ref_evapcoilcleaned+"<br>");
+	mbody=combinestring(mbody,"Fan Blade Condition: "+ref_fanbladecond+"<br>");
+	mbody=combinestring(mbody,"Fan Blade Cleaned: "+ref_fanbladecleaned+"<br>");
+	mbody=combinestring(mbody,"Cleaned Condensate Line: "+ref_condensateline+"<br>");
+	mbody=combinestring(mbody,"Condensor Fan: "+ref_condfan+"<br>");
+	mbody=combinestring(mbody,"Door Gaskets: "+ref_doorgasket+"<br>");
+	mbody=combinestring(mbody,"Doors Close Properly: "+ref_doorsclose+"<br>");
+	mbody=combinestring(mbody,"Product Box Condition: "+ref_productboxcond+"<br>");
+	mbody=combinestring(mbody,"Check Screws: "+ref_checkscrews+"<br>");
+	mbody=combinestring(mbody,"Evaporator Air Temp In: "+ref_evaptempin+"<br>");
+	mbody=combinestring(mbody,"Evaporator Air Temp Out: "+ref_evaptempout+"<br>");
+	mbody=combinestring(mbody,"Box Temp: "+ref_boxtemp+"<br>");
+	mbody=combinestring(mbody,"Sight Glass Level: "+ref_sightglasslevel+"<br>");
+	mbody=combinestring(mbody,"Refrigerant: "+ref_refrigerant+"<br>");
+	mbody=combinestring(mbody,"Defrost Clock: "+ref_defrostclock+"<br>");
+	mbody=combinestring(mbody,"Defrost Times: "+ref_defrosttimes+"<br>");
+	mbody=combinestring(mbody,"Check Electrical: "+ref_electrical+"<br>");
+	mbody=combinestring(mbody,"Compressor Amp Rated: "+ref_compamprated+"<br>");
+	mbody=combinestring(mbody,"Compressor Amp Actual: "+ref_compampactual+"<br>");	
+	}	
+
+
 ////////////////////////////////////////////////////
 //Print Recommendations 
 ///////////////////////////////////////////////////	
@@ -11482,6 +11806,42 @@ double totalcharge=0.00;
 	String out_temp=null;
 	int servsync=0;
 	String parts=null;
+		String  im_cleanbin=null;
+		String  im_limeaway=null;
+		String  im_bleach=null;
+		String  im_watercomp=null;
+		String  im_icecomp=null;
+		String  im_filter=null;
+		String  im_float=null;
+		String  im_wpump=null;
+		String  im_binsensor=null;
+		String  im_testdump=null;
+		String  im_electrical=null;
+		String  im_comprated=null;
+		String  im_compactual=null;
+		String  ref_condcoilcond=null;
+		String  ref_condcoilcleaned=null;
+		String  ref_evapcoilcond=null;
+		String  ref_evapcoilcleaned=null;
+		String  ref_fanbladecond=null;
+		String  ref_fanbladecleaned=null;
+		String  ref_condensateline=null;
+		String  ref_condfan=null;
+		String  ref_doorgasket=null;
+		String  ref_doorsclose=null;
+		String  ref_productboxcond=null;
+		String  ref_checkscrews=null;
+		String  ref_evaptempin=null;
+		String  ref_evaptempout=null;
+		String  ref_boxtemp=null;
+		String  ref_sightglasslevel=null;
+		String  ref_refrigerant=null;
+		String  ref_defrostclock=null;
+		String  ref_defrosttimes=null;
+		String  ref_doorheater=null;
+		String  ref_electrical=null;
+		String  ref_compamprated=null;
+		String  ref_compampactual=null;
 
 
 		String cname=null;
@@ -11622,6 +11982,42 @@ double totalcharge=0.00;
 		mcfm=t.getMCfm();
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
+		im_cleanbin=t.im_cleanbin();
+		im_limeaway=t.im_limeaway();
+		im_bleach=t.im_bleach();
+		im_watercomp=t.im_watercomp();
+		im_icecomp=t.im_icecomp();
+		im_filter=t.im_filter();
+		im_float=t.im_float();
+		im_wpump=t.im_wpump();
+		im_binsensor=t.im_binsensor();
+		im_testdump=t.im_testdump();
+		im_electrical=t.im_electrical();
+		im_comprated=t.im_comprated();
+		im_compactual=t.im_compactual();
+		ref_condcoilcond=t.ref_condcoilcond();
+		ref_condcoilcleaned=t.ref_condcoilcleaned();
+		ref_evapcoilcond=t.ref_evapcoilcond();
+		ref_evapcoilcleaned=t.ref_evapcoilcleaned();
+		ref_fanbladecond=t.ref_fanbladecond();
+		ref_fanbladecleaned=t.ref_fanbladecleaned();
+		ref_condensateline=t.ref_condensateline();
+		ref_condfan=t.ref_condfan();
+		ref_doorgasket=t.ref_doorgasket();
+		ref_doorsclose=t.ref_doorsclose();
+		ref_productboxcond=t.ref_productboxcond();
+		ref_checkscrews=t.ref_checkscrews();
+		ref_evaptempin=t.ref_evaptempin();
+		ref_evaptempout=t.ref_evaptempout();
+		ref_boxtemp=t.ref_boxtemp();
+		ref_sightglasslevel=t.ref_sightglasslevel();
+		ref_refrigerant=t.ref_refrigerant();
+		ref_defrostclock=t.ref_defrostclock();
+		ref_defrosttimes=t.ref_defrosttimes();
+		ref_doorheater=t.ref_doorheater();
+		ref_electrical=t.ref_electrical();
+		ref_compamprated=t.ref_compamprated();
+		ref_compampactual=t.ref_compampactual();
 
 ////////////////////////////////////////////////////
 //Get Customer Data 
@@ -11809,6 +12205,54 @@ if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_
 	mbody=combinestring(mbody,"Blower Amps Rated: "+g_bampr+", <br>");
 	mbody=combinestring(mbody,"Blower Amps Actual: "+g_bampa+", <br>");
 }
+
+if ((!im_watercomp.equalsIgnoreCase("-"))||!(im_cleanbin.equalsIgnoreCase("-"))||(!im_electrical.equalsIgnoreCase("-")))
+        {		
+	mbody=combinestring(mbody,"Ice Machine Checked: <br>");
+	mbody=combinestring(mbody,"Clean Ice Bin: "+im_cleanbin+"<br>");
+	mbody=combinestring(mbody,"Clean With LimeAway: "+im_limeaway+"<br>");
+	mbody=combinestring(mbody,"Clean With Bleach: "+im_bleach+"<br>");
+	mbody=combinestring(mbody,"Clean All Water Components: "+im_watercomp+"<br>");
+	mbody=combinestring(mbody,"Clean All Ice Components: "+im_icecomp+"<br>");
+	mbody=combinestring(mbody,"Clean / Check Water Filter: "+im_filter+"<br>");
+	mbody=combinestring(mbody,"Clean Float: "+im_float+"<br>");
+	mbody=combinestring(mbody,"Clean Water Pump: "+im_wpump+"<br>");
+	mbody=combinestring(mbody,"Check Bin Sensor: "+im_binsensor+"<br>");
+	mbody=combinestring(mbody,"Run 3 Batches and Dump: "+im_testdump+"<br>");
+	mbody=combinestring(mbody,"Check Electrical: "+im_electrical+"<br>");
+	mbody=combinestring(mbody,"Compressor Amps Rated: "+im_comprated+"<br>");
+	mbody=combinestring(mbody,"Compressor Amps Actual: "+im_compactual+"<br>");
+	mbody=combinestring(mbody,"<br>");
+	}
+if ((!ref_condcoilcond.equalsIgnoreCase("-"))||!(ref_condcoilcleaned.equalsIgnoreCase("-"))||(!ref_electrical.equalsIgnoreCase("-")))
+        {
+
+	mbody=combinestring(mbody,"<th><h3>Refrigeration</h3></th><th></th>");
+	mbody=combinestring(mbody,"Condensor Coil Condition: "+ref_condcoilcond+"<br>");
+	mbody=combinestring(mbody,"Condensor Coil Cleaned: "+ref_condcoilcleaned+"<br>");
+	mbody=combinestring(mbody,"Evaperator Coil Condition: "+ref_evapcoilcond+"<br>");
+	mbody=combinestring(mbody,"Evaperator Coil Cleaned: "+ref_evapcoilcleaned+"<br>");
+	mbody=combinestring(mbody,"Fan Blade Condition: "+ref_fanbladecond+"<br>");
+	mbody=combinestring(mbody,"Fan Blade Cleaned: "+ref_fanbladecleaned+"<br>");
+	mbody=combinestring(mbody,"Cleaned Condensate Line: "+ref_condensateline+"<br>");
+	mbody=combinestring(mbody,"Condensor Fan: "+ref_condfan+"<br>");
+	mbody=combinestring(mbody,"Door Gaskets: "+ref_doorgasket+"<br>");
+	mbody=combinestring(mbody,"Doors Close Properly: "+ref_doorsclose+"<br>");
+	mbody=combinestring(mbody,"Product Box Condition: "+ref_productboxcond+"<br>");
+	mbody=combinestring(mbody,"Check Screws: "+ref_checkscrews+"<br>");
+	mbody=combinestring(mbody,"Evaporator Air Temp In: "+ref_evaptempin+"<br>");
+	mbody=combinestring(mbody,"Evaporator Air Temp Out: "+ref_evaptempout+"<br>");
+	mbody=combinestring(mbody,"Box Temp: "+ref_boxtemp+"<br>");
+	mbody=combinestring(mbody,"Sight Glass Level: "+ref_sightglasslevel+"<br>");
+	mbody=combinestring(mbody,"Refrigerant: "+ref_refrigerant+"<br>");
+	mbody=combinestring(mbody,"Defrost Clock: "+ref_defrostclock+"<br>");
+	mbody=combinestring(mbody,"Defrost Times: "+ref_defrosttimes+"<br>");
+	mbody=combinestring(mbody,"Check Electrical: "+ref_electrical+"<br>");
+	mbody=combinestring(mbody,"Compressor Amp Rated: "+ref_compamprated+"<br>");
+	mbody=combinestring(mbody,"Compressor Amp Actual: "+ref_compampactual+"<br>");	
+	}	
+
+
 ////////////////////////////////////////////////////
 //Print Recommendations 
 ///////////////////////////////////////////////////	
@@ -17804,7 +18248,7 @@ private void doAddSurvey(HttpServletRequest req, HttpServletResponse res, PrintW
 
 // Window Type Here	
 //
-		out.println("<h3>Windows</h3>");
+/*		out.println("<h3>Windows</h3>");
 		out.println("<table border=\"1\" width=\"100%\" >");
 		out.println("<tr><td width=\"40%\">Window Type</td>");
 		out.println("<td width=\"50%\"><select width=\"50\" name=\"windowtype\" value=\""+windowtype +"\">");
@@ -17880,6 +18324,7 @@ private void doAddSurvey(HttpServletRequest req, HttpServletResponse res, PrintW
 
 
 		out.println("</table>");
+	*/
 // Current Equipment
 //
 		out.println("<h3>Existing Equipment</h3>");
@@ -18151,6 +18596,7 @@ private void doAddHeatLoad(HttpServletRequest req, HttpServletResponse res, Prin
 		String sitenum = req.getParameter("sitenum");
 		String action = req.getParameter("action");
 		String csection = req.getParameter("csection");
+		String recnum=req.getParameter("recnum");
 
 	Format formatter;
         Calendar now = Calendar.getInstance();
@@ -18160,9 +18606,33 @@ private void doAddHeatLoad(HttpServletRequest req, HttpServletResponse res, Prin
 		if (csection==null) {
 		       csection="7";
 		}	       
-		String n = HeatLoadForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custsitenum, sitenum, packdate);
+		String n = HeatLoadForm.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custsitenum, sitenum, packdate, recnum);
 		out.println(n+"<br>");
+		con.close();
 		}
+private void doPrintHeatLoad(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		throws Exception
+        {
+		String tcustnum = req.getParameter("custnum");
+		String custsitenum = req.getParameter("custsitenum");
+		String sitenum = req.getParameter("sitenum");
+		String action = req.getParameter("action");
+		String csection = req.getParameter("csection");
+		String recnum=req.getParameter("recnum");
+
+	Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String packdate = formatter.format(date);
+		if (csection==null) {
+		       csection="7";
+		}	       
+		String n = HeatLoadPrint.getIndividualItem (con, req, res, out, session, username, classdir, tcustnum, custsitenum, sitenum, packdate, recnum);
+		out.println(n+"<br>");
+		con.close();
+		}
+
 		
 private void doEditEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -19345,715 +19815,10 @@ out.println("</html>");
 private void doPrintInspection(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
-	Format formatter;
-        Calendar now = Calendar.getInstance();
-        Date date = new Date();
-        formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String s = formatter.format(date);
-        int hour = now.get(Calendar.HOUR_OF_DAY); 
-        int second = now.get(Calendar.SECOND);
-        int year = now.get(Calendar.YEAR);
-        int month = now.get(Calendar.MONTH);
-        int minute = now.get(Calendar.MINUTE);
-        int millisecond = now.get(Calendar.MILLISECOND);
-	String tcustnum = req.getParameter("custnum");
-        int custnum = Integer.parseInt(tcustnum);
-	String action = req.getParameter("action");
-	String tcrecnum = req.getParameter("crecnum");
-        int crecnum = Integer.parseInt(tcrecnum);
-         int eenum=0;
-        int ecustnum=0;
-        String brand=null;
-        String modelnum=null;
-        String serialnum=null;
-	String cdate=null;
-	String reason=null;
-	String rscheduled=null;
-	String charges=null;
-	String collected=null;
-	int followup=0;
-	String descript;
-	String ccallslip;
-	double quant;
-	double price;
-	double total;
-	double totalcharge=0.00;
-	int recnum;
-	String cname=null;
-	String address1=null;
-	String address2=null;
-	String city =null;
-	String state=null;
-	String zip=null;
-	String homephone=null;
-	String techid=null;
-	String altphone=null;
-	String cust_notes=null;
-	String custsite=null;
-	String sitenum=null;
-	String cemail=null;
-	String etype = "";
-	String parts=null;
-
-                String callslip = null;
-                String idate = null;
-                int equip1 = 0;
-                int equip2 = 0;
-                int equip3 = 0;
-                int equip4 = 0;
-                String mbearing = null;
-                String mblades = null;
-                String ecoil = null;
-                String dline = null;
-                String dpan = null;
-                String ielect = null;
-                String mcap = null;
-                String hstrips = null;
-                String filter = null;
-                String gpreassures = null;
-                String ignition = null;
-                String burners = null;
-                String limits = null;
-                String flame = null;
-                String dinducer = null;
-                String humidifier = null;
-                String atemp = null;
-                String tempsplit = null;
-                String crlaa = null;
-                String crlar = null;
-                String ccapr = null;
-                String ccapa = null;
-                String frlaa = null;
-                String frlar = null;
-		String fcapr = null;
-                String fcapa = null;
-                String fbearing = null;
-                String coilcond = null;
-                String cleancoil = null;
-                String contactor = null;
-                String scap = null;
-                String ctimedelay = null;
-                String oelectrical = null;
-                String comppad = null;
-                String recommendations = null;
-                String services = null;
-                String dueamount = null;
-                String paidamount = null;
-                String notes = null;
-                String lpres = null;
-                String hpres = null;
-                String startco = null;
-                String runco = null;
-                String stacktemp = null;
-                String ventpipe = null;
-                String oleaks = null;
-                String ochimney = null;
-                String opump = null;
-                String ocontrols = null;
-                String otstat = null;
-                String oprimesafety = null;
-                String osafetime = null;
-                String oigntrans = null;
-                String olubemotors = null;
-		String ofulemix = null;
-                String onozzle = null;
-                String ogross = null;
-                String onet = null;
-                String osmoke = null;
-                String oco2 = null;
-                String oo2 = null;
-                String oco = null;
-                String oexcessair = null;
-                String obreachdraft = null;
-                String ofiredraft = null;
-                String oeffic = null;
-                String orating = null;
-                String opower = null;
-                String otank = null;
-                String otcond = null;
-                String odheat = null;
-                String ocombustion = null;
-                String oelectrodes = null;
-                String obrush = null;
-                String ofilters = null;
-                String efilter = null;
-
-	String spres_return=null;
-	String spres_supply=null;
-	String spres_rated=null;
-	String airflow=null;
-	String g_filter = null;
-	String g_electrical = null;
-	String g_looppres=null;
-	String g_cleancoil=null;
-	String g_cleandrain=null;
-	String g_pansensor=null;
-	String g_cleancomp=null;
-	String g_cleanunit=null;
-	String g_oilblower=null;
-	String g_cleanpump=null;
-	String g_tsplit=null;
-	String g_pampr=null;
-	String g_pampa=null;
-	String g_compar=null;
-	String g_compaa=null;
-	String g_bampr=null;
-	String g_bampa=null;
-	String g_pdrop=null;
-
-	String sductsize=null;
-	String rductsize=null;
-
-	String sucttemp=null;
-	String liqtemp=null;
-
-	String r_temp=null;
-	String s_temp=null;
-	String rw_temp=null;
-	String mcfm=null;
-	String out_temp=null;
-	String custtype=null;
-	int servsync=0;
-
-	String tech_init = doGetTechInfo_init(username);
-	String tech_name = doGetTechInfo_name(username);
-	String nate_id=doGetTechInfo_nateid(username);
-	int nateid=Integer.parseInt(nate_id);
-	String tech_truck = doGetTechInfo_truck(username);
-
-//////////////////////////////////////////////////////
-// Print Header Information
-/////////////////////////////////////////////////////
-
-	out.println("<html><basefont size=2>");
-	if (!action.equalsIgnoreCase("vinspectprint")) {
-	out.println("<head><title>Inspection Report</title></head><body>");
-	doMHeader(req, res, out, session, username);
-			}
-
-
-////////////////////////////////////////////////////////
-// Get callslip information
-///////////////////////////////////////////////////////
-
-        Vector v;
-        v = UniInspection.getIndItems(con, custnum, crecnum);
-		
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                UniInspection t = (UniInspection) v.elementAt(i);
-		crecnum=t.getCrecnum();
-		custnum=t.getCustnum();
-                callslip=t.getCallslip();
-                idate=t.getIdate();
-                equip1=t.getEquip1();
-                equip2=t.getEquip2();
-                equip3=t.getEquip3();
-                equip4=t.getEquip4();
-                mbearing=t.getMbearing();
-                mblades=t.getMblades();
-                ecoil=t.getEcoil();
-                dline=t.getDline();
-                dpan=t.getDpan();
-                ielect=t.getIelect();
-                mcap=t.getMcap();
-                hstrips=t.getHstrips();
-                filter=t.getFilter();
-                gpreassures=t.getGpreassures();
-                ignition=t.getIgnition();
-                burners=t.getBurners();
-                limits=t.getLimits();
-                flame=t.getFlame();
-                dinducer=t.getDinducer();
-                humidifier=t.getHumidifier();
-                atemp=t.getAtemp();
-                tempsplit=t.getTempsplit();
-                crlaa=t.getCrlaa();
-                crlar=t.getCrlar();
-                ccapr=t.getCcapr();
-                ccapa=t.getCcapa();
-                frlaa=t.getFrlaa();
-                frlar=t.getFrlar();
-		fcapr=t.getFcapr();
-                fcapa=t.getFcapa();
-                fbearing=t.getFbearing();
-                coilcond=t.getCoilcond();
-                cleancoil=t.getCleancoil();
-                contactor=t.getContactor();
-                scap=t.getScap();
-                ctimedelay=t.getCtimedelay();
-                oelectrical=t.getOelectrical();
-                comppad=t.getComppad();
-                recommendations=t.getRecommendations();
-                services=t.getServices();
-                dueamount=t.getDueamount();
-                paidamount=t.getPaidamount();
-                notes=t.getNotes();
-                lpres=t.getLpres();
-                hpres=t.getHpres();
-                startco=t.getStartco();
-                runco=t.getRunco();
-                stacktemp=t.getStacktemp();
-                ventpipe=t.getVentpipe();
-                oleaks=t.getOleaks();
-                ochimney=t.getOchimney();
-                opump=t.getOpump();
-                ocontrols=t.getOcontrols();
-                otstat=t.getOtstat();
-                oprimesafety=t.getOprimesafety();
-                osafetime=t.getOsafetime();
-                oigntrans=t.getOigntrans();
-                olubemotors=t.getOlubemotors();
-		parts=t.getParts();
-		ofulemix=t.getOfulemix();
-                onozzle=t.getOnozzle();
-                ogross=t.getOgross();
-                onet=t.getOnet();
-                osmoke=t.getOsmoke();
-                oco2=t.getOco2();
-                oo2=t.getOo2();
-                oco=t.getOco();
-                oexcessair=t.getOexcessair();
-                obreachdraft=t.getObreachdraft();
-                ofiredraft=t.getOfiredraft();
-                oeffic=t.getOeffic();
-                orating=t.getOrating();
-                opower=t.getOpower();
-                otank=t.getOtank();
-                otcond=t.getOtcond();
-                odheat=t.getOdheat();
-                ocombustion=t.getOcombustion();
-                oelectrodes=t.getOelectrodes();
-                obrush=t.getObrush();
-                ofilters=t.getOfilters();
-                followup=t.getFollowup();
-		airflow=t.getAirflow();
-		spres_rated=t.getSpresRated();
-		spres_supply=t.getSpresSupply();
-		spres_return=t.getSpresReturn();
-		g_filter=t.getGFilter();
-		g_electrical=t.getGElectrical();
-		g_looppres=t.getGLooppres();
-		g_cleancoil=t.getGCleanCoil();
-		g_cleandrain=t.getGCleanDrain();
-		g_pansensor=t.getGPanSensor();
-		g_cleancomp=t.getGCleanComp();
-		g_cleanunit=t.getGCleanUnit();
-		g_oilblower=t.getGOilBlower();
-		g_cleanpump=t.getGCleanPump();
-		g_tsplit=t.getGTsplit();
-		g_pampr=t.getGPampr();
-		g_pampa=t.getGPampa();
-		g_compar=t.getGCompar();
-		g_compaa=t.getGCompaa();
-		g_bampr=t.getGBampr();
-		g_bampa=t.getGBampa();
-		g_pdrop=t.getGPdrop();
-		sductsize=t.getSDuctSize();
-		rductsize=t.getRDuctSize();
-		liqtemp=t.getLiqTemp();
-		sucttemp=t.getSuctTemp();
-		r_temp=t.getRTemp();
-		s_temp=t.getSTemp();
-		rw_temp=t.getRWTemp();
-		mcfm=t.getMCfm();
-		out_temp=t.getOutTemp();
-		servsync=t.getServSync();
-		techid=t.getTechID();
-		}
-
-//////////////////////////////////////////
-// customer and inventory information
-/////////////////////////////////////////
-
-	out.println("<br>");
-	out.println("<table border=0 width=\"95%\" align=\"center\"><td width=\"50%\">");
-	out.println("<b align=Left>Service Invoice:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;Call Slip: "+callslip+"<br>&nbsp;&nbsp;&nbsp;&nbsp;Call Date: "+doFormatDate(getDate(idate))+"");
-	out.println("</td>");
-
-        Vector vc;
-        vc = UniCustomer.getIndItem(con, custnum);
-		
-                for (int ic = 0 ; ic < vc.size(); ic++)
-                {
-                UniCustomer tc = (UniCustomer) vc.elementAt(ic);
-        	custtype = tc.getCustType();
-		cname= tc.getCustomerName();
-		address1=tc.getAddress1();
-		address2=tc.getAddress2();
-		city =tc.getCity();
-		state=tc.getState();
-		zip=tc.getZip();
-		homephone=tc.getHomePhone();
-		altphone=tc.getAltPhone();
-		cust_notes=tc.getCustomerNotes();
-		cemail=tc.getCEmail();
-		sitenum=tc.getSiteNum();
-		custsite=tc.getCustSite();
-		}
-
-out.println("<td width=\"30%\">");
-out.println("<b>Customer:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;"+cname+"<br>&nbsp;&nbsp;&nbsp;&nbsp;"+address1+"<br>&nbsp;&nbsp;&nbsp;&nbsp;"+city+","+state+"<br>&nbsp;&nbsp;&nbsp;"+cemail+"");
-out.println("</td>");
-
-out.println("<td width=\"30%\">");
-out.println("Customer Number / Site:&nbsp;&nbsp;&nbsp;"+custsite+"&nbsp;/&nbsp;"+sitenum+"<br>Home Phone:&nbsp;&nbsp;&nbsp;"+homephone+"<br>Alt. Phone:&nbsp;&nbsp;&nbsp;"+altphone+"");
-out.println("</td>");
-	out.println("</table>");
-
-	out.println("<table width=\"100%\" align=\"center\" border=0><th width=\"50%\" >Parts Used</th><th>Equipment List</th><tr><td>");
-	out.println("<font size=1>");
-	out.println("<tr><td>");
-		out.println("<table width=\"100%\" align=\"center\" border=1>");
-	out.println("<font size=1>");
-out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th>");
-Vector ci;
-ci = InvUse.getAllCallslipItems(con, callslip, idate);
-for (int cc = 0 ; cc < ci.size(); cc++)
-{
-	InvUse ti = (InvUse) ci.elementAt(cc);
-	String keycode = ti.getKeyCode();
-	String itemname = ti.getItemName();
-	String pquant = ti.getQuantity();
-	String iidate = doFormatDate(getDate(ti.getTDate()));
-	out.println("<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td></tr>");
-	}
-		out.println("</font>");
-		out.println("</table>");
-	out.println("</td><td>");
-		out.println("<table width=\"95%\" align=\"center\" border=1>");
-		out.println("<th>Type</th><th>Make</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
-		out.println("<font size=1>");
- 	Statement stmt = con.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"' or enum='"+equip3+"' or enum='"+equip4+"';");
-		 while(rs.next())
-                {
-		brand = rs.getString("brand");
-                modelnum = rs.getString("modelnum");
-                serialnum = rs.getString("serialnum");
-                efilter = rs.getString("filter");
-                notes = rs.getString("notes");
-// add equipment type here
-		etype = rs.getString("etype");
-if (etype==null) {
-		etype = "-";
-		}
-
-	out.println("<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+efilter+"</td><td>"+notes+"</tr>");
-		}
-		out.println("</font>");
-		out.println("</table>");
-		out.println("<font size=1>");
-		out.println("</td></tr></table>");
-
-//////////////////////////////////////////////////////
-// Print Air Handler
-/////////////////////////////////////////////////////
-if ((!mbearing.equalsIgnoreCase("-"))||!(mblades.equalsIgnoreCase("-"))||(!ecoil.equalsIgnoreCase("-")))
-        {
-out.println ("<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Air Handler</h3>");
-out.println ("<font size=1>");
-out.println ("<table width=\"95%\" align=center border=1 height=5>");
-out.println ("<font size=1>");
-out.println ("<tr><td width=\"25%\"><b>Motor Bearings</td><td width=\"25%\">"+mbearing+"</td>");
-out.println ("<td width=\"25%\"><b>Motor Blades</td><td width=\"25%\">"+mblades+"</td></tr>");
-out.println ("<tr><td><b>Evaporator Coil</td><td>"+ecoil+"</td>");
-out.println ("<td><b>Drain Line</td><td>"+dline+"</td></tr>");
-out.println ("<tr><td><b>Drain Pan</td><td>"+dpan+"</td>");
-out.println ("<td><b>Electrical</td><td>"+ielect+"</td></tr>");
-out.println ("<tr><td><b>Motor Capacitor</td><td>"+mcap+"</td>");
-out.println ("<td><b>Filter</td><td>"+filter+"</td></tr>");
-out.println ("<tr><td><b>Humidifier</td><td>"+humidifier+"</td>");
-out.println("<td><b>Temp Split</td><td width=\"25%\">"+tempsplit+"</td></tr>");
-out.println ("<tr><td><b>Supply Db Temp</td><td>"+s_temp+"</td>");
-out.println ("<td><b>Return Db Temp</td><td>"+r_temp+"</td></tr>");
-out.println ("<tr><td><b>Return Wb Temp</td><td>"+rw_temp+"</td>");
-out.println ("</font>");
-out.println ("</table>");
-out.println ("</font>");
-}
-
-////////////////////////////////////////////////////////
-// Air Diagnostics Section
-///////////////////////////////////////////////////////
-if ((!spres_rated.equalsIgnoreCase("-"))||!(spres_return.equalsIgnoreCase("-"))||(!spres_rated.equalsIgnoreCase("-"))||!(rductsize.equalsIgnoreCase("-"))||!(airflow.equalsIgnoreCase("-")))
-        {
-	out.println("<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Air Diagnostics</h3>");
-	out.println("<font size=1>");
-	out.println("<table width=\"95%\" align=center border=1 height=5>");
-	out.println("<font size=1>");
-	out.println ("<tr><td><b>Supply Pressure</td><td>"+spres_supply+"</td>");
-	out.println ("<td><b>Return Pressure</td><td>"+spres_return+"</td></tr>");
-	out.println ("<tr><td><b>Rated Static Pressue</td><td>"+spres_rated+"</td>");
-	out.println ("<td><b>Air Flow</td><td>"+airflow+"</td></tr>");
-	out.println ("<tr><td><b>Supply Duct Size</td><td>"+sductsize+"</td>");
-	out.println ("<td><b>Return Duct Size</td><td>"+rductsize+"</td></tr>");
-	out.println ("<tr><td><b>Measured CFM</td><td>"+mcfm+"</td></tr>");
-	
-	out.println ("</font>");
-	out.println ("</table>");
-	out.println ("</font>");
-	}
-
-
-////////////////////////////////////////////////////////
-// Print Heating Section
-///////////////////////////////////////////////////////
-if ((!hstrips.equalsIgnoreCase("-"))||!(burners.equalsIgnoreCase("-"))||(!flame.equalsIgnoreCase("-")))
-        {
-	out.println("<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Heating</h3>");
-	out.println("<font size=1>");
-	out.println("<table width=\"95%\" align=center border=1 height=5>");
-	out.println("<font size=1>");
-	out.println("<tr><td width=\"25%\"><b>Heat Strips</td><td width=\"25%\">"+hstrips+"</td>");
-	out.println("<td width=\"25%\"><b>Gas Pressure</td><td width=\"25%\">"+gpreassures+"</td></tr>");
-	out.println("<tr><td><b>Ignition</td><td>"+ignition+"</td>");
-	out.println("<td><b>Burners</td><td>"+burners+"</td></tr>");
-	out.println("<tr><td><b>Limits</td><td>"+limits+"</td>");
-	out.println("<td><b>Flame</td><td>"+flame+"</td></tr>");
-	out.println("<tr><td><b>Draft Inducer</td><td>"+dinducer+"</td>");
-	out.println("<td><b>Stack Temp</td><td>"+stacktemp+"</td></tr>");
-	out.println("<tr><td><b>Start CO</td><td>"+startco+"</td>");
-	out.println("<td><b>Run CO</td><td>"+runco+"</td></tr>");
-	out.println("<tr><td><b>Vent Pipe</td><td>"+ventpipe+"</td></tr>");
-	out.println("</font>");
-out.println ("</font>");
-	out.println("</table>");
-}
-
-/////////////////////////////////////////////////////////
-// Print Condensor section
-////////////////////////////////////////////////////////
-
-if ((!atemp.equalsIgnoreCase("-"))||!(crlar.equalsIgnoreCase("-"))||(!lpres.equalsIgnoreCase("-")))
-        {
-	out.println("<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Condensor</h3>");
-	out.println("<table width=\"95%\" align=center border=1 height=5>");
-	out.println("<font size=1>");
-	out.println("<tr><td width=\"25%\"><b>Suction Line Temp</td><td width=\"25%\">"+sucttemp+"</td>");
-	out.println("<td width=\"25%\"><b>Liquid Line Temp</td><td width=\"25%\">"+liqtemp+"</td></tr>");
-	out.println("<tr><td width=\"25%\"><b>Approach Temp</td><td width=\"25%\">"+atemp+"</td>");
-	out.println("<td><b>Outdoor Temp</td><td>"+out_temp+"</td></tr>");
-	out.println("<tr><td><b>Comp. Rated Amps</td><td>"+crlar+"</td>");
-	out.println("<td><b>Comp. Actual Amps</td><td>"+crlaa+"</td></tr>");
-	out.println("<tr><td><b>Comp. Cap Actual</td><td>"+ccapa+"</td>");
-	out.println("<td><b>Comp. Cap Rated</td><td>"+ccapr+"</td></tr>");
-	out.println("<tr><td><b>Fan Amps Rated</td><td>"+frlar+"</td>");
-	out.println("<td><b>Fan Amps Actual</td><td>"+frlaa+"</td></tr>");
-	out.println("<tr><td><b>Fan Cap. Actual</td><td>"+fcapa+"</td>");
-	out.println("<td><b>Fan Cap. Rated</td><td>"+fcapr+"</td></tr>");
-	out.println("<tr><td><b>Coil Conditions</td><td>"+coilcond+"</td>");
-	out.println("<td><b>Cleaned Coil</td><td>"+cleancoil+"</td></tr>");
-	out.println("<tr><td><b>Start Capacitor</td><td>"+scap+"</td>");
-	out.println("<td><b>Time Delay</td><td>"+ctimedelay+"</td></tr>");
-	out.println("<tr><td><b>Electrical</td><td>"+oelectrical+"</td>");
-	out.println("<td><b>Condensor Pad</td><td>"+comppad+"</td></tr>");
-	out.println("<tr><td><b>Contactor</td><td>"+contactor+"</td>");
-	out.println("<td><b>Fan Bearings</td><td>"+fbearing+"</td></tr>");
-	out.println("<tr><td><b>Low Pressure</td><td>"+lpres+"</td>");
-	out.println("<td><b>High Pressure</td><td>"+hpres+"</td></tr>");
-	out.println("</font>");
-	out.println("</table>");
-	}
-
-/////////////////////////////////////////////////////////
-// Print Oil Heat section
-////////////////////////////////////////////////////////
-
-if ((!opump.equalsIgnoreCase("-"))||(!oprimesafety.equalsIgnoreCase("-"))||(!osafetime.equalsIgnoreCase("-"))||(!oco2.equalsIgnoreCase("-"))||(!ofulemix.equalsIgnoreCase("-")))
-        {
-	out.println("<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Oil Heat</h3>");
-	out.println("<table width=\"95%\" align=center border=1 height=5>");
-	out.println("<font size=1>");
-	out.println("<tr><td width=\"25%\"><b>Oil Leaks</td><td width=\"25%\">"+oleaks+"</td>");  
-	out.println("<td width=\"25%\"><b>Chimney and Flue</td><td width=\"25%\">"+ochimney+"</td></tr>");
-	out.println("<tr><td><b>Pump Pressure</td><td>"+opump+"</td>");
-	out.println("<td><b>Controls</td><td>"+ocontrols+"</td></tr>");
-	out.println("<tr><td><b>Thermostat</td><td>"+otstat+"</td>");
-	out.println("<td><b>Primary Control Safety</td><td>"+oprimesafety+"</td></tr>");
-	out.println("<tr><td><b>Safety Timing</td><td>"+osafetime+"</td>");
-	out.println("<td><b>Ignition Transformer</td><td>"+oigntrans+"</td></tr>");
-	out.println("<tr><td><b>Lubricate Motors</td><td>"+olubemotors+"</td>");
-	out.println("<td><b>Fuel/Air Mix</td><td>"+ofulemix+"</td></tr>");
-	out.println("<tr><td><b>Nozzle Size</td><td>"+onozzle+"</td>");
-	out.println("<td><b>Gross Stack Temp</td><td>"+ogross+"</td></tr>");
-	out.println("<tr><td><b>Net Stack Temp</td><td>"+onet+"</td>");
-	out.println("<td><b>Smoke</td><td>"+osmoke+"</td></tr>");
-	out.println("<tr><td><b>CO2</td><td>"+oco2+"</td>");
-	out.println("<td><b>O2</td><td>"+oo2+"</td></tr>");
-	out.println("<tr><td><b>CO</td><td>"+oco+"</td>");
-	out.println("<td><b>Excess Air</td><td>"+oexcessair+"</td></tr>");
-	out.println("<tr><td><b>Breech Draft</td><td>"+obreachdraft+"</td>");
-	out.println("<td><b>Overfire Draft</td><td>"+ofiredraft+"</td></tr>");
-	out.println("<tr><td><b>Efficiency</td><td>"+oeffic+"</td>");
-	out.println("<td><b>Rating (Excellent, Good, Fair, Poor)</td><td>"+orating+"</td></tr>");
-	out.println("<tr><td><b>Chimney/Power Vent</td><td>"+opower+"</td>");
-	out.println("<td><b>Tank Size</td><td>"+otank+"</td></tr>");
-	out.println("<tr><td><b>Tank Condition</td><td>"+otcond+"</td>");
-	out.println("<td><b>Domestic Hot Water</td><td>"+odheat+"</td></tr>");
-	out.println("<tr><td><b>Combustion Chamber</td><td>"+ocombustion+"</td>");
-	out.println("<td><b>Electrodes</td><td>"+oelectrodes+"</td></tr>");
-	out.println("<tr><td><b>Boiler/Furnace Brush/Vacuum</td><td>"+obrush+"</td>");
-	out.println("<td><b>Filters</td><td>"+ofilters+"</td></tr>");
-	out.println("</font>");
-	out.println("</table>");
-}
-
-
-/////////////////////////////////////////////////////////
-// Print Geothermal section
-////////////////////////////////////////////////////////
-
-if ((!g_looppres.equalsIgnoreCase("-"))||!(g_filter.equalsIgnoreCase("-"))||(!g_electrical.equalsIgnoreCase("-")))
-        {
-	out.println("<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Geothermal</h3>");
-	out.println("<table width=\"95%\" align=center border=1 height=5>");
-	out.println("<font size=1>");
-	out.println("<tr><td width=\"25%\"><b>Filters</td><td width=\"25%\">"+g_filter+"</td>");  
-	out.println("<td width=\"25%\"><b>Electrical</td><td width=\"25%\">"+g_electrical+"</td></tr>");
-	out.println("<tr><td><b>Loop Pressure </td><td>"+g_looppres +"</td>");
-	out.println("<td><b>Cleaned Coil</td><td>"+g_cleancoil +"</td></tr>");
-	out.println("<tr><td><b>Cleaned Drainline</td><td>"+g_cleandrain +"</td>");
-	out.println("<td><b>Check Pan Sensor </td><td>"+g_pansensor +"</td></tr>");
-	out.println("<tr><td><b>Clean Compartments </td><td>"+g_cleancomp +"</td>");
-	out.println("<td><b>Clean Unit </td><td>"+g_cleanunit +"</td></tr>");
-	out.println("<tr><td><b>Oil/Check Blower </td><td>"+g_oilblower +"</td>");
-	out.println("<td><b>Clean Condensate Pump </td><td>"+g_cleanpump +"</td></tr>");
-	out.println("<tr><td><b>Temp Split </td><td>"+g_tsplit +"</td>");
-	out.println("<td><b>Pressure Drop </td><td>"+g_pdrop +"</td></tr>");
-	out.println("<tr><td><b>Pump Amps Rated </td><td>"+g_pampr +"</td>");
-	out.println("<td><b>Pump Amps Actual </td><td>"+g_pampa +"</td></tr>");
-	out.println("<tr><td><b>Compressor Amps Rated </td><td>"+g_compar +"</td>");
-	out.println("<td><b>Compressor Amps Actual </td><td>"+g_compaa +"</td></tr>");
-	out.println("<tr><td><b>Blower Amps Rated </td><td>"+g_bampr +"</td>");
-	out.println("<td><b>Blower Amps Actual </td><td>"+g_bampa +"</td></tr>");
-	out.println("</font>");
-	out.println("</table>");
-	}
-/////////////////////////////////////////////////////////
-// Print Comments and Notes section
-////////////////////////////////////////////////////////
-if (services.length()>1||recommendations.length()>1||parts.length()>1||notes.length()>1) {
-out.println("<br>");
-out.println("<table size=95% width=\"95%\" align=center border=1>");
-out.println("<font size=1>");
-if (services.length()>1) {
-out.println("<tr><td><b>Services</td></tr><tr><td>"+services);
-out.println("</td></tr>");
-}
-if (parts.length()>1) {
-out.println("<tr><td><b>Parts Needed</td></tr><tr><td>"+parts);
-out.println("</td></tr>");
-}
-
-if (recommendations.length()>1) {
-out.println("<P></P><br>");
-		out.println("<tr><td><h4>Our Trained Technician Recommends</h4></td></tr><tr><td>"+recommendations+"");
-		out.println("<table><font size=1><tr><td>Customer Accepts Recomendations</td><td>______________</td><td>Customer Declines Recommendations</td><td>________________</td></tr></font></table></tr>");
-		out.println("</td></tr>");
-}
-if (action.equalsIgnoreCase("vinspectprint")) {
-if (notes.length()>1) {
-out.println("<tr><td><b>NOTES: DO NOT PRINT FOR CUSTOMER!!</td></tr><tr><td>"+notes);
-out.println("</td></tr>");
-}
-}
-out.println("</font>");
-out.println("</table>");
-out.println("");
-}
-
-
-/////////////////////////////////////////////////////////
-// Print footer and signature section
-////////////////////////////////////////////////////////
-
-       int frcode=0; 
-        v = UniSvcCharges.getAllItems(con,callslip);
-	if ((v.size()>0)) {
-	out.println("<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Charges</h4>");
-        out.println("<table border=1 width=95% align=\"center\">");
-		out.println("<font size=1>");
-        out.println("<th>Code</th><th>Quantity</th><th>Description</th><th>Price</th><th>Sub Total</th>");
-		
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                UniSvcCharges t = (UniSvcCharges) v.elementAt(i);
-		recnum=t.getRecnum();
-		callslip=t.getCallslip();
-		quant=t.getQuant();
-		descript=t.getDescript();
-		price=t.getPrice();
-		frcode = t.getFrcode();
-		total=t.getTotal();
-		totalcharge=totalcharge+total;
-                out.println("<tr><td>"+frcode+"</td><td>"+quant+"</td><td>"+descript+"</td><td>"+NumberFormat.getCurrencyInstance().format(price)+"</td><td>"+NumberFormat.getCurrencyInstance().format(total)+"</td></tr>");
-		}
-	out.println("</font>");
-        out.println("</table>");
-		}
-	out.println("</font>");
-	String itech_name = doGetTechInfo_name(techid);
-	out.println("<table width=\"95%\" align=\"center\">");
-	out.println("<font size=1>");
-	out.println("<tr>");
-	if (totalcharge>0) {
-		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>"+NumberFormat.getCurrencyInstance().format(totalcharge)+"</b></td>");
-
-	} else {
-		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>_________________</b></td>");
-	}
-	out.println("<P></p><br><br>");
-out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</h5></td><td>Amount Paid</td><td>_________________</td>");
-out.println("</tr></font></table>");
-
-// Put the discount information in here...
-
-if (!action.equalsIgnoreCase("vinspectprint")) {
-	out.println("<table width=\"95%\" align=\"center\">");
-	out.println("<font size=1>");
-                        if (nateid==0) {
-                        if (custtype.equalsIgnoreCase("T")) {
-
-		out.println("<tr><td></td><td><b>Please ask our technician how you could save money on this call with a Planned Service Agreement!</b></td></tr>");
-                        }
-			else if (custtype.equalsIgnoreCase("F")) {
-
-		out.println("<tr><td></td><td><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-                        else {
-		out.println("<tr><td></td><td><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-			//NO NATE ID - DO NOT PRINT NATE INFO
-			} else {
-	out.println("<tr><td> ");
-	out.println("<IMG SRC=\"http://127.0.0.1:8080/servsys/natelogo.gif\" NAME=\"NateLogo\" ALIGN=LEFT WIDTH=60 HEIGHT=60 BORDER=0><BR CLEAR=LEFT>");
-	out.println("</td>");
-                        if (custtype.equalsIgnoreCase("T")) {
-
-		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Please ask our technician how you could save money on this call with a Planned Service Agreement!</b></td></tr>");
-                        }
-			else if (custtype.equalsIgnoreCase("F")) {
-
-		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-                        else {
-		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-			}
-}
-
-out.println("</font></table>");
-
-out.println("</body>");
-out.println("</html>");
+		String mbody=ServsysPrintInspection.getIndividualItem (con, req,res, out, session, username, classdir); 
 		con.close();
-		if (action.equalsIgnoreCase("vinspectprint")) 
-				{
-                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&csection=3&custnum="+custnum+">Click here to continue</a>");
-				}
-
-}
+				
+			}
 
 
 private void doEditInspection(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -20204,6 +19969,43 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 	String conage=null;
 	int servsync=0;
 	String parts=null;
+			String  im_cleanbin=null;
+		String  im_limeaway=null;
+		String  im_bleach=null;
+		String  im_watercomp=null;
+		String  im_icecomp=null;
+		String  im_filter=null;
+		String  im_float=null;
+		String  im_wpump=null;
+		String  im_binsensor=null;
+		String  im_testdump=null;
+		String  im_electrical=null;
+		String  im_comprated=null;
+		String  im_compactual=null;
+		String  ref_condcoilcond=null;
+		String  ref_condcoilcleaned=null;
+		String  ref_evapcoilcond=null;
+		String  ref_evapcoilcleaned=null;
+		String  ref_fanbladecond=null;
+		String  ref_fanbladecleaned=null;
+		String  ref_condensateline=null;
+		String  ref_condfan=null;
+		String  ref_doorgasket=null;
+		String  ref_doorsclose=null;
+		String  ref_productboxcond=null;
+		String  ref_checkscrews=null;
+		String  ref_evaptempin=null;
+		String  ref_evaptempout=null;
+		String  ref_boxtemp=null;
+		String  ref_sightglasslevel=null;
+		String  ref_refrigerant=null;
+		String  ref_defrostclock=null;
+		String  ref_defrosttimes=null;
+		String  ref_doorheater=null;
+		String  ref_electrical=null;
+		String  ref_compamprated=null;
+		String  ref_compampactual=null;
+	
 //////////////////////////////////////////////////////
 // Get Origional Call Information
 //////////////////////////////////////////////////////
@@ -20299,6 +20101,7 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
                 obrush=t.getObrush();
                 ofilters=t.getOfilters();
                 followup=t.getFollowup();
+		
 		if (followup==1)
 			{
 			sfollowup=null;
@@ -20341,6 +20144,42 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 		out_temp=t.getOutTemp();
 		servsync=t.getServSync();
 		parts=t.getParts();
+		im_cleanbin=t.im_cleanbin();
+		im_limeaway=t.im_limeaway();
+		im_bleach=t.im_bleach();
+		im_watercomp=t.im_watercomp();
+		im_icecomp=t.im_icecomp();
+		im_filter=t.im_filter();
+		im_float=t.im_float();
+		im_wpump=t.im_wpump();
+		im_binsensor=t.im_binsensor();
+		im_testdump=t.im_testdump();
+		im_electrical=t.im_electrical();
+		im_comprated=t.im_comprated();
+		im_compactual=t.im_compactual();
+		ref_condcoilcond=t.ref_condcoilcond();
+		ref_condcoilcleaned=t.ref_condcoilcleaned();
+		ref_evapcoilcond=t.ref_evapcoilcond();
+		ref_evapcoilcleaned=t.ref_evapcoilcleaned();
+		ref_fanbladecond=t.ref_fanbladecond();
+		ref_fanbladecleaned=t.ref_fanbladecleaned();
+		ref_condensateline=t.ref_condensateline();
+		ref_condfan=t.ref_condfan();
+		ref_doorgasket=t.ref_doorgasket();
+		ref_doorsclose=t.ref_doorsclose();
+		ref_productboxcond=t.ref_productboxcond();
+		ref_checkscrews=t.ref_checkscrews();
+		ref_evaptempin=t.ref_evaptempin();
+		ref_evaptempout=t.ref_evaptempout();
+		ref_boxtemp=t.ref_boxtemp();
+		ref_sightglasslevel=t.ref_sightglasslevel();
+		ref_refrigerant=t.ref_refrigerant();
+		ref_defrostclock=t.ref_defrostclock();
+		ref_defrosttimes=t.ref_defrosttimes();
+		ref_doorheater=t.ref_doorheater();
+		ref_electrical=t.ref_electrical();
+		ref_compamprated=t.ref_compamprated();
+		ref_compampactual=t.ref_compampactual();
 		}
 
 
@@ -20520,6 +20359,55 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 	out.println("</table>");
 	out.println("<p></p><p></p>");
 
+		
+	out.println("<table size=100% border=1>");
+	out.println("<th><h3>Ice Machine</h3></th><th></th>");
+	out.println("<tr><td>Clean Ice Bin</td><td><input type=\"text\" name=\"im_cleanbin\" size=\"30\" value=\""+im_cleanbin+"\"></td>");
+	out.println("<td>Clean With LimeAway</td><td><input type=\"text\" name=\"im_limeaway\" size=\"30\" value=\""+im_limeaway+"\"></td></tr>");
+	out.println("<tr><td>Clean With Bleach</td><td><input type=\"text\" name=\"im_bleach\" size=\"30\" value=\""+im_bleach+"\"></td>");
+	out.println("<td>Clean All Water Components</td><td><input type=\"text\" name=\"im_watercomp\" size=\"30\" value=\""+im_watercomp+"\"></td></tr>");
+	out.println("<tr><td>Clean All Ice Components</td><td><input type=\"text\" name=\"im_icecomp\" size=\"30\" value=\""+im_icecomp+"\"></td>");
+	out.println("<td>Clean / Check Water Filter</td><td><input type=\"text\" name=\"im_filter\" size=\"30\" value=\""+im_filter+"\"></td></tr>");
+	out.println("<tr><td>Clean Float</td><td><input type=\"text\" name=\"im_float\" size=\"30\" value=\""+im_float+"\"></td>");
+	out.println("<td>Clean Water Pump</td><td><input type=\"text\" name=\"im_wpump\" size=\"30\" value=\""+im_wpump+"\"></td></tr>");
+	out.println("<tr><td>Check Bin Sensor</td><td><input type=\"text\" name=\"im_binsensor\" size=\"30\" value=\""+im_binsensor+"\"></td>");
+	out.println("<td>Run 3 Batches and Dump</td><td><input type=\"text\" name=\"im_testdump\" size=\"30\" value=\""+im_testdump+"\"></td></tr>");
+	out.println("<tr><td>Check Electrical</td><td><input type=\"text\" name=\"im_electrical\" size=\"30\" value=\""+im_electrical+"\"></td>");
+	out.println("<td>Compressor Amps Rated</td><td><input type=\"text\" name=\"im_comprated\" size=\"30\" value=\""+im_comprated+"\"></td></tr>");
+	out.println("<tr><td>Compressor Amps Actual</td><td><input type=\"text\" name=\"im_compactual\" size=\"30\" value=\""+im_compactual+"\"></td></tr>");
+	out.println("</table>");
+	out.println("<p></p><p></p>");
+
+
+	out.println("<table size=100% border=1>");
+	out.println("<th><h3>Refrigeration</h3></th><th></th>");
+	out.println("<tr><td>Condensor Coil Condition</td><td><input type=\"text\" name=\"ref_condcoilcond\" size=\"30\" value=\""+ref_condcoilcond+"\"></td>");
+	out.println("<td>Condensor Coil Cleaned</td><td><input type=\"text\" name=\"ref_condcoilcleaned\" size=\"30\" value=\""+ref_condcoilcleaned+"\"></td></tr>");
+	out.println("<tr><td>Evaperator Coil Condition</td><td><input type=\"text\" name=\"ref_evapcoilcond\" size=\"30\" value=\""+ref_evapcoilcond+"\"></td>");
+	out.println("<td>Evaperator Coil Cleaned</td><td><input type=\"text\" name=\"ref_evapcoilcleaned\" size=\"30\" value=\""+ref_evapcoilcleaned+"\"></td></tr>");
+	out.println("<tr><td>Fan Blade Condition</td><td><input type=\"text\" name=\"ref_fanbladecond\" size=\"30\" value=\""+ref_fanbladecond+"\"></td>");
+	out.println("<td>Fan Blade Cleaned</td><td><input type=\"text\" name=\"ref_fanbladecleaned\" size=\"30\" value=\""+ref_fanbladecleaned+"\"></td></tr>");
+	out.println("<tr><td>Cleaned Condensate Line</td><td><input type=\"text\" name=\"ref_condensateline\" size=\"30\" value=\""+ref_condensateline+"\"></td>");
+	out.println("<td>Condensor Fan</td><td><input type=\"text\" name=\"ref_condfan\" size=\"30\" value=\""+ref_condfan+"\"></td></tr>");
+	out.println("<tr><td>Door Gaskets</td><td><input type=\"text\" name=\"ref_doorgasket\" size=\"30\" value=\""+ref_doorgasket+"\"></td>");
+	out.println("<td>Doors Close Properly</td><td><input type=\"text\" name=\"ref_doorsclose\" size=\"30\" value=\""+ref_doorsclose+"\"></td></tr>");
+	out.println("<tr><td>Product Box Condition</td><td><input type=\"text\" name=\"ref_productboxcond\" size=\"30\" value=\""+ref_productboxcond+"\"></td>");
+	out.println("<td>Check Screws</td><td><input type=\"text\" name=\"ref_checkscrews\" size=\"30\" value=\""+ref_checkscrews+"\"></td></tr>");
+	out.println("<tr><td>Evaporator Air Temp In</td><td><input type=\"text\" name=\"ref_evaptempin\" size=\"30\" value=\""+ref_evaptempin+"\"></td>");
+	out.println("<td>Evaporator Air Temp Out</td><td><input type=\"text\" name=\"ref_evaptempout\" size=\"30\" value=\""+ref_evaptempout+"\"></td></tr>");
+	out.println("<tr><td>Box Temp</td><td><input type=\"text\" name=\"ref_boxtemp\" size=\"30\" value=\""+ref_boxtemp+"\"></td>");
+	out.println("<td>Sight Glass Level</td><td><input type=\"text\" name=\"ref_sightglasslevel\" size=\"30\" value=\""+ref_sightglasslevel+"\"></td></tr>");
+	out.println("<tr><td>Refrigerant</td><td><input type=\"text\" name=\"ref_refrigerant\" size=\"30\" value=\""+ref_refrigerant+"\"></td>");
+	out.println("<td>Defrost Clock</td><td><input type=\"text\" name=\"ref_defrostclock\" size=\"30\" value=\""+ref_defrostclock+"\"></td></tr>");
+	out.println("<tr><td>Defrost Times</td><td><input type=\"text\" name=\"ref_defrosttimes\" size=\"30\" value=\""+ref_defrosttimes+"\"></td>");
+	out.println("<td>Check Electrical</td><td><input type=\"text\" name=\"ref_electrical\" size=\"30\" value=\""+ref_electrical+"\"></td></tr>");
+	out.println("<tr><td>Compressor Amp Rated</td><td><input type=\"text\" name=\"ref_compamprated\" size=\"30\" value=\""+ref_compamprated+"\"></td>");
+	out.println("<td>Compressor Amp Actual</td><td><input type=\"text\" name=\"ref_compampactual\" size=\"30\" value=\""+ref_compampactual+"\"></td></tr>");	
+	out.println("</table>");
+	out.println("<p></p><p></p>");
+		
+	
+	
 	out.println("<p></p><p></p>");
 	out.println("<table size=100% border=1>");
 ///////////////////////////////////////////////////////
@@ -21130,6 +21018,43 @@ private void doUpdateInspection(HttpServletRequest req, HttpServletResponse res,
 	String out_temp=req.getParameter("out_temp");
 	String action=req.getParameter("action");
 	String parts=req.getParameter("parts");
+			String im_cleanbin=req.getParameter("im_cleanbin");
+		String im_limeaway=req.getParameter("im_limeaway");
+		String im_bleach=req.getParameter("im_bleach");
+		String im_watercomp=req.getParameter("im_watercomp");
+		String im_icecomp=req.getParameter("im_icecomp");
+		String im_filter=req.getParameter("im_filter");
+		String im_float=req.getParameter("im_float");
+		String im_wpump=req.getParameter("im_wpump");
+		String im_binsensor=req.getParameter("im_binsensor");
+		String im_testdump=req.getParameter("im_testdump");
+		String im_electrical=req.getParameter("im_electrical");
+		String im_comprated=req.getParameter("im_comprated");
+		String im_compactual=req.getParameter("im_compactual");
+		String ref_condcoilcond=req.getParameter("ref_condcoilcond");
+		String ref_condcoilcleaned=req.getParameter("ref_condcoilcleaned");
+		String ref_evapcoilcond=req.getParameter("ref_evapcoilcond");
+		String ref_evapcoilcleaned=req.getParameter("ref_evapcoilcleaned");
+		String ref_fanbladecond=req.getParameter("ref_fanbladecond");
+		String ref_fanbladecleaned=req.getParameter("ref_fanbladecleaned");
+		String ref_condensateline=req.getParameter("ref_condensateline");
+		String ref_condfan=req.getParameter("ref_condfan");
+		String ref_doorgasket=req.getParameter("ref_doorgasket");
+		String ref_doorsclose=req.getParameter("ref_doorsclose");
+		String ref_productboxcond=req.getParameter("ref_productboxcond");
+		String ref_checkscrews=req.getParameter("ref_checkscrews");
+		String ref_evaptempin=req.getParameter("ref_evaptempin");
+		String ref_evaptempout=req.getParameter("ref_evaptempout");
+		String ref_boxtemp=req.getParameter("ref_boxtemp");
+		String ref_sightglasslevel=req.getParameter("ref_sightglasslevel");
+		String ref_refrigerant=req.getParameter("ref_refrigerant");
+		String ref_defrostclock=req.getParameter("ref_defrostclock");
+		String ref_defrosttimes=req.getParameter("ref_defrosttimes");
+		String ref_doorheater=req.getParameter("ref_doorheater");
+		String ref_electrical=req.getParameter("ref_electrical");
+		String ref_compamprated=req.getParameter("ref_compamprated");
+		String ref_compampactual=req.getParameter("ref_compampactual");
+	
 	int servsync=0;
 		if (tfollowup != null) {
        		followup = 1;
@@ -21148,7 +21073,7 @@ private void doUpdateInspection(HttpServletRequest req, HttpServletResponse res,
 			SiteNum=t.getSiteNum();
 		}
 			
-               UniInspection.UpdateItem(con, crecnum, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2,equip3,equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_return, spres_supply, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp , CustNum, SiteNum, expansion, ahage, conage, username, servsync, parts);
+               UniInspection.UpdateItem(con, crecnum, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2,equip3,equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_return, spres_supply, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, liqtemp, sucttemp, r_temp, s_temp, rw_temp, mcfm, out_temp , CustNum, SiteNum, expansion, ahage, conage, username, servsync, parts, im_cleanbin, im_limeaway, im_bleach, im_watercomp, im_icecomp, im_filter, im_float, im_wpump, im_binsensor, im_testdump, im_electrical, im_comprated, im_compactual, ref_condcoilcond, ref_condcoilcleaned, ref_evapcoilcond, ref_evapcoilcleaned, ref_fanbladecond, ref_fanbladecleaned, ref_condensateline, ref_condfan, ref_doorgasket, ref_doorsclose, ref_productboxcond, ref_checkscrews, ref_evaptempin, ref_evaptempout, ref_boxtemp, ref_sightglasslevel, ref_refrigerant, ref_defrostclock, ref_defrosttimes, ref_doorheater, ref_electrical, ref_compamprated, ref_compampactual);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
 			if (action.equalsIgnoreCase("updateinspection"))
@@ -21301,6 +21226,44 @@ private void doSaveInspection(HttpServletRequest req, HttpServletResponse res, P
 	String ahage=req.getParameter("ahage");
 	String conage=req.getParameter("conage");
 	String parts=req.getParameter("parts");
+	
+		String im_cleanbin=req.getParameter("im_cleanbin");
+		String im_limeaway=req.getParameter("im_limeaway");
+		String im_bleach=req.getParameter("im_bleach");
+		String im_watercomp=req.getParameter("im_watercomp");
+		String im_icecomp=req.getParameter("im_icecomp");
+		String im_filter=req.getParameter("im_filter");
+		String im_float=req.getParameter("im_float");
+		String im_wpump=req.getParameter("im_wpump");
+		String im_binsensor=req.getParameter("im_binsensor");
+		String im_testdump=req.getParameter("im_testdump");
+		String im_electrical=req.getParameter("im_electrical");
+		String im_comprated=req.getParameter("im_comprated");
+		String im_compactual=req.getParameter("im_compactual");
+		String ref_condcoilcond=req.getParameter("ref_condcoilcond");
+		String ref_condcoilcleaned=req.getParameter("ref_condcoilcleaned");
+		String ref_evapcoilcond=req.getParameter("ref_evapcoilcond");
+		String ref_evapcoilcleaned=req.getParameter("ref_evapcoilcleaned");
+		String ref_fanbladecond=req.getParameter("ref_fanbladecond");
+		String ref_fanbladecleaned=req.getParameter("ref_fanbladecleaned");
+		String ref_condensateline=req.getParameter("ref_condensateline");
+		String ref_condfan=req.getParameter("ref_condfan");
+		String ref_doorgasket=req.getParameter("ref_doorgasket");
+		String ref_doorsclose=req.getParameter("ref_doorsclose");
+		String ref_productboxcond=req.getParameter("ref_productboxcond");
+		String ref_checkscrews=req.getParameter("ref_checkscrews");
+		String ref_evaptempin=req.getParameter("ref_evaptempin");
+		String ref_evaptempout=req.getParameter("ref_evaptempout");
+		String ref_boxtemp=req.getParameter("ref_boxtemp");
+		String ref_sightglasslevel=req.getParameter("ref_sightglasslevel");
+		String ref_refrigerant=req.getParameter("ref_refrigerant");
+		String ref_defrostclock=req.getParameter("ref_defrostclock");
+		String ref_defrosttimes=req.getParameter("ref_defrosttimes");
+		String ref_doorheater=req.getParameter("ref_doorheater");
+		String ref_electrical=req.getParameter("ref_electrical");
+		String ref_compamprated=req.getParameter("ref_compamprated");
+		String ref_compampactual=req.getParameter("ref_compampactual");
+	
 	int servsync=0;
 
 		String CustNum=null;
@@ -21321,7 +21284,7 @@ private void doSaveInspection(HttpServletRequest req, HttpServletResponse res, P
 				} else 
 		{
 
-               UniInspection.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, sucttemp, liqtemp, r_temp, s_temp, rw_temp, mcfm, out_temp, CustNum, SiteNum , expansion, ahage, conage, username, servsync, parts);
+               UniInspection.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(idate)), equip1, equip2, equip3, equip4, mbearing, mblades, ecoil, dline, dpan, ielect, mcap, hstrips, filter, gpreassures, ignition, burners, limits, flame, dinducer,humidifier, atemp, tempsplit, crlaa, crlar, ccapr, ccapa, frlaa,frlar, fcapr, fcapa, fbearing, coilcond, cleancoil, contactor,scap, ctimedelay, oelectrical, comppad, recommendations, services, dueamount, paidamount, notes,lpres, hpres, startco, runco, stacktemp, ventpipe, oleaks, ochimney, opump, ocontrols, otstat, oprimesafety, osafetime, oigntrans, olubemotors, ofulemix, onozzle, ogross, osmoke, onet, oco2, oo2, oco, oexcessair, obreachdraft, ofiredraft, oeffic,orating, opower,otank,otcond, odheat, ocombustion, oelectrodes, obrush, ofilters, followup, airflow, spres_rated, spres_supply, spres_return, g_filter, g_electrical, g_looppres, g_cleancoil, g_cleandrain, g_pansensor, g_cleancomp, g_cleanunit, g_oilblower, g_cleanpump, g_tsplit, g_pampr, g_pampa, g_compar, g_compaa, g_bampr, g_bampa, g_pdrop, sductsize, rductsize, sucttemp, liqtemp, r_temp, s_temp, rw_temp, mcfm, out_temp, CustNum, SiteNum , expansion, ahage, conage, username, servsync, parts, im_cleanbin, im_limeaway, im_bleach, im_watercomp, im_icecomp, im_filter, im_float, im_wpump, im_binsensor, im_testdump, im_electrical, im_comprated, im_compactual, ref_condcoilcond, ref_condcoilcleaned, ref_evapcoilcond, ref_evapcoilcleaned, ref_fanbladecond, ref_fanbladecleaned, ref_condensateline, ref_condfan, ref_doorgasket, ref_doorsclose, ref_productboxcond, ref_checkscrews, ref_evaptempin, ref_evaptempout, ref_boxtemp, ref_sightglasslevel, ref_refrigerant, ref_defrostclock, ref_defrosttimes, ref_doorheater, ref_electrical, ref_compamprated, ref_compampactual);
                 out.println("Your item has been updated in the database<br>");
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=3&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
@@ -21877,6 +21840,20 @@ private void doDeleteMasterWsRecY(HttpServletRequest req, HttpServletResponse re
 		con2.close();
             }
 
+private void doDelHeatLoad(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String tcustnum = req.getParameter("custnum");
+       		 int custnum = Integer.parseInt(tcustnum);
+		String twsrec = req.getParameter("recnum");
+       		 int wsnum = Integer.parseInt(twsrec);
+                HeatLoad.deleteItem(con, twsrec);
+                out.println("Your item has been deleted from the database<br>");
+		con.close();
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=7&custnum="+custnum+"");
+            }
+
+	    
 private void doDelPackageCompare(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
@@ -21982,6 +21959,87 @@ private void doSavePackageCompare(HttpServletRequest req, HttpServletResponse re
                 res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart=A&custstop=A");
 			}
 		
+private void doSaveHeatLoad(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String action=req.getParameter("action");
+		String tcustnum = req.getParameter("custnum");
+		int custnum = Integer.parseInt(tcustnum);
+		
+	String recnum=req.getParameter("recnum");
+	String ceilingsqft=req.getParameter("ceilingsqft");
+	String wallsqft=req.getParameter("wallsqft");
+	String nwinsqft=req.getParameter("nwinsqft");
+	String swinsqft=req.getParameter("swinsqft");
+	String ewinsqft=req.getParameter("ewinsqft");
+	String wwinsqft=req.getParameter("wwinsqft");
+	String nsldoorsqft=req.getParameter("nsldoor");
+	String ssldoorsqft=req.getParameter("ssldoor");
+	String esldoorsqft=req.getParameter("esldoor");
+	String wsldoorsqft=req.getParameter("wsldoor");
+	String doorsqft=req.getParameter("doorsqft");
+	String totglasssqft=req.getParameter("totglasssqft");
+	String nframewall=req.getParameter("nframewall");
+	String nmasawall=req.getParameter("nmasawall");
+	String nmasbwall=req.getParameter("nmasbwall");
+	String basfloorsqft=req.getParameter("basfloorsqft");
+	String slabnoperim=req.getParameter("slabnoperim");
+	String slabwperim=req.getParameter("slabwperim");
+	String mechvent=req.getParameter("mechventcfm");
+	String numpeople=req.getParameter("numpeople");
+	String flooruncond=req.getParameter("flooruncond");
+	String custsitenum=req.getParameter("custsitenum");
+	String sitenum=req.getParameter("sitenum");
+	String ceiltype=req.getParameter("ceiltype");
+//	String walltype=req.getParameter("walltype");
+	String walltype="-";
+	String nwintype=req.getParameter("nwintype");
+	String swintype=req.getParameter("swintype");
+	String ewintype=req.getParameter("ewintype");
+	String wwintype=req.getParameter("wwintype");
+	String nsldoortype=req.getParameter("nsldoortype");
+	String ssldoortype=req.getParameter("ssldoortype");
+	String esldoortype=req.getParameter("esldoortype");
+	String wsldoortype=req.getParameter("wsldoortype");
+	String doortype=req.getParameter("doortype");
+	String nframewalltype=req.getParameter("nframewalltype");
+	String nmasawalltype=req.getParameter("nmasawalltype");
+	String nmasbwalltype=req.getParameter("nmasbwalltype");
+	String slabnoperimtype=req.getParameter("slabnoperimtype");
+	String slabwperimtype=req.getParameter("slabwperimtype");
+	String flooruncondtype=req.getParameter("flooruncondtype");
+	String bldlength=req.getParameter("bldlength");
+	String bldwidth=req.getParameter("bldwidth");
+	String bldheight=req.getParameter("bldheight");
+	Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String LoadDate = formatter.format(date);
+	
+		String CustNum=null;
+		String SiteNum=null;
+                Vector v;
+                v = UniCustomer.getIndItem(con, custnum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+			CustNum=t.getCustSite();
+			SiteNum=t.getSiteNum();
+		}
+		if (action.equalsIgnoreCase("saveheatload")) {
+		//out.println("INSERT INTO heatloads(custsitenum, sitenum, loaddate, ceilingsqft,wallsqft,nwinsqft,swinsqft,ewinsqft,wwinsqft,nsldoorsqft,ssldoorsqft,esldoorsqft,wsldoorsqft,doorsqft,totglasssqft,nframewall,nmasawall,nmasbwall,basfloorsqft,slabnoperim,slabwperim,flooruncond,mechvent,numpeople,ceiltype,walltype, nwintype,swintype,ewintype,   wwintype,nsldoortype,ssldoortype,esldoortype,wsldoortype,doortype,nframewalltype,nmasawalltype,nmasbwalltype,slabnoperimtype,slabwperimtype,flooruncondtype ) Values ( '"+CustNum+"', '"+SiteNum+"', '"+LoadDate+"','"+ceilingsqft+"', '"+wallsqft+"', '"+nwinsqft+"', '"+swinsqft+"', '"+ewinsqft+"', '"+wwinsqft+"', '"+nsldoorsqft+"', '"+ssldoorsqft+"', '"+esldoorsqft+"', '"+wsldoorsqft+"', '"+doorsqft+"', '"+totglasssqft+"', '"+nframewall+"', '"+nmasawall+"', '"+nmasbwall+"', '"+basfloorsqft+"', '"+slabnoperim+"', '"+slabwperim+"', '"+flooruncond+"', '"+mechvent+"', '"+numpeople+"', '"+ceiltype+"', '"+walltype+"', '"+ nwintype+"', '"+swintype+"', '"+ewintype+"', '"+wwintype+"', '"+nsldoortype+"', '"+ssldoortype+"', '"+esldoortype+"', '"+wsldoortype+"', '"+doortype+"', '"+nframewalltype+"', '"+nmasawalltype+"', '"+nmasbwalltype+"', '"+slabnoperimtype+"', '"+slabwperimtype+"', '"+flooruncondtype+"');");
+                HeatLoad.AddItem(con,CustNum, SiteNum, LoadDate, ceilingsqft,wallsqft,nwinsqft,swinsqft,ewinsqft,wwinsqft,nsldoorsqft,ssldoorsqft,esldoorsqft,wsldoorsqft,doorsqft,totglasssqft,nframewall,nmasawall,nmasbwall,basfloorsqft,slabnoperim,slabwperim,flooruncond,mechvent,numpeople,ceiltype,walltype,nwintype,swintype,ewintype,wwintype,nsldoortype,ssldoortype,esldoortype,wsldoortype,doortype,nframewalltype,nmasawalltype,nmasbwalltype,slabnoperimtype,slabwperimtype,flooruncondtype, bldlength, bldwidth, bldheight);
+		} else if (action.equalsIgnoreCase("updateheatload")) {
+		HeatLoad.UpdateItem(con, recnum, CustNum, SiteNum, LoadDate, ceilingsqft,wallsqft,nwinsqft,swinsqft,ewinsqft,wwinsqft,nsldoorsqft,ssldoorsqft,esldoorsqft,wsldoorsqft,doorsqft,totglasssqft,nframewall,nmasawall,nmasbwall,basfloorsqft,slabnoperim,slabwperim,flooruncond,mechvent,numpeople,ceiltype,walltype,nwintype,swintype,ewintype,wwintype,nsldoortype,ssldoortype,esldoortype,wsldoortype,doortype,nframewalltype,nmasawalltype,nmasbwalltype,slabnoperimtype,slabwperimtype,flooruncondtype, bldlength, bldwidth, bldheight);	
+		}
+                out.println("Your item has been updated in the database<br>");
+		con.close();
+                res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=7&custnum="+custnum+"&custstart=A&custstop=A");
+			}
+
+			
+			
 private void doSaveEquip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
@@ -27271,7 +27329,43 @@ private void doAddInspection(HttpServletRequest req, HttpServletResponse res, Pr
 	String expansion=null;
 	String ahage=null;
 	String conage=null;
-
+		String  im_cleanbin=null;
+		String  im_limeaway=null;
+		String  im_bleach=null;
+		String  im_watercomp=null;
+		String  im_icecomp=null;
+		String  im_filter=null;
+		String  im_float=null;
+		String  im_wpump=null;
+		String  im_binsensor=null;
+		String  im_testdump=null;
+		String  im_electrical=null;
+		String  im_comprated=null;
+		String  im_compactual=null;
+		String  ref_condcoilcond=null;
+		String  ref_condcoilcleaned=null;
+		String  ref_evapcoilcond=null;
+		String  ref_evapcoilcleaned=null;
+		String  ref_fanbladecond=null;
+		String  ref_fanbladecleaned=null;
+		String  ref_condensateline=null;
+		String  ref_condfan=null;
+		String  ref_doorgasket=null;
+		String  ref_doorsclose=null;
+		String  ref_productboxcond=null;
+		String  ref_checkscrews=null;
+		String  ref_evaptempin=null;
+		String  ref_evaptempout=null;
+		String  ref_boxtemp=null;
+		String  ref_sightglasslevel=null;
+		String  ref_refrigerant=null;
+		String  ref_defrostclock=null;
+		String  ref_defrosttimes=null;
+		String  ref_doorheater=null;
+		String  ref_electrical=null;
+		String  ref_compamprated=null;
+		String  ref_compampactual=null;
+	
 
 ///////////////////////////////////////////////////////
 // Actual calls start here
@@ -27433,7 +27527,54 @@ private void doAddInspection(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("<td>Checked Pan Sensor</td><td><input type=\"text\" name=\"g_pansensor\" size=\"30\" value=\"-\"></td></tr>");
 	out.println("</table>");
 	out.println("<p></p><p></p>");
+	
+	out.println("<table size=100% border=1>");
+	out.println("<th><h3>Ice Machine</h3></th><th></th>");
+	out.println("<tr><td>Clean Ice Bin</td><td><input type=\"text\" name=\"im_cleanbin\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Clean With LimeAway</td><td><input type=\"text\" name=\"im_limeaway\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Clean With Bleach</td><td><input type=\"text\" name=\"im_bleach\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Clean All Water Components</td><td><input type=\"text\" name=\"im_watercomp\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Clean All Ice Components</td><td><input type=\"text\" name=\"im_icecomp\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Clean / Check Water Filter</td><td><input type=\"text\" name=\"im_filter\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Clean Float</td><td><input type=\"text\" name=\"im_float\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Clean Water Pump</td><td><input type=\"text\" name=\"im_wpump\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Check Bin Sensor</td><td><input type=\"text\" name=\"im_binsensor\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Run 3 Batches and Dump</td><td><input type=\"text\" name=\"im_testdump\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Check Electrical</td><td><input type=\"text\" name=\"im_electrical\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Compressor Amps Rated</td><td><input type=\"text\" name=\"im_comprated\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Compressor Amps Actual</td><td><input type=\"text\" name=\"im_compactual\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("</table>");
+	out.println("<p></p><p></p>");
 
+
+	out.println("<table size=100% border=1>");
+	out.println("<th><h3>Refrigeration</h3></th><th></th>");
+	out.println("<tr><td>Condensor Coil Condition</td><td><input type=\"text\" name=\"ref_condcoilcond\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Condensor Coil Cleaned</td><td><input type=\"text\" name=\"ref_condcoilcleaned\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Evaperator Coil Condition</td><td><input type=\"text\" name=\"ref_evapcoilcond\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Evaperator Coil Cleaned</td><td><input type=\"text\" name=\"ref_evapcoilcleaned\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Fan Blade Condition</td><td><input type=\"text\" name=\"ref_fanbladecond\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Fan Blade Cleaned</td><td><input type=\"text\" name=\"ref_fanbladecleaned\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Cleaned Condensate Line</td><td><input type=\"text\" name=\"ref_condensateline\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Condensor Fan</td><td><input type=\"text\" name=\"ref_condfan\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Door Gaskets</td><td><input type=\"text\" name=\"ref_doorgasket\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Doors Close Properly</td><td><input type=\"text\" name=\"ref_doorsclose\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Product Box Condition</td><td><input type=\"text\" name=\"ref_productboxcond\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Check Screws</td><td><input type=\"text\" name=\"ref_checkscrews\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Evaporator Air Temp In</td><td><input type=\"text\" name=\"ref_evaptempin\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Evaporator Air Temp Out</td><td><input type=\"text\" name=\"ref_evaptempout\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Box Temp</td><td><input type=\"text\" name=\"ref_boxtemp\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Sight Glass Level</td><td><input type=\"text\" name=\"ref_sightglasslevel\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Refrigerant</td><td><input type=\"text\" name=\"ref_refrigerant\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Defrost Clock</td><td><input type=\"text\" name=\"ref_defrostclock\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Defrost Times</td><td><input type=\"text\" name=\"ref_defrosttimes\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Check Electrical</td><td><input type=\"text\" name=\"ref_electrical\" size=\"30\" value=\"-\"></td></tr>");
+	out.println("<tr><td>Compressor Amp Rated</td><td><input type=\"text\" name=\"ref_compamprated\" size=\"30\" value=\"-\"></td>");
+	out.println("<td>Compressor Amp Actual</td><td><input type=\"text\" name=\"ref_compampactual\" size=\"30\" value=\"-\"></td></tr>");	
+	out.println("</table>");
+	out.println("<p></p><p></p>");
+		
+	
 
 	out.println("<table size=100% border=1>");
 ///////////////////////////////////////////////////////

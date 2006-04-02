@@ -144,7 +144,7 @@ public static void AddItem(Connection con, int crecnum, String qdate, String qde
 		        {
 	       	        Statement stmt = con.createStatement();
 			String tqnotes = qnotes.replaceAll("'","''");
-	                stmt.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync, combineopts) Values ('"+crecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"', '"+combineopts+"' )");
+	                stmt.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync, combineopts, jobnum) Values ('"+crecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"', '"+combineopts+"','-' )");
 		        }
 
         public int getId() { return id; }

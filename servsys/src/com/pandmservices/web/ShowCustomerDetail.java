@@ -530,7 +530,26 @@ public class ShowCustomerDetail
 	
 	out.println("<P><P>");
 	out.println("<h3>Heat Loads</h3>");
-		out.println("<br><br><a href="+classdir+"UniCash?action=addheatload&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsite="+custsite+"&sitenum="+sitenum+">Add Heat/Cool Load to Customer File</a>");
+	
+	Vector vh;
+	vh = HeatLoad.getAllItems(con,custsite, sitenum);
+	out.println("<table border=1 width=100%>");
+	out.println("<th>Form #</th><th>Date</th><th>Print</th><th>Email</th>");
+	counter=0;
+	for (int i = 0 ; i < vh.size(); i++)
+	{
+		HeatLoad th = (HeatLoad) vh.elementAt(i);		
+		int formnum=th.recnum();
+		String formdate=doFormatDate(getDate(th.loaddate()));
+		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editheatload&recnum="+formnum+"&custnum="+custnum+"\">"+formnum+"</a></td><td>"+formdate+"</td><td><a href="+classdir+"UniCash?action=printheatload&recnum="+formnum+"&custnum="+custnum+" target=_blank>Print Format</a><td><a href="+classdir+"UniCash?action=sendsingleheatload&formnum="+formnum+"&custnum="+custnum+" target=\"_blank\">Email</a></td>");
+		//DELETE LINK	
+		if (AllowDelete==1) {
+			out.println("<td><a href="+classdir+"UniCash?action=deleteheatload&custnum="+custnum+"&recnum="+formnum+">Delete</a></td>");
+		}
+		out.println("</tr>");
+	}
+	out.println("</table><br><br>");
+	out.println("<br><br><a href="+classdir+"UniCash?action=addheatload&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&custsite="+custsite+"&sitenum="+sitenum+">Add Heat/Cool Load to Customer File</a>");
 	out.println("<P><P>");
 	
 	out.println("<P><P>");

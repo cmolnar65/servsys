@@ -106,9 +106,9 @@ public class UniTechInfo
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-		stmt.executeUpdate("Delete From tech_table where tech_name='" + d + "';");
+		stmt.executeUpdate("Delete From tech_table where username='" + d + "';");
 		stmt.executeUpdate("Delete From configemail where username='" + d + "';");
-		stmt.executeUpdate("Delete From users where username='" + d + "';");
+		stmt.executeUpdate("Delete From users where login='" + d + "';");
 	}
 	  
 
