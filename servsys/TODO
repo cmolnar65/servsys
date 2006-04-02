@@ -17,6 +17,12 @@
 
 
 =================================================================
+RELEASE 2.20	
+=================================================================
+Bump version number to correct database problem with heat loads (windows) that Andy found.
+
+
+=================================================================
 RELEASE 2.19
 =================================================================
 (F) Moved Send Time Sheet to external routine.
@@ -25,6 +31,15 @@ RELEASE 2.19
 (F) Fixed Time Sheet Columns for both Printed Form and Email (Bug on Email)
 (N) Added edit package compare forms (Scott Request)
 (F) Moved print proposal and send proposal to external class. Part of code cleanup.
+(N) Heat load form is now in. Create, List, Print, Save. Added like 14 new tables
+    and values. Print calculates totals and does all math. Still need to pretty it up.
+(N) Added 23 fields to inspection table for ice machine maint. procedures. (request of service department)
+(N) Added 34 fields to inspection table for refrigeration main. procedures. (reequest of service department)
+(N) Added fields to UniInspection.java for read access. (request of service department)
+(N) Print Inspection updated
+(N) Upload (sync) Inspection fixed
+(N) Download Inspection fixed
+(N) Edit and Add Inspection working
 
 
 =================================================================
