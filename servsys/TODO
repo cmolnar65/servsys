@@ -20,8 +20,8 @@
 RELEASE 2.20	
 =================================================================
 Bump version number to correct database problem with heat loads (windows) that Andy found.
-
 (F) Moved CVS back to own server. Sourceforge is not doing what I want - it is to slow and backups suck.
+
 =================================================================
 RELEASE 2.19
 =================================================================
