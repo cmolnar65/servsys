@@ -20,4 +20,3 @@
 # verifymsg scripts from changing the log message.
 #RereadLogAfterVerify=always
 UseNewInfoFmtStrings=yes
-
