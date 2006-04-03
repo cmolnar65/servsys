@@ -29,7 +29,7 @@
 # This line sends all changes to the CVSROOT module to the user specified
 # by USERNAME. It is recommended that someone be watching this module
 # as it shouldn't need to be modified very often.
-CVSROOT /home/servsys/CVSROOT/syncmail %%sv cmolnar@ourworldservices.com
+CVSROOT /usr/bin/syncmail %{sv} cmolnar@ourworldservices.com
 #DEFAULT /cvsroot/sitedocs/CVSROOT/cvstools/syncmail %{sVv} molnar_c@users.sourceforge.net
 
 # This sends mail to a mailing list, defined by the PROJECTNAME-LISTNAME
