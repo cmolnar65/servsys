@@ -18,6 +18,8 @@
 =================================================================
 RELEASE 2.21	
 =================================================================
+(M) Moved Inspection Print and Inspection Email to external routine. Was able to combine a number of these into one.
+(F) Changed liscense on opening page and changed 
 
 =================================================================
 RELEASE 2.20	
