@@ -5646,7 +5646,14 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.21";
+			vnumber = "2.22";
+			if (dbvnumber.equalsIgnoreCase("2.21")) {
+			Statement stmtu2 = con.createStatement();
+			int result221a1 = stmtu2.executeUpdate("drop table if exists dispatch;");
+			int result221a2 = stmtu2.executeUpdate("create table dispatch(userlogin text, customer text, ddate date,  dtime text, dstatus text);");
+			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-04-04';");
+			int result221z = stmtu2.executeUpdate("UPDATE version set vnumber='2.22';");
+			}
 			if (dbvnumber.equalsIgnoreCase("2.20")) {
 			Statement stmtu2 = con.createStatement();
 			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-04-03';");
@@ -9819,11 +9826,19 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"paytype\">");
 out.println("<tr><td>Commision        :</td>");
 out.println("<td><input type=\"text\" name=\"commision\" value=\"0\"></td></tr>");
 out.println("<tr><td>Call Type        :</td>");
-out.println("<td><input type=\"text\" name=\"ctype\" value=\"-\"></td></tr>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"ctype\">");
+                Vector vtc = TimeCat.getAllItems(con);
+		out.println("<option value=\"-\">-</option>");
+                for (int it = 0 ; it < vtc.size(); it++)
+                {
+                TimeCat tc = (TimeCat) vtc.elementAt(it);
+		out.println("<option value="+tc.Code()+">"+tc.Code()+" - "+tc.Category()+"</option>");
+		}
+		out.println("</select></td></tr>");
 out.println("<input type=\"hidden\" name=\"timeadd\" value=1>");
 out.println("</table></td>");
 out.println("<td><table>");
-                Vector v;
+ /*               Vector v;
                 v = TimeCat.getAllItems(con);
                 for (int i = 0 ; i < v.size(); i++)
                 {
@@ -9833,6 +9848,7 @@ out.println("<td><table>");
 			String code = t.Code();
                         out.println("<tr><td>"+code+"</td><td>"+category+"</td></tr>");
                 }
+		*/
 out.println("</table></td></tr></table>");
 out.println("<p> <CENTER>");
 out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
