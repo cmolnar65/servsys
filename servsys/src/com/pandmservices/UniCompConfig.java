@@ -22,6 +22,7 @@ public class UniCompConfig
 	private String useletterhead;
 	private String yearenddate;
 	private String enabcustomer;
+	private String reportemail;
 
         public UniCompConfig (Connection c, String image)
 		throws SQLException, TodoException
@@ -43,6 +44,7 @@ public class UniCompConfig
 		this.useletterhead=rs.getString("useletterhead");
 		this.yearenddate=rs.getString("yearenddate");
 		this.enabcustomer=rs.getString("enabcustomer");
+		this.reportemail=rs.getString("reportemail");
 	}
 
 
@@ -62,21 +64,21 @@ public class UniCompConfig
 	}
 
 
-	public static void UpdateItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer)
+	public static void UpdateItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update configcompany Set image='" +image+ "' ,imagehight='"+imagehight+"' , imagewidth='"+imagewidth+"', coname='"+coname+"', cologo='"+cologo+"',coaddress='"+coaddress+"',cophone='"+cophone+"', useletterhead='"+useletterhead+"', enabcustomer='"+enabcustomer+"';");
+      		stmt.executeUpdate("Update configcompany Set image='" +image+ "' ,imagehight='"+imagehight+"' , imagewidth='"+imagewidth+"', coname='"+coname+"', cologo='"+cologo+"',coaddress='"+coaddress+"',cophone='"+cophone+"', useletterhead='"+useletterhead+"', enabcustomer='"+enabcustomer+"', reportemail='"+reportemail+"';");
       	}
 
 
-	public static void AddItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer)
+	public static void AddItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
 		stmt.executeUpdate("DROP TABLE IF EXISTS configcompany;");
-		stmt.executeUpdate("create table configcompany (image text, imagewidth text, imagehight text, coname text, cologo text, coaddress text, cophone text, useletterhead text not null, yearenddate date default '2005-09-31', enabcustomer text not null);");
-      		stmt.executeUpdate("insert into configcompany (image,imagehight, imagewidth, coname, cologo,coaddress,cophone, useletterhead, enabcustomer) values ('"+image+"','"+imagehight+"','"+imagewidth+"','"+coname+"','"+cologo+"','"+coaddress+"','"+cophone+"','"+useletterhead+"', '"+enabcustomer+"');");
+		stmt.executeUpdate("create table configcompany (image text, imagewidth text, imagehight text, coname text, cologo text, coaddress text, cophone text, useletterhead text not null, yearenddate date default '2005-09-31', enabcustomer text not null, reportemail text not null);");
+      		stmt.executeUpdate("insert into configcompany (image,imagehight, imagewidth, coname, cologo,coaddress,cophone, useletterhead, enabcustomer) values ('"+image+"','"+imagehight+"','"+imagewidth+"','"+coname+"','"+cologo+"','"+coaddress+"','"+cophone+"','"+useletterhead+"', '"+enabcustomer+"', '"+reportemail+"');");
       	}
 
 
@@ -90,4 +92,5 @@ public class UniCompConfig
         public String getUseLetterHead() { return useletterhead; }
         public String getYearEndDate() { return yearenddate; }
 	public String getEnabCustomer() { return enabcustomer; }
+	public String getReportEmail() { return reportemail; }
 }

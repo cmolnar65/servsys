@@ -109,8 +109,10 @@ public class UniCash extends HttpServlet
 				doCheckUserLogin(req, res, out, session, username);	
 					} else {
 			if (username==null) {
+			
 			doLoginUser(req, res, out, session, username);	
-					} else {
+			
+				} else {
 			gidcode=(String)session.getAttribute("idcode");
 			log("Session idcode= "+gidcode+"");
 			res.setContentType("text/html");
@@ -1672,6 +1674,14 @@ out.println("</CENTER>");
 			else if (action.equalsIgnoreCase("sendweeklytimereport"))
 			{
 				doWeeklyTimeTransmit(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("sendyesterdaytimereport"))
+			{
+				doAutoYesterdayTimeTransmit(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("sendweektodatetimereport"))
+			{
+				doAutoWeekToDateTimeTransmit(req, res, out, session, username);
 			}
 			else if (action.equalsIgnoreCase("senddailytimereport"))
 			{
@@ -3715,7 +3725,8 @@ private void doUpdateCompInfo(HttpServletRequest req, HttpServletResponse res, P
 		String compphone = req.getParameter("compphone");
 		String enabcustomer = req.getParameter("enabcustomer");
 		String useletterhead = req.getParameter("useletterhead");
-                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer);
+		String reportemail = req.getParameter("reportemail");
+                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail);
                 out.println("Your item has been updated in the database<br>");
                 res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
 		con.close();
@@ -4360,6 +4371,7 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		String compphone=null;
 		String useletterhead=null;
 		String enabcustomer=null;
+		String reportemail=null;
                 Vector v;
                 v = UniCompConfig.getAllItems(con);
 		int counter=0;
@@ -4375,6 +4387,7 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			compphone=t.getCoPhone();
 			useletterhead=t.getUseLetterHead();
 			enabcustomer=t.getEnabCustomer();
+			reportemail=t.getReportEmail();
 		}
 
 	out.println("<html>");
@@ -4394,6 +4407,10 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("Image Height  :");
 	out.println("</td><td>");
 	out.println("<input type=\"text\" name=\"imagehight\" size=\"40\" value=\""+imagehight +"\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Report Email Address  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"reportemail\" size=\"80\" value=\""+reportemail +"\">");
 	out.println("</td></tr><tr>");
 	out.println("<td>Use Letterhead:</td>");
 	out.println("<td align=\"left\"><select width=\"50\" name=\"useletterhead\">");
@@ -4637,7 +4654,12 @@ private void doCheckUserLogin(HttpServletRequest req, HttpServletResponse res, P
                                       String classdir = (String) config.getInitParameter("web.classdir");
 				      String apphome = (String) config.getInitParameter("web.apphome");
                                       //res.sendRedirect("../servlet/UniCash?action=top&username="+parmlogin+"");
+				      if (next_page==null) {
                                       res.sendRedirect(""+apphome+"");
+				      } else {
+				       res.sendRedirect(""+classdir+"UniCash?action="+next_page+"");
+				      }
+
                                       //doTop(req, res, out, session, parmlogin);
                                       }
                                else {
@@ -5646,7 +5668,13 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.22";
+			vnumber = "2.23";
+			if (dbvnumber.equalsIgnoreCase("2.22")) {
+			Statement stmtu2 = con.createStatement();
+			int result213a=stmtu2.executeUpdate("alter table configcompany add reportemail text after enabcustomer;");
+			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-07-04';");
+			int result221z = stmtu2.executeUpdate("UPDATE version set vnumber='2.23';");
+			}
 			if (dbvnumber.equalsIgnoreCase("2.21")) {
 			Statement stmtu2 = con.createStatement();
 			int result221a1 = stmtu2.executeUpdate("drop table if exists dispatch;");
@@ -5860,7 +5888,38 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
 		}
 		return compname;
 	}
-            
+ 
+	public static String doGetCompanyReportEmail()
+	throws Exception
+	{
+		String imagename=null;
+		String imagewidth=null;
+		String imagehight=null;
+		String compname=null;
+		String complogo=null;
+		String compaddress=null;
+		String compphone=null;
+		String enabcustomer=null;
+		String reportemail=null;
+                Vector v;
+                v = UniCompConfig.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniCompConfig t = (UniCompConfig) v.elementAt(i);
+			imagename=t.getImage();
+			imagewidth=t.getImageWidth();
+			imagehight=t.getImageHight();
+			compname=t.getCoName();
+			complogo=t.getCoLogo();
+			compaddress=t.getCoAddress();
+			compphone=t.getCoPhone();
+			enabcustomer = t.getEnabCustomer();
+			reportemail=t.getReportEmail();
+		}
+		return reportemail;
+	}
+         	
 
 	public String doVersionInfo_VDate()
         throws Exception
@@ -22622,172 +22681,26 @@ public void doWeeklyTimeTransmit(HttpServletRequest req, HttpServletResponse res
         throws Exception
         {
 		//Connection con;
-
-	try {
-	//Class.forName("com.mysql.jdbc.Driver");
-	//con = DriverManager.getConnection("jdbc:mysql://"+host+"/"+database+"", dbuser, password);
-	}	
-		catch (Exception e)
-		{
-			throw new ServletException(e.getMessage());
-                }
-		String startdate = req.getParameter("startlistdate");
-		String enddate = req.getParameter("endlistdate");
-		out.println("Time Report From "+startdate+" to "+enddate+" \n");
-		Statement stmt2 = con.createStatement();
-		Statement stmt = con.createStatement();
-	ResultSet rs2 = stmt2.executeQuery("select department, transmit from tech_table where transmit=1 group by department;");
-Format formatter;
-Calendar now = Calendar.getInstance();
-Date date = new Date();
-       SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-formatter = new SimpleDateFormat("yyyy-MM-dd");
-String s = formatter.format(date);
-               Date expireationDate=null;
-                expireationDate=dateFormatter.parse(s);
-                Calendar dateToBeTested=Calendar.getInstance();
-                dateToBeTested.setTime(expireationDate);
-                dateToBeTested.add(Calendar.DAY_OF_YEAR,-1);
-                //String enddate = doFormatDate(dateToBeTested.getTime());
-                dateToBeTested.add(Calendar.DAY_OF_YEAR,-8);
-                //String startdate = doFormatDate(dateToBeTested.getTime());
-	System.out.println ("Start Date: "+startdate+"\n");
-	System.out.println ("End Date: "+enddate+"\n");
-
-   	Vector u;
-	String mbody="";
-	String mbody2="";
-	mbody=combinestring(mbody,"<html><basefont size=-1>");
-	mbody=combinestring(mbody,"<head><title>Time Sheet Report</title></head><body><h2>By Technician</h2>");
-	//doStyleSheet(req, res, out, session, username);
-	u = UniTechInfo.getAllTransmitItems(con);
-	int counter=0;
-	for (int iu = 0 ; iu < u.size(); iu++)
-	{
-		UniTechInfo tu = (UniTechInfo) u.elementAt(iu);
-		String tech_init = tu.getTechInit();
-		String lusername = tu.getUserName();
-		String tech_name = tu.getTechName();
-		String department = tu.getDepartment();
-		Vector v;
-		v = TimeSheetSummary.getLoginItemsMultiDate(con,lusername, doFormatDateDb(getDateDb(startdate)),doFormatDateDb(getDateDb(enddate)));
-		mbody=combinestring(mbody,"<table border=1 width=\"75%\" align=\"left\">");
-		mbody=combinestring(mbody,"<tr><td>Tech ID: "+lusername+" - "+tech_name+"</td></tr>");
-		mbody=combinestring(mbody,"</table>");		
-		if (v.size()>0)
-		{
-			mbody=combinestring(mbody,"<table border=1 width=\"75%\" align=\"left\">");
-			mbody=combinestring(mbody,"<tr><td>Call-Type</td><td>Count</td><td>Total-Collected</td><td>Non-Commision-Billed</td><td>Commision-Billed</td><td>Commision</td><td>Time</td><td>Time-Without-Travel</td></tr>");
-			for (int i = 0 ; i < v.size(); i++)
-			{
-				TimeSheetSummary ts = (TimeSheetSummary) v.elementAt(i);
-				String tamount = ts.Amount();
-				String tcamount = ts.CAmount();
-				String tamount_collected = ts.AmountCollected();
-				String tcommision = ts.Commision();
-				String ctype=ts.CType();
-				String callcount=ts.CallCount();
-				String timewithtravel=ts.TimeWithTravel();
-				String timenotravel=ts.TimeNoTravel();
-				mbody=combinestring(mbody,"<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-				
-			}
-			        ResultSet rs = stmt.executeQuery("select count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel, ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where login='"+lusername+"' and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"';");
-                while(rs.next())
-                {
-                        String tamount =rs.getString("amount");
-                        String tcamount = rs.getString("camount");
-                        String tamount_collected = rs.getString("amount_collected");
-                        String tcommision = rs.getString("commision");
-                        String callcount=rs.getString("callcount");
-                        String timewithtravel=rs.getString("time_with_travel");
-                        //String timewithtravel="-";
-                        String timenotravel=rs.getString("time_no_travel");
-                        //String timenotravel="-";
-        mbody=combinestring(mbody,"<tr><td>Total</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-                }
-
-
-			mbody=combinestring(mbody,"</table><br>");
-		}
-		else {
-			mbody=combinestring(mbody,"<table border=0 width=\"75%\" align=\"left\">");
-			mbody=combinestring(mbody,"<tr><td>**NO DATA TRANSMITTED</td></tr></table><br>");
-		}
-		mbody=combinestring(mbody,"<table border=0 width=\"75%\" align=\"left\">");
-		mbody=combinestring(mbody,"<tr><td> </td></tr></table><br>");
+		String mbody="";
+		mbody=ServsysPrintTimeRecap.getIndividualItem (con, req,res, out, session, username, classdir);
+		
 	}
-	mbody=combinestring(mbody,"");
-	mbody2=combinestring(mbody2,"");
-	//mbody2=combinestring(mbody2,"<h2>By Department</h2><br>");
-		while(rs2.next())
-		{
-		String sdepartment = rs2.getString("department");
-		Vector v;
-		v = TimeSheetSummary.getDepartmentItemsMultiDate(con,sdepartment, doFormatDateDb(getDateDb(startdate)),doFormatDateDb(getDateDb(enddate)));
-		mbody2=combinestring(mbody2,"<table border=1 width=\"75%\" align=\"left\">");
-		mbody2=combinestring(mbody2,"<tr><td>Department:  "+sdepartment+"</td></tr>");
-		mbody2=combinestring(mbody2,"</table>");		
-		if (v.size()>0)
-		{
-			mbody2=combinestring(mbody2,"<table border=1 width=\"75%\" align=\"left\">");
-			mbody2=combinestring(mbody2,"<tr><td>Call-Type</td><td>Count</td><td>Total-Collected</td><td>Non-Commision-Billed</td><td>Commision-Billed</td><td>Commision</td><td>Time</td><td>Time-Without-Travel</td></tr>");
-			for (int i = 0 ; i < v.size(); i++)
-			{
-				TimeSheetSummary ts = (TimeSheetSummary) v.elementAt(i);
-				String tamount = ts.Amount();
-				String tcamount = ts.CAmount();
-				String tamount_collected = ts.AmountCollected();
-				String tcommision = ts.Commision();
-				String ctype=ts.CType();
-				String callcount=ts.CallCount();
-				String timewithtravel=ts.TimeWithTravel();
-				String timenotravel=ts.TimeNoTravel();
-				mbody2=combinestring(mbody2,"<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-				
-			}
- //System.out.println("select tech_table.department as department, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"' and department='"+sdepartment+"' group by department;\n");
- ResultSet rs3 = stmt.executeQuery("select tech_table.department as department, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"' and department='"+sdepartment+"' group by department;");
 
-                while(rs3.next())
-                {
-                        String tamount =rs3.getString("amount");
-                        String tcamount = rs3.getString("camount");
-                        String tamount_collected = rs3.getString("amount_collected");
-                        String tcommision = rs3.getString("commision");
-                        String callcount=rs3.getString("callcount");
-                        String timewithtravel=rs3.getString("time_with_travel");
-                        //String timewithtravel="-";
-                        String timenotravel=rs3.getString("time_no_travel");
-                        //String timenotravel="-";
-        mbody2=combinestring(mbody2,"<tr><td>Total</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-		}
-			mbody2=combinestring(mbody2,"</table>");
-			}
-		else {
-			mbody2=combinestring(mbody2,"<table border=0 width=\"75%\" align=\"left\">");
-			mbody2=combinestring(mbody2,"<tr><td>**NO DATA TRANSMITTED</td></tr></table>");
-		}
+public void doAutoYesterdayTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+        throws Exception
+        {
+		String mbody="";
+		mbody=ServsysPrintTimeRecap.getYesterday (con, req,res, out, session, username, classdir);
+	}
 
-		mbody2=combinestring(mbody2,"<table border=0 width=\"75%\" align=\"left\">");
-		mbody2=combinestring(mbody2,"<tr><td> </td></tr></table><br>");
-		}
-
-
-
-
-////////////////////////////////////////////////////////
-// Here is where we end the http headers
-////////////////////////////////////////////////////////
-//		out.println(
-               //String newstring = mbody.replaceAll("<br>","\n");
-                out.println(mbody);
-                out.println(mbody2);
-		mbody="";
-
-}
-
-
+public void doAutoWeekToDateTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+        throws Exception
+        {
+		String mbody="";
+		mbody=ServsysPrintTimeRecap.getWeekToDate (con, req,res, out, session, username, classdir);
+	}
+	
+	
 private void doDailyTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 throws Exception
 {

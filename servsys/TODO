@@ -16,6 +16,14 @@
   appropriate people.
 
 =================================================================
+RELEASE 2.23	
+=================================================================
+
+Fixed auto transmit of reports. The times are still not good and correct. Need to find out why there are some duplicates. 
+Autotransmit daily times are now working.
+Passing password and login and next_page are now working. This allows us to automate the report.
+
+=================================================================
 RELEASE 2.21	
 =================================================================
 (M) Moved Inspection Print and Inspection Email to external routine. Was able to combine a number of these into one.
