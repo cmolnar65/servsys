@@ -1683,6 +1683,10 @@ out.println("</CENTER>");
 			{
 				doAutoWeekToDateTimeTransmit(req, res, out, session, username);
 			}
+			else if (action.equalsIgnoreCase("sendquartertodatetimereport"))
+			{
+				doAutoQuarterToDateTimeTransmit(req, res, out, session, username);
+			}	
 			else if (action.equalsIgnoreCase("senddailytimereport"))
 			{
 				doDailyTimeTransmit(req, res, out, session, username);
@@ -22699,7 +22703,13 @@ public void doAutoWeekToDateTimeTransmit(HttpServletRequest req, HttpServletResp
 		String mbody="";
 		mbody=ServsysPrintTimeRecap.getWeekToDate (con, req,res, out, session, username, classdir);
 	}
-	
+public void doAutoQuarterToDateTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+        throws Exception
+        {
+		String mbody="";
+		mbody=ServsysPrintTimeRecap.getQuarterToDate (con, req,res, out, session, username, classdir);
+	}
+		
 	
 private void doDailyTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 throws Exception
