@@ -1687,6 +1687,10 @@ out.println("</CENTER>");
 			{
 				doAutoQuarterToDateTimeTransmit(req, res, out, session, username);
 			}	
+			else if (action.equalsIgnoreCase("sendyeartodatetimereport"))
+			{
+				doAutoYearToDateTimeTransmit(req, res, out, session, username);
+			}	
 			else if (action.equalsIgnoreCase("senddailytimereport"))
 			{
 				doDailyTimeTransmit(req, res, out, session, username);
@@ -22709,8 +22713,13 @@ public void doAutoQuarterToDateTimeTransmit(HttpServletRequest req, HttpServletR
 		String mbody="";
 		mbody=ServsysPrintTimeRecap.getQuarterToDate (con, req,res, out, session, username, classdir);
 	}
+public void doAutoYearToDateTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+        throws Exception
+        {
+		String mbody="";
+		mbody=ServsysPrintTimeRecap.getYearToDate (con, req,res, out, session, username, classdir);
+	}
 		
-	
 private void doDailyTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 throws Exception
 {

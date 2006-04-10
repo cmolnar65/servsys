@@ -19,6 +19,7 @@
 RELEASE 2.23	
 =================================================================
 
+Auto Transmit of year to date totals are now in. Duplicates have something to do with Joe's data on time sheets.
 Fixed auto transmit of reports. The times are still not good and correct. Need to find out why there are some duplicates. 
 Autotransmit daily times are now working.
 Passing password and login and next_page are now working. This allows us to automate the report.
