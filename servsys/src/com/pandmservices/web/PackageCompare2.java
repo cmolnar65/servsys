@@ -78,6 +78,16 @@ public class PackageCompare2 extends UniCash
 		double totinvestment13=0.00;
 		double totinvestment14=0.00;
 		double totinvestment15=0.00;
+		double totinvestment16=0.00;
+		double totinvestment17=0.00;
+		double totinvestment18=0.00;
+		double totinvestment19=0.00;
+		double totinvestment20=0.00;
+		double totinvestment21=0.00;
+		double totinvestment22=0.00;
+		double totinvestment23=0.00;
+		double totinvestment24=0.00;
+		double totinvestment25=0.00;
 		String bestdesc="";
 		String betterdesc="";
 		String gooddesc="";
@@ -96,6 +106,16 @@ public class PackageCompare2 extends UniCash
 		String description13="";
 		String description14="";
 		String description15="";
+		String description16="";
+		String description17="";
+		String description18="";
+		String description19="";
+		String description20="";
+		String description21="";
+		String description22="";
+		String description23="";
+		String description24="";
+		String description25="";
 		String investment=null;
 		double qtotal=0.00;
 		double ptotal=0.00;
@@ -119,16 +139,25 @@ public class PackageCompare2 extends UniCash
 		int best3=tp1.getBest3();
 		int best4=tp1.getBest4();
 		int best5=tp1.getBest5();
+		int best6=tp1.getBest6();
+		int best7=tp1.getBest7();
+		int best8=tp1.getBest8();
 		int better1=tp1.getBetter1();
 		int better2=tp1.getBetter2();
 		int better3=tp1.getBetter3();
 		int better4=tp1.getBetter4();
 		int better5=tp1.getBetter5();
+		int better6=tp1.getBetter6();
+		int better7=tp1.getBetter7();
+		int better8=tp1.getBetter8();
 		int good1=tp1.getGood1();
 		int good2=tp1.getGood2();
 		int good3=tp1.getGood3();
 		int good4=tp1.getGood4();
 		int good5=tp1.getGood5();
+		int good6=tp1.getGood6();
+		int good7=tp1.getGood7();
+		int good8=tp1.getGood8();
 		bestdesc=tp1.getDesc1();
 		betterdesc=tp1.getDesc2();
 		gooddesc=tp1.getDesc3();
@@ -225,7 +254,64 @@ public class PackageCompare2 extends UniCash
 			totinvestment5=totinvestment5+ptotal;
 		}
 	}
-	besttotal=totinvestment1+totinvestment2+totinvestment3+totinvestment4+totinvestment5;
+
+// Get quote information here #3
+	vv = UniQuotes.getIndItem(con,intcustnum, best6);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description24=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment24=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,best6);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment24=totinvestment24+ptotal;
+		}
+	}
+
+// Get quote information here #4
+	vv = UniQuotes.getIndItem(con,intcustnum, best7);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description23=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment23=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,best7);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment21=totinvestment23+ptotal;
+		}
+	}
+
+// Get quote information here #5
+	vv = UniQuotes.getIndItem(con,intcustnum, best8);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description22=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment22=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,best8);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment22=totinvestment22+ptotal;
+		}
+	}
+	
+
+	
+	besttotal=totinvestment1+totinvestment2+totinvestment3+totinvestment4+totinvestment5+totinvestment22+totinvestment23+totinvestment24;
 // Get quote information here #6
 	vv = UniQuotes.getIndItem(con,intcustnum, better1);
 	for (int i = 0 ; i < vv.size(); i++)
@@ -315,8 +401,62 @@ public class PackageCompare2 extends UniCash
 			totinvestment10=totinvestment10+ptotal;
 		}
 	}
+// Get quote information here #8
+	vv = UniQuotes.getIndItem(con,intcustnum, better6);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description19=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment19=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,better6);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment19=totinvestment19+ptotal;
+		}
+	}
 
-	bettertotal=totinvestment6+totinvestment7+totinvestment8+totinvestment9+totinvestment10;
+// Get quote information here #9
+	vv = UniQuotes.getIndItem(con,intcustnum, better7);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description20=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment20=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,better7);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment20=totinvestment20+ptotal;
+		}
+	}
+
+// Get quote information here #10
+	vv = UniQuotes.getIndItem(con,intcustnum, better8);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description21=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment21=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,better5);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment21=totinvestment21+ptotal;
+		}
+	}
+
+	bettertotal=totinvestment6+totinvestment7+totinvestment8+totinvestment9+totinvestment10+totinvestment19+totinvestment20+totinvestment21;
+	
 // Get quote information here #11
 	vv = UniQuotes.getIndItem(con,intcustnum, good1);
 	for (int i = 0 ; i < vv.size(); i++)
@@ -407,8 +547,63 @@ public class PackageCompare2 extends UniCash
 		}
 	}
 
+	
+// Get quote information here #13
+	vv = UniQuotes.getIndItem(con,intcustnum, good6);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description16=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment16=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,good6);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment16=totinvestment16+ptotal;
+		}
+	}
 
-	goodtotal=totinvestment11+totinvestment12+totinvestment13+totinvestment14+totinvestment15;
+// Get quote information here #13
+	vv = UniQuotes.getIndItem(con,intcustnum, good7);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description17=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment17=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,good7);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment17=totinvestment17+ptotal;
+		}
+	}
+
+// Get quote information here #13
+	vv = UniQuotes.getIndItem(con,intcustnum, good8);
+	for (int i = 0 ; i < vv.size(); i++)
+	{
+		UniQuotes tt = (UniQuotes) vv.elementAt(i);
+		description18=tt.getQDescription();
+		ptotal=0.00;
+		totinvestment18=0.00;
+		Vector vp;
+		vp = UniQuoteParts.getAllItems(con,good8);
+		for (int j = 0 ; j < vp.size(); j++)
+		{
+			UniQuoteParts tp = (UniQuoteParts) vp.elementAt(j);
+			ptotal=tp.getQuoteTotal();
+			totinvestment18=totinvestment18+ptotal;
+		}
+	}
+
+
+	goodtotal=totinvestment11+totinvestment12+totinvestment13+totinvestment14+totinvestment15+totinvestment16+totinvestment17+totinvestment18;
 		
 	
 	out.println("<html><head><title>Proposal</title>");
@@ -437,6 +632,15 @@ public class PackageCompare2 extends UniCash
 	if (description5.length()>1) {
 	out.println("<p align=\"left\">"+description5+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment5)+"</p><br></ul>");
 			}
+		if (description24.length()>1) {
+	out.println("<p align=\"left\">"+description24+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment24)+"</p><br></ul>");
+			}
+		if (description23.length()>1) {
+	out.println("<p align=\"left\">"+description23+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment23)+"</p><br></ul>");
+			}
+	if (description22.length()>1) {
+	out.println("<p align=\"left\">"+description22+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment22)+"</p><br></ul>");
+			}
 	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(besttotal)+"</p></b><br>");
 	out.println("</td>");
 		}	
@@ -460,6 +664,16 @@ public class PackageCompare2 extends UniCash
 	if (description10.length()>1) {
 	out.println("<p align=\"left\">"+description10+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment10)+"</p><br></ul>");
 			}
+	if (description19.length()>1) {
+	out.println("<p align=\"left\">"+description19+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment19)+"</p><br></ul>");
+			}
+	if (description20.length()>1) {
+	out.println("<p align=\"left\">"+description20+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment20)+"</p><br></ul>");
+			}
+	if (description21.length()>1) {
+	out.println("<p align=\"left\">"+description21+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment21)+"</p><br></ul>");
+			}
+
 	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(bettertotal)+"</p></b><br>");
 	out.println("</td>");
 		}
@@ -482,6 +696,15 @@ public class PackageCompare2 extends UniCash
 			}
 	if (description15.length()>1) {
 	out.println("<p align=\"left\">"+description15+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment15)+"</p><br></ul>");
+			}
+	if (description16.length()>1) {
+	out.println("<p align=\"left\">"+description16+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment16)+"</p><br></ul>");
+			}
+	if (description17.length()>1) {
+	out.println("<p align=\"left\">"+description17+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment17)+"</p><br></ul>");
+			}
+	if (description18.length()>1) {
+	out.println("<p align=\"left\">"+description18+"&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(totinvestment18)+"</p><br></ul>");
 			}
 	out.println("<b><p align=\"left\">Package Total Price:&nbsp;&nbsp;&nbsp;&nbsp;"+NumberFormat.getCurrencyInstance().format(goodtotal)+"</p></b><br>");
 	out.println("</td>");

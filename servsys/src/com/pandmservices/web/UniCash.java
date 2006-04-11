@@ -5676,7 +5676,21 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.23";
+			vnumber = "2.24";
+			if (dbvnumber.equalsIgnoreCase("2.23")) {
+			Statement stmtu2 = con.createStatement();
+			int result224a=stmtu2.executeUpdate("alter table packcompare add best6 text after desc3;");
+			int result224b=stmtu2.executeUpdate("alter table packcompare add best7 text after best6;");
+			int result224c=stmtu2.executeUpdate("alter table packcompare add best8 text after best7;");
+			
+			int result224d=stmtu2.executeUpdate("alter table packcompare add better6 text after best8;");
+			int result224e=stmtu2.executeUpdate("alter table packcompare add better7 text after better6;");
+			int result224f=stmtu2.executeUpdate("alter table packcompare add better8 text after better7;");
+			
+			int result224g=stmtu2.executeUpdate("alter table packcompare add good6 text after better8;");
+			int result224h=stmtu2.executeUpdate("alter table packcompare add good7 text after good6;");
+			int result224i=stmtu2.executeUpdate("alter table packcompare add good8 text after good7;");
+			}
 			if (dbvnumber.equalsIgnoreCase("2.22")) {
 			Statement stmtu2 = con.createStatement();
 			int result213a=stmtu2.executeUpdate("alter table configcompany add reportemail text after enabcustomer;");
@@ -19940,6 +19954,15 @@ private void doSavePackageCompare(HttpServletRequest req, HttpServletResponse re
                 String good3= req.getParameter("good3");
                 String good4= req.getParameter("good4");
                 String good5= req.getParameter("good5");
+		String good6= req.getParameter("good6");
+		String good7= req.getParameter("good7");
+		String good8= req.getParameter("good8");
+		String better6= req.getParameter("better6");
+		String better7= req.getParameter("better7");
+		String better8= req.getParameter("better8");
+		String best6= req.getParameter("best6");
+		String best7= req.getParameter("best7");
+		String best8= req.getParameter("best8");
                 String desc1= req.getParameter("desc1");
                 String desc2= req.getParameter("desc2");
                 String desc3= req.getParameter("desc3");
@@ -19956,10 +19979,10 @@ private void doSavePackageCompare(HttpServletRequest req, HttpServletResponse re
 			SiteNum=t.getSiteNum();
 		}
 		if (action.equalsIgnoreCase("savepackagecompareform")) {
-                PackCompare.AddItem(con,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3 );
+                PackCompare.AddItem(con,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3, best6, best7, best8, better6, better7, better8, good6, good7, good8 );
 		} else if (action.equalsIgnoreCase("updatepackagecompareform")) {
 		
-		PackCompare.UpdateItem(con,propnum,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3 );	
+		PackCompare.UpdateItem(con,propnum,description, best1, best2, best3, best4, best5, better1, better2, better3, better4, better5, good1, good2, good3, good4, good5, username, CustNum, SiteNum, packdate, desc1, desc2, desc3, best6, best7, best8, better6, better7, better8, good6, good7, good8);	
 		}
                 out.println("Your item has been updated in the database<br>");
 		con.close();

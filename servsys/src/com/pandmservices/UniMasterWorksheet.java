@@ -115,7 +115,7 @@ public static void AddItem(Connection con, int wsrec, String wsdate, String wsde
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO masterworksheet (wsrec, wsdate, wsdesc, wsmult) Values ("+wsrec+", '" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"')");
+	                stmt.executeUpdate("INSERT INTO masterworksheet (wsrec, wsdate, wsdesc, wsmult, wsnotes) Values ("+wsrec+", '" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"','-')");
 		        }
 
 
@@ -123,7 +123,7 @@ public static void AddItem(Connection con, String wsdate, String wsdescription, 
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO masterworksheet (wsdate, wsdesc, wsmult) Values ('" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"')");
+	                stmt.executeUpdate("INSERT INTO masterworksheet (wsdate, wsdesc, wsmult, wsnotes) Values ('" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"','-')");
 		        }
 
 	public static Vector getMaxItem(Connection c)
