@@ -6533,7 +6533,40 @@ private void doDownloadCompConfig(HttpServletRequest req, HttpServletResponse re
                       	psform = t.getResPsForm();
 		ResPsForm.AddItem(con, psform);
                 }
-		out.println("Res Prev Form Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
+		out.println("Res Prev Form Updated</p>");
+		
+				String imagename=null;
+		String imagewidth=null;
+		String imagehight=null;
+		String compname=null;
+		String complogo=null;
+		String compaddress=null;
+		String compphone=null;
+		String useletterhead=null;
+		String enabcustomer=null;
+		String reportemail=null;
+		String yearenddate=null;
+                Vector vc;
+                vc = UniCompConfig.getAllItems(conu);
+		int counter=0;
+                for (int i = 0 ; i < vc.size(); i++)
+                {
+                       	UniCompConfig tc = (UniCompConfig) vc.elementAt(i);
+			imagename=tc.getImage();
+			imagewidth=tc.getImageWidth();
+			imagehight=tc.getImageHight();
+			compname=tc.getCoName();
+			complogo=tc.getCoLogo();
+			compaddress=tc.getCoAddress();
+			compphone=tc.getCoPhone();
+			useletterhead=tc.getUseLetterHead();
+			enabcustomer=tc.getEnabCustomer();
+			reportemail=tc.getReportEmail();
+			yearenddate=tc.getYearEndDate();
+			UniCompConfig.AddItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail, yearenddate);
+		}
+		
+		out.println("Company Configuration Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
 		con.close();
 		conu.close();
             }
@@ -6559,7 +6592,38 @@ private void doUploadCompConfig(HttpServletRequest req, HttpServletResponse res,
                       	psform = t.getResPsForm();
 		ResPsForm.AddItem(conu, psform);
                 }
-		out.println("Res Prev Form Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
+		out.println("Res Prev Form Updated<br></p>");
+		String imagename=null;
+		String imagewidth=null;
+		String imagehight=null;
+		String compname=null;
+		String complogo=null;
+		String compaddress=null;
+		String compphone=null;
+		String useletterhead=null;
+		String enabcustomer=null;
+		String reportemail=null;
+		String yearenddate=null;
+                Vector vc;
+                vc = UniCompConfig.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < vc.size(); i++)
+                {
+                       	UniCompConfig tc = (UniCompConfig) vc.elementAt(i);
+			imagename=tc.getImage();
+			imagewidth=tc.getImageWidth();
+			imagehight=tc.getImageHight();
+			compname=tc.getCoName();
+			complogo=tc.getCoLogo();
+			compaddress=tc.getCoAddress();
+			compphone=tc.getCoPhone();
+			useletterhead=tc.getUseLetterHead();
+			enabcustomer=tc.getEnabCustomer();
+			reportemail=tc.getReportEmail();
+			yearenddate=tc.getYearEndDate();
+			UniCompConfig.AddItem(conu, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail, yearenddate);		
+		}
+		out.println("Company Configuration Updated<br><a href=\""+classdir+"UniCash?action=showhomepage\">Continue</a></p>");
 		con.close();
 		conu.close();
             }
