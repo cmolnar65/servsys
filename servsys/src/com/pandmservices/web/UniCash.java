@@ -3734,7 +3734,8 @@ private void doUpdateCompInfo(HttpServletRequest req, HttpServletResponse res, P
 		String enabcustomer = req.getParameter("enabcustomer");
 		String useletterhead = req.getParameter("useletterhead");
 		String reportemail = req.getParameter("reportemail");
-                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail);
+		String yearenddate = req.getParameter("yearenddate");
+                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail,  doFormatDateDb(getDateDb(yearenddate)));
                 out.println("Your item has been updated in the database<br>");
                 res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
 		con.close();
@@ -4380,6 +4381,7 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		String useletterhead=null;
 		String enabcustomer=null;
 		String reportemail=null;
+		String yearenddate=null;
                 Vector v;
                 v = UniCompConfig.getAllItems(con);
 		int counter=0;
@@ -4396,6 +4398,7 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			useletterhead=t.getUseLetterHead();
 			enabcustomer=t.getEnabCustomer();
 			reportemail=t.getReportEmail();
+			yearenddate=t.getYearEndDate();
 		}
 
 	out.println("<html>");
@@ -4448,7 +4451,6 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		out.println("<option selected>"+enabcustomer+"</option>");
 		out.println("</select></td></tr>");
 		
-		
 	out.println("<tr><td>");
 	out.println("Company Phone  :");
 	out.println("</td><td>");
@@ -4465,6 +4467,10 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("Company Address  :");
 	out.println("</td><td>");
 	out.println("<input type=\"text\" name=\"compaddress\" size=\"40\" value=\""+compaddress +"\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Company Year End Date  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"yearenddate\" size=\"40\" value=\""+doFormatDate(getDate(yearenddate)) +"\">");
 	out.println("</td></tr></table>");
 	out.println("<p> <CENTER>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
@@ -5690,6 +5696,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			int result224g=stmtu2.executeUpdate("alter table packcompare add good6 text after better8;");
 			int result224h=stmtu2.executeUpdate("alter table packcompare add good7 text after good6;");
 			int result224i=stmtu2.executeUpdate("alter table packcompare add good8 text after good7;");
+			int result221z = stmtu2.executeUpdate("UPDATE version set vnumber='2.24';");
 			}
 			if (dbvnumber.equalsIgnoreCase("2.22")) {
 			Statement stmtu2 = con.createStatement();

@@ -64,21 +64,21 @@ public class UniCompConfig
 	}
 
 
-	public static void UpdateItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail)
+	public static void UpdateItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail, String yearenddate)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update configcompany Set image='" +image+ "' ,imagehight='"+imagehight+"' , imagewidth='"+imagewidth+"', coname='"+coname+"', cologo='"+cologo+"',coaddress='"+coaddress+"',cophone='"+cophone+"', useletterhead='"+useletterhead+"', enabcustomer='"+enabcustomer+"', reportemail='"+reportemail+"';");
+      		stmt.executeUpdate("Update configcompany Set image='" +image+ "' ,imagehight='"+imagehight+"' , imagewidth='"+imagewidth+"', coname='"+coname+"', cologo='"+cologo+"',coaddress='"+coaddress+"',cophone='"+cophone+"', useletterhead='"+useletterhead+"', enabcustomer='"+enabcustomer+"', reportemail='"+reportemail+"', yearenddate='"+yearenddate+"';");
       	}
 
 
-	public static void AddItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail)
+	public static void AddItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail, String yearenddate)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
 		stmt.executeUpdate("DROP TABLE IF EXISTS configcompany;");
 		stmt.executeUpdate("create table configcompany (image text, imagewidth text, imagehight text, coname text, cologo text, coaddress text, cophone text, useletterhead text not null, yearenddate date default '2005-09-31', enabcustomer text not null, reportemail text not null);");
-      		stmt.executeUpdate("insert into configcompany (image,imagehight, imagewidth, coname, cologo,coaddress,cophone, useletterhead, enabcustomer) values ('"+image+"','"+imagehight+"','"+imagewidth+"','"+coname+"','"+cologo+"','"+coaddress+"','"+cophone+"','"+useletterhead+"', '"+enabcustomer+"', '"+reportemail+"');");
+      		stmt.executeUpdate("insert into configcompany (image,imagehight, imagewidth, coname, cologo,coaddress,cophone, useletterhead, enabcustomer, reportemail, yearenddate) values ('"+image+"','"+imagehight+"','"+imagewidth+"','"+coname+"','"+cologo+"','"+coaddress+"','"+cophone+"','"+useletterhead+"', '"+enabcustomer+"', '"+reportemail+"', '"+yearenddate+"');");
       	}
 
 

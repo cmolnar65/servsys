@@ -19,7 +19,8 @@
 RELEASE 2.24
 =================================================================
 
-Added three more fields to each package compare column. Made database changes to do this as well.
+-Added three more fields to each package compare column. Made database changes to do this as well.
+-Added the company fiscal year end date to the comp. info edit and save routines.
 
 =================================================================
 RELEASE 2.23	
