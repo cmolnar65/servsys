@@ -1679,6 +1679,10 @@ out.println("</CENTER>");
 			{
 				doAutoYesterdayTimeTransmit(req, res, out, session, username);
 			}
+			else if (action.equalsIgnoreCase("screens"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
 			else if (action.equalsIgnoreCase("sendweektodatetimereport"))
 			{
 				doAutoWeekToDateTimeTransmit(req, res, out, session, username);
@@ -22788,6 +22792,14 @@ public void doWeeklyTimeTransmit(HttpServletRequest req, HttpServletResponse res
 		
 	}
 
+public void doAutoScreens(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+        throws Exception
+        {
+		String mbody="";
+		mbody=ServsysScreenReport.getYesterday (con, req,res, out, session, username, classdir);
+	}
+
+	
 public void doAutoYesterdayTimeTransmit(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
         throws Exception
         {

@@ -133,7 +133,7 @@ public static void AddItem(Connection con, int crecnum, String qdate, String qde
 		        {
 	       	        Statement stmt = con.createStatement();
 			String tqnotes = qnotes.replaceAll("'","''");
-	                stmt.executeUpdate("INSERT INTO squotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart) Values ('"+crecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"','"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"')");
+	                stmt.executeUpdate("INSERT INTO squotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, jobnum) Values ('"+crecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"','"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"','-')");
 		        }
 
         public int getId() { return id; }
