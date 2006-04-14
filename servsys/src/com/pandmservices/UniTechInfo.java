@@ -102,6 +102,23 @@ public class UniTechInfo
 		return V;
 	}
 
+
+	public static Vector getAllTransmitItems(Connection c, String department)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM tech_table where transmit=1 and department='"+department+"' order by username");
+		while(rs.next())
+		{
+			
+			UniTechInfo t = new UniTechInfo(c,rs.getString("techinit"));
+			V.addElement(t);
+		}
+		return V;
+	}
+	
+	
 	public static void deleteItem(Connection con, String d)
 		throws SQLException
 	{
