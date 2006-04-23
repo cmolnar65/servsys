@@ -17809,6 +17809,9 @@ if ((services!=null)||(recommendations!=null)||(rscheduled!=null)||(notes!=null)
 		out.println("<tr><td><h4>Repair Scheduled</h4></td></tr><tr><td>"+rscheduled+"");
 		out.println("</td></tr>");
 		}
+		if (parts==null) {
+			parts="-";
+		}
 		if (parts.length()>1) {
 		out.println("<tr><td><h4>Parts Needed</h4></td></tr><tr><td>"+parts+"");
 		out.println("</td></tr>");
