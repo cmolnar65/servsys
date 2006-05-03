@@ -235,6 +235,75 @@ public class ServsysScreenReport extends UniCash
                 String enddate = doFormatDate(dateToBeTested.getTime());
                 dateToBeTested.add(Calendar.DAY_OF_YEAR,-8);
                 String startdate = doFormatDate(dateToBeTested.getTime());  */
+
+		String department=req.getParameter("department");
+		String timeframe=req.getParameter("timeframe");
+		String enddate=req.getParameter("enddate");
+		String startdate=req.getParameter("startdate");
+		String reptype=req.getParameter("reptype");
+		
+		String action=req.getParameter("action");
+		
+		if (action.equalsIgnoreCase("screenmaintthisweeke")) {
+		
+			department="maintenance";
+			timeframe="thisweek";
+			reptype="email";
+		}
+		
+		if (action.equalsIgnoreCase("screenmaintlastweeke")) {
+		
+			department="maintenance";
+			timeframe="lastweek";
+			reptype="email";
+		}
+		
+			
+		if (action.equalsIgnoreCase("screenmaintquartere")) {
+		
+			department="maintenance";
+			timeframe="quarter";
+			reptype="email";
+		}
+		
+			
+		if (action.equalsIgnoreCase("screenmaintytde")) {
+		
+			department="maintenance";
+			timeframe="ytd";
+			reptype="email";
+		}
+
+		
+		if (action.equalsIgnoreCase("screenservicethisweeke")) {
+		
+			department="service";
+			timeframe="thisweek";
+			reptype="email";
+		}
+		
+		if (action.equalsIgnoreCase("screenservicelastweeke")) {
+		
+			department="service";
+			timeframe="lastweek";
+			reptype="email";
+		}
+		
+			
+		if (action.equalsIgnoreCase("screenservicequartere")) {
+		
+			department="service";
+			timeframe="quarter";
+			reptype="email";
+		}
+		
+			
+		if (action.equalsIgnoreCase("screenserviceytde")) {
+		
+			department="service";
+			timeframe="ytd";
+			reptype="email";
+		}
 		
 		Format formatter;
 		Date monday;
@@ -242,6 +311,8 @@ public class ServsysScreenReport extends UniCash
 		Calendar calendar = Calendar.getInstance();
 		sunday=calendar.getTime();
 		monday=calendar.getTime();
+		
+	if (timeframe.equalsIgnoreCase("thisweek")) {	
 		if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
 		{
 			sunday=calendar.getTime();
@@ -290,15 +361,177 @@ public class ServsysScreenReport extends UniCash
 			calendar.add(Calendar.DATE,-6);
 			monday=calendar.getTime();
 		}
+	} else if (timeframe.equalsIgnoreCase("lastweek")) {	
+		if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+		{
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		}
+		else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+		{
+			calendar.add(Calendar.DATE,-1);
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		}
+		else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)
+		{
+			calendar.add(Calendar.DATE,-2);
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		}
+		else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
+		{
+			calendar.add(Calendar.DATE,-3);
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		}
+		else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY)
+		{
+			calendar.add(Calendar.DATE,-4);
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		}
+		else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+		{
+			calendar.add(Calendar.DATE,-5);
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		}
+		else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+		{
+			calendar.add(Calendar.DATE,-6);
+			sunday=calendar.getTime();
+			calendar.add(Calendar.DATE,-6);
+			monday=calendar.getTime();
+		} 
+	}
+		
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		formatter = new SimpleDateFormat("yyyy-MM-dd");
-		String enddate = doFormatDate(sunday);
-		String startdate = doFormatDate(monday);	
+		enddate = doFormatDate(sunday);
+		startdate = doFormatDate(monday);
+		
+		if (timeframe.equalsIgnoreCase("quarter")) {
+		
+		sunday=calendar.getTime();
+		monday=calendar.getTime();
+		// 1st quarter = Sept 1 to December 31
+		// 2nd quarter = Jan 1 to March 31
+		// 3rd quarter = April 1 to June 31
+		// 4th quarter = July 1 to August 31
+		String endqtr="";
+		String startqtr="";
+		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY)
+		{
+			startqtr="01-01-";
+			endqtr="03-31-";
+			// 1st Quarter
+			
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.FEBRUARY)
+		{
+			startqtr="01-01-";
+			endqtr="03-31-";
+			// 1st Quarter
+			
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.MARCH)
+		{
+			startqtr="01-01-";
+			endqtr="03-31-";
+			// 1st Quarter
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.APRIL)
+		{
+			startqtr="04-01-";
+			endqtr="06-30-";
+			// 2nd Quarter
+			
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.MAY)
+		{
+			startqtr="04-01-";
+			endqtr="06-30-";
+			// 2nd Quarter
+			
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.JUNE)
+		{
+			startqtr="04-01-";
+			endqtr="06-30-";
+			// 2nd Quarter
+			
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.JULY)
+		{
+			startqtr="07-01-";
+			endqtr="09-30-";
+			// 3rd Quarter
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.AUGUST)
+		{
+			startqtr="07-01-";
+			endqtr="09-30-";
+			// 3rd Quarter
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.SEPTEMBER)
+		{
+			startqtr="07-01-";
+			endqtr="09-30-";
+		
+			// 3rd Quarter
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.OCTOBER)
+		{
+			startqtr="10-01-";
+			endqtr="12-31-";
+			// 4th Quarter
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.NOVEMBER)
+		{
+			startqtr="10-01-";
+			endqtr="12-31-";
+			// 4th Quarter
+		}
+		else if (calendar.get(Calendar.MONTH) == Calendar.DECEMBER)
+		{
+			startqtr="10-01-";
+			endqtr="12-31-";
+			// 4th Quarter
+		}
+
+
+		dateFormatter = new SimpleDateFormat("yyyy");
+		formatter = new SimpleDateFormat("yyyy");
+		enddate = combinestring(endqtr,formatter.format(sunday));
+		startdate = combinestring(startqtr,formatter.format(monday));		
+
+		} else if (timeframe.equalsIgnoreCase("ytd")) {
+		dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
+		formatter = new SimpleDateFormat("MM-dd-yyyy");
+		enddate = formatter.format(sunday);
+		startdate=doFormatDate(getDate(UniCash.doGetYearEndDate()));	
+		}
+		
+	
+	
+	//if ((!timeframe.equalsIgnoreCase("quarter"))&&(!timeframe.equalsIgnoreCase("ytd"))) {	
+	//	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+	//	formatter = new SimpleDateFormat("yyyy-MM-dd");
+	//	enddate = doFormatDate(sunday);
+	//	startdate = doFormatDate(monday);
+	//}
 		
 	//out.println("Time Report For "+enddate+"<br>");
 	Statement stmt2 = con.createStatement();
 	Statement stmt = con.createStatement();
-	ResultSet rs2 = stmt2.executeQuery("select department, transmit from tech_table where transmit=1 group by department;");
+	ResultSet rs2 = stmt2.executeQuery("select department, transmit from tech_table where transmit=1 and department='"+department+"' group by department;");
 	//Format formatter;
         //String startdate = doFormatDate(dateToBeTested.getTime());
 
@@ -319,8 +552,12 @@ public class ServsysScreenReport extends UniCash
 		{
 		String sdepartment = rs2.getString("department");
 	mbody5=combinestring(mbody5,"<tr><td><table border=1  align=\"left\">");
+	if (department.equalsIgnoreCase("service")) {
 	mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"<br>Department</td><td>#ps</td><td>#Tel<br>Leads</td><td>#PS<br>calls</td><td>#TM<br>calls</td><td>$<br>repair</td><td>avg<br>repair</td><td>Equip<br>Sales</td><td>%psa<br>Sold</td><td>#psa<br>Sold</td><td>$Upgrade<br>Sales</td><td>#War</td><td>#Svc<br>Cb</td><td>#Ins<br>Cb</td><td>#Maint<br>CB</td><td>#Sales<br>Leads</td><td>#Install</td></tr>");
-		
+	}
+	if (department.equalsIgnoreCase("maintenance")) {
+	mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"<br>Department</td><td>NL<br>Run</td><td>NL<br>Sold</td><td>%<br>NL<br>Sold</td><td>NL<br>$</td><td>NC<br>$</td><td>#<br>PMR</td><td>#PMRR<br>Sold</td><td>%PMRR<br>Sold</td><td>PMRR<br>NC<br>$</td><td>#PMNR<br>Run</td><td>#<br>Sold</td><td>%PMNR<br>Sold</td><td>$PMNR<br>Sold</td><td>$<br>PMNR<br>NC</td><td>SLNP<br>Run</td><td>SLPG<br>Run</td><td>#<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td></tr>");
+	}
 	u = UniTechInfo.getAllTransmitItems(con, sdepartment);
 	int counter=0;
 	for (int iu = 0 ; iu < u.size(); iu++)
@@ -329,7 +566,7 @@ public class ServsysScreenReport extends UniCash
 		String tech_init = tu.getTechInit();
 		String lusername = tu.getUserName();
 		String tech_name = tu.getTechName();
-		String department = tu.getDepartment();
+		department = tu.getDepartment();
 		Vector v;
 		v = TimeSheetSummary.getLoginItemsMultiDate(con,lusername, doFormatDateDb(getDateDb(startdate)),doFormatDateDb(getDateDb(enddate)));
 		int cbi=0;
@@ -360,6 +597,8 @@ public class ServsysScreenReport extends UniCash
 				int sct=0;
 				int scte=0;
 				int sctp=0;
+				int pfs=0;
+				int slpgs=0;
 				int sctu=0;
 				int slnp=0;
 				int slpg=0;
@@ -397,12 +636,14 @@ public class ServsysScreenReport extends UniCash
 				double sctpd=0.00;
 				double sctud=0.00;
 				double slnpd=0.00;
+				double slpgsd=0.00;
+				double pfsd=0.00;
+				double pfsdc=0.00;
 				double slpgd=0.00;
+				double slpgdc=0.00;
 				double trd=0.00;
 				double ward=0.00;
 				double dashd=0.00;
-				
-				
 				double cbidc=0.00;
 				double cbmdc=0.00;
 				double cbsdc=0.00;
@@ -433,7 +674,7 @@ public class ServsysScreenReport extends UniCash
 				double sctpdc=0.00;
 				double sctudc=0.00;
 				double slnpdc=0.00;
-				double slpgdc=0.00;
+				double slpgsdc=0.00;
 				double trdc=0.00;
 				double wardc=0.00;
 				double dashdc=0.00;
@@ -600,7 +841,7 @@ public class ServsysScreenReport extends UniCash
 					// Preventative for renewal
 					pmrd=Double.parseDouble(tamount);
 					pmrdc=Double.parseDouble(tcamount);
-					pmrd=Integer.parseInt(callcount);
+					pmr=Integer.parseInt(callcount);
 				} else if (ctype.equalsIgnoreCase("pmre")) {
 					// Preventative renewal equipment sold
 					pmred=Double.parseDouble(tamount);
@@ -621,11 +862,24 @@ public class ServsysScreenReport extends UniCash
 					dashd=Double.parseDouble(tamount);
 					dashdc=Double.parseDouble(tcamount);
 					dash=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pfs")) {
+					// Proposal Follow-up Sold
+					pfsd=Double.parseDouble(tamount);
+					pfsdc=Double.parseDouble(tcamount);
+					pfs=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("slpgs")) {
+					// Sales lead proposal given sold
+					slpgsd=Double.parseDouble(tamount);
+					slpgsdc=Double.parseDouble(tcamount);
+					slpg=Integer.parseInt(callcount);
 				} 
 				
 					}
 					
-				int totsalescalls=pf+slnp+slpg;
+				int totsalescalls=pf+slnp+slpg+slpgs+pfs;
+				int totslpgrun=slpg+slpgs;
+				int totslsold=pfs+slpgs;
+				
 				double totsalescallsd=pfd+slnpd+slpgd;
 				double totsalescallsdc=pfdc+slnpdc+slpgdc;
 				
@@ -641,8 +895,12 @@ public class ServsysScreenReport extends UniCash
 				double totservcallsdc=totservtcalldc+totservfcalldc;
 				
 				int totpmnrcall = pmnr+pmnre+pmnru;
+				int totpmnrsold = pmnre+pmnru;
 				int totpmrcall=pmr+pmre+pmrr+pmru;
+				int totpmrsold = pmre+pmrr+pmru;
 
+				
+				
 				double totpmnrcalld = pmnrd+pmnred+pmnrud;
 				double totpmrcalld=pmrd+pmred+pmrrd+pmrud;
 			
@@ -653,9 +911,11 @@ public class ServsysScreenReport extends UniCash
 				double totpmcallsdc=totpmrcalldc+totpmnrcalldc;
 				
 				double totupsales = pmrud+pmnrud+scfud+sctud+nlud+pmrudc+pmnrudc+scfudc+sctudc+nludc;
+				
 				double totequipsales = pmred+pmnred+scfed+scted+nled+pmredc+pmnredc+scfedc+sctedc+nledc+slpgd+slpgdc+pfd+pfdc;
 				
 				int totnl=nl+nle+nlu+nlp;
+				int totnlsold=nle+nlu+nlp;
 				double totnld=nld+nled+nlud+nlpd;
 				double totnldc=nldc+nledc+nludc+nlpdc;
 				int totpmcalls=totpmrcall+totpmnrcall;				
@@ -665,14 +925,51 @@ public class ServsysScreenReport extends UniCash
 				if (totpspossible > 0) {
 				perpssold = (pssold / totpspossible)*100;
 				}
+				
+				double pernlsold= 0.00;
+				if (totnl > 0) {
+				pernlsold=(nlp/totnl)*100;
+				}
+				
+				
+				double perpmrrsold=0.00;
+				if (totpmrcall > 0) {
+				perpmrrsold=(totpmrsold/totpmrcall)*100;
+				}
+				
+				double perpmnrsold=0.00;
+				if (totpmnrsold > 0) {
+				//perpmnrsold=(totpmnrsold/totpmnrcall)*100;
+				perpmnrsold=999;
+				perpmnrsold=totpmnrsold/(pmnre+pmnru+pmnr);
+				}
+				
+				double ppmnrsold=0.00;
+				if (totpmnrsold > 0) {
+					ppmnrsold=(totpmnrsold/totpmnrcall)*100;
+				}
+				
+				
+				double persales=0.00;
+				if (totsalescalls > 0) {
+				persales=(totslsold/totsalescalls)*100;	
+				}
+				
 				double avgsvccall=0.00;
 				if (totservcalls>0) {
 				avgsvccall = totservcallsd/totservcalls;
 				} else {
 				avgsvccall=0.00;
 				}								
+				
+				if (department.equalsIgnoreCase("service")) {
 				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+perpssold+"</td><td>"+pssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td></tr>");
-			}
+				}
+				
+				if (department.equalsIgnoreCase("maintenance")) {
+				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+pernlsold+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+perpmrrsold+"</td><td>"+totpmrcalld+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+perpmnrsold+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+persales+"</td><td>"+totsalescallsdc+"</td></tr>");
+				}
+		}
 	}
 	mbody4=combinestring(mbody4,"<br><table border=1  align=\"left\">");
 	mbody4=combinestring(mbody4,"<tr><td>Department</td><td>#ps</td><td>#Tel<br>Leads</td><td>#PS<br>calls</td><td>#TM<br>calls</td><td>$<br>repair</td><td>avg<br>repair</td><td>Equip<br>Sales</td><td>%psa<br>Sold</td><td>#psa<br>Sold</td><td>$Upgrade<br>Sales</td><td>#War</td><td>#Svc<br>Cb</td><td>#Ins<br>Cb</td><td>#Maint<br>CB</td><td># Sales<br>Leads</td><td>#Install</td></tr>");
@@ -787,6 +1084,12 @@ public class ServsysScreenReport extends UniCash
 				double trdc=0.00;
 				double wardc=0.00;
 				double dashdc=0.00;
+				double pfsd=0.00;
+				double pfsdc=0.00;
+				double slpgsd=0.00;
+				double slpgsdc=0.00;
+				int pfs=0;
+				int slpgs=0;
 				
 			for (int i = 0 ; i < v.size(); i++)
 			{
@@ -970,11 +1273,25 @@ public class ServsysScreenReport extends UniCash
 					dashd=Double.parseDouble(tamount);
 					dashdc=Double.parseDouble(tcamount);
 					dash=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pfs")) {
+					// Proposal Follow-up Sold
+					pfsd=Double.parseDouble(tamount);
+					pfsdc=Double.parseDouble(tcamount);
+					pfs=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("slpgs")) {
+					// Sales lead proposal given sold
+					slpgsd=Double.parseDouble(tamount);
+					slpgsdc=Double.parseDouble(tcamount);
+					slpg=Integer.parseInt(callcount);
 				} 
 				
 					}
 					
 				int totsalescalls=pf+slnp+slpg;
+				int totslsold = pfs+slpgs;
+				
+				int totslpgrun=slpg+slpgs;
+				
 				double totsalescallsd=pfd+slnpd+slpgd;
 				double totsalescallsdc=pfdc+slnpdc+slpgdc;
 				
@@ -991,6 +1308,9 @@ public class ServsysScreenReport extends UniCash
 				
 				int totpmnrcall = pmnr+pmnre+pmnru;
 				int totpmrcall=pmr+pmre+pmrr+pmru;
+				int totpmnrsold = pmnre+pmnru;
+				int totpmrsold = pmre+pmrr+pmru;
+
 
 				double totpmnrcalld = pmnrd+pmnred+pmnrud;
 				double totpmrcalld=pmrd+pmred+pmrrd+pmrud;
@@ -1020,8 +1340,50 @@ public class ServsysScreenReport extends UniCash
 				} else {
 				avgsvccall=0.00;
 				}
+				
+								
+				double pernlsold= 0.00;
+				if (totnl > 0) {
+				pernlsold=(nlp/totnl)*100;
+				}
+				
+				
+				double perpmrrsold=0.00;
+				if (totpmrcall > 0) {
+				perpmrrsold=(totpmrsold/totpmrcall)*100;
+				}
+				
+				double perpmnrsold=0.00;
+				if (totpmnrsold > 0) {
+				//perpmnrsold=(totpmnrsold/totpmnrcall)*100;
+				perpmnrsold=999;
+				perpmnrsold=totpmnrsold/(pmnre+pmnru+pmnr);
+				}
+				
+				double ppmnrsold=0.00;
+				if (totpmnrsold > 0) {
+					ppmnrsold=(totpmnrsold/totpmnrcall)*100;
+				}
+				
+				
+				double persales=0.00;
+				if (totsalescalls > 0) {
+				persales=(totslsold/totsalescalls)*100;	
+				}
+				
+				
+				if (department.equalsIgnoreCase("service")) {
 				mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+perpssold+"</td><td>"+pssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td></tr>");
+				}
+				if (department.equalsIgnoreCase("maintenance")) {
+				mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+pernlsold+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+perpmrrsold+"</td><td>"+totpmrcalld+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+perpmnrsold+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+persales+"</td><td>"+totsalescallsdc+"</td></tr>");
+				}
+				
+				
 				mbody5=combinestring(mbody5,"</table></td></tr>");
+				
+				
+				
  ResultSet rs3 = stmt.executeQuery("select tech_table.department as department, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and tdate>='"+doFormatDateDb(getDateDb(enddate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"' and department='"+sdepartment+"' group by department;");
 
                 while(rs3.next())
@@ -1047,9 +1409,10 @@ public class ServsysScreenReport extends UniCash
 	techemailaddress=doGetTech_Email(username);	
       String smtpuser = doGetSmtpUser(username);
       String smtppassword = doGetSmtpPassword(username);
-       //doMailSend(emailserver, emailsendaddress, techemailaddress, "Daily Time Recap - "+enddate+" - By Tech" , mbody, smtpuser, smtppassword);
+      if (reptype.equalsIgnoreCase("email")) {
+       doMailSend(emailserver, emailsendaddress, techemailaddress, "Recap Report for "+timeframe+" Department: "+department+" Start: "+startdate+" End:"+enddate+"" , mbody5, smtpuser, smtppassword);
        //doMailSend(emailserver, emailsendaddress, techemailaddress, "Daily Time Recap - "+enddate+" - By Department" , mbody2, smtpuser, smtppassword);
-		
+      }
 	return mbody;    
 	
 	

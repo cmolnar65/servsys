@@ -1683,6 +1683,38 @@ out.println("</CENTER>");
 			{
 				doAutoScreens(req, res, out, session, username);
 			}
+			else if (action.equalsIgnoreCase("screenservicethisweeke"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenservicelastweeke"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenservicequartere"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenserviceytde"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintthisweeke"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintlastweeke"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintquartere"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintytde"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
 			else if (action.equalsIgnoreCase("sendweektodatetimereport"))
 			{
 				doAutoWeekToDateTimeTransmit(req, res, out, session, username);
@@ -6056,7 +6088,7 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
                         return department;                       
         }
 
-	public String doGetYearEndDate()
+	public static String doGetYearEndDate()
         throws Exception
         {
                 Vector v;
