@@ -926,33 +926,44 @@ public class ServsysScreenReport extends UniCash
 				perpssold = (pssold / totpspossible)*100;
 				}
 				
+				BigDecimal d4=new BigDecimal(0.00);
 				double pernlsold= 0.00;
 				if (totnl > 0) {
-				pernlsold=(nlp/totnl)*100;
+				pernlsold=(Double.parseDouble(""+nlp+"")/Double.parseDouble(""+totnl+""))*100;
+				d4 = new BigDecimal(pernlsold);
+				d4 = d4.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
-				
+				BigDecimal d1=new BigDecimal(0.00);
 				double perpmrrsold=0.00;
 				if (totpmrcall > 0) {
-				perpmrrsold=(totpmrsold/totpmrcall)*100;
+				perpmrrsold=(Double.parseDouble(""+totpmrsold+"")/Double.parseDouble(""+totpmrcall+""))*100;
+				d1 = new BigDecimal(perpmrrsold);
+				d1 = d1.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
 				double perpmnrsold=0.00;
+				BigDecimal d2=new BigDecimal(0.00);
 				if (totpmnrsold > 0) {
 				//perpmnrsold=(totpmnrsold/totpmnrcall)*100;
 				perpmnrsold=999;
-				perpmnrsold=totpmnrsold/(pmnre+pmnru+pmnr);
+				perpmnrsold=(Double.parseDouble(""+totpmnrsold+"")/Double.parseDouble(""+totpmnrcall+""))*100;
+				d2 = new BigDecimal(perpmnrsold);
+				d2 = d2.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
-				double ppmnrsold=0.00;
-				if (totpmnrsold > 0) {
-					ppmnrsold=(totpmnrsold/totpmnrcall)*100;
-				}
+				//double ppmnrsold=0.00;
+				//if (totpmnrsold > 0) {
+				//	ppmnrsold=(Double.parseDouble(""+totpmnrsold+"")/Double.parseDouble(""+totpmnrcall+""))*100;
+				//}
 				
 				
 				double persales=0.00;
+				BigDecimal d3=new BigDecimal(0.00);
 				if (totsalescalls > 0) {
-				persales=(totslsold/totsalescalls)*100;	
+				persales=(Double.parseDouble(""+totslsold+"")/Double.parseDouble(""+totsalescalls+""))*100;	
+				d3 = new BigDecimal(perpmnrsold);
+				d3 = d3.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
 				double avgsvccall=0.00;
@@ -967,7 +978,7 @@ public class ServsysScreenReport extends UniCash
 				}
 				
 				if (department.equalsIgnoreCase("maintenance")) {
-				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+pernlsold+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+perpmrrsold+"</td><td>"+totpmrcalld+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+perpmnrsold+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+persales+"</td><td>"+totsalescallsdc+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"</td><td>"+totpmrcalld+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"</td><td>"+totsalescallsdc+"</td></tr>");
 				}
 		}
 	}
@@ -1341,34 +1352,43 @@ public class ServsysScreenReport extends UniCash
 				avgsvccall=0.00;
 				}
 				
-								
+				BigDecimal d4 = new BigDecimal(0.00);				
 				double pernlsold= 0.00;
 				if (totnl > 0) {
-				pernlsold=(nlp/totnl)*100;
+				pernlsold=(Double.parseDouble(""+nlp+"")/Double.parseDouble(""+totnl+""))*100;
+				d4 = new BigDecimal(pernlsold);
+				d4 = d4.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
-				
+				BigDecimal d1=new BigDecimal(0.00);
 				double perpmrrsold=0.00;
 				if (totpmrcall > 0) {
-				perpmrrsold=(totpmrsold/totpmrcall)*100;
+				perpmrrsold=(Double.parseDouble(""+totpmrsold+"")/Double.parseDouble(""+totpmrcall+""))*100;
+				d1 = new BigDecimal(perpmrrsold);
+				d1 = d1.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
+				BigDecimal d2=new BigDecimal(0.00);
 				double perpmnrsold=0.00;
 				if (totpmnrsold > 0) {
 				//perpmnrsold=(totpmnrsold/totpmnrcall)*100;
 				perpmnrsold=999;
-				perpmnrsold=totpmnrsold/(pmnre+pmnru+pmnr);
+				perpmnrsold=(Double.parseDouble(""+totpmnrsold+"")/Double.parseDouble(""+totpmnrcall+""))*100;
+				d2 = new BigDecimal(perpmnrsold);
+				d2 = d2.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
-				double ppmnrsold=0.00;
-				if (totpmnrsold > 0) {
-					ppmnrsold=(totpmnrsold/totpmnrcall)*100;
-				}
+				//double ppmnrsold=0.00;
+				//if (totpmnrsold > 0) {
+				//	ppmnrsold=(totpmnrsold/totpmnrcall)*100;
+				//}
 				
-				
+				BigDecimal d3=new BigDecimal(0.00);
 				double persales=0.00;
 				if (totsalescalls > 0) {
-				persales=(totslsold/totsalescalls)*100;	
+				persales=(Double.parseDouble(""+totslsold+"")/Double.parseDouble(""+totsalescalls+""))*100;
+				d3 = new BigDecimal(persales);
+				d3 = d3.setScale(2, BigDecimal.ROUND_HALF_UP);
 				}
 				
 				
@@ -1376,7 +1396,7 @@ public class ServsysScreenReport extends UniCash
 				mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+perpssold+"</td><td>"+pssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td></tr>");
 				}
 				if (department.equalsIgnoreCase("maintenance")) {
-				mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+pernlsold+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+perpmrrsold+"</td><td>"+totpmrcalld+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+perpmnrsold+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+persales+"</td><td>"+totsalescallsdc+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"</td><td>"+totpmrcalld+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"</td><td>"+totsalescallsdc+"</td></tr>");
 				}
 				
 				

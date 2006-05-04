@@ -27539,7 +27539,7 @@ private void doPrintServProposal(HttpServletRequest req, HttpServletResponse res
 	 Locale[] locales = NumberFormat.getAvailableLocales();
 	  double myNumber = totinvestment;
 	   NumberFormat form;
-												                    form = NumberFormat.getIntegerInstance(locales[1]);
+	   form = NumberFormat.getIntegerInstance(locales[1]);
 	out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(myNumber)))+"<br></p>");
 	out.println("<br>");
 	out.println("Pricing does include labor and these prices are subject to change without notice unless accepted within thirty (30) calendar days from the date of this contract.<br><br>");
