@@ -1683,6 +1683,38 @@ out.println("</CENTER>");
 			{
 				doAutoScreens(req, res, out, session, username);
 			}
+			else if (action.equalsIgnoreCase("screenservicethisweek"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenservicelastweek"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenservicequarter"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenserviceytd"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintthisweek"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintlastweek"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintquarter"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("screenmaintytd"))
+			{
+				doAutoScreens(req, res, out, session, username);
+			}
 			else if (action.equalsIgnoreCase("screenservicethisweeke"))
 			{
 				doAutoScreens(req, res, out, session, username);
