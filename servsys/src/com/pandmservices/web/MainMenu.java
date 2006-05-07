@@ -189,6 +189,13 @@ mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=exportflatrate&servicestart=a&serviceend=&catnum=0 target=_blank>Flat Rate Export</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=nositenum target=_blank>No Cust Number</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=selecttimereportdate target=_blank>Display Time/Activity Report</a><br>");
+	if (thismainserver.equalsIgnoreCase("yes")) {
+		mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=screenservicelastweek target=_blank>Last Weeks Service Department Recap Report</a><br>");
+		mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=screenmaintlastweek target=_blank>Last Weeks Maint Department Recap Report</a><br>");
+		mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=screenserviceytd target=_blank>Year To Date Service Department Recap Report</a><br>");
+		mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=screenmaintytd target=_blank>Year To Date Maint Department Recap Report</a><br>");
+		
+	}
 	}
 
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=update target=nav>Update</a><br>");
