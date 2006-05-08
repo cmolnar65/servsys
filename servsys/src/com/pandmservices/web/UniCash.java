@@ -5800,7 +5800,8 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
 						}
 						int result225a7=stmtu2.executeUpdate("alter table configcompany add nocustonlaptop text after enabcustomer;");
 						int result225a8=stmtu2.executeUpdate("alter table configcompany add laptopretentiontime int(11) after nocustonlaptop;");
-						int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.25';");				
+						int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.25';");
+						int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-08';");
 			}
 			if (dbvnumber.equalsIgnoreCase("2.23")) {
 			Statement stmtu2 = con.createStatement();
