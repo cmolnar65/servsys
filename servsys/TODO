@@ -16,11 +16,21 @@
   appropriate people.
 
 =================================================================
+RELEASE 2.25
+=================================================================
+(N) Add callnotes and inspectnotes tables.
+(N) Added sync for inspection and callslip notes.
+(N) Added printing and emailing for inspection and callslip notes.
+(N) Added delete for inspection and callslip notes.
+(C) Fixed follow-up report for inspection and callslip notes.
+
+=================================================================
 RELEASE 2.24
 =================================================================
 (F) Several bug fixes with reports and screens
 (N) Addition of screen reports and several other fixes.
 (NOTE) Public release
+
 
 =================================================================
 RELEASE 2.21	

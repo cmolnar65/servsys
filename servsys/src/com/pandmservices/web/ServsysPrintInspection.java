@@ -438,6 +438,8 @@ public class ServsysPrintInspection extends UniCash
 		ref_electrical=t.ref_electrical();
 		ref_compamprated=t.ref_compamprated();
 		ref_compampactual=t.ref_compampactual();
+		sitenum=t.getSiteNum();
+		custsite=t.getCustSite();
 		}
 
 //////////////////////////////////////////
@@ -784,10 +786,36 @@ mbody=combinestring(mbody,"<P></P><br>");
 		mbody=combinestring(mbody,"</td></tr>");
 }
 if (action.equalsIgnoreCase("vinspectprint")) {
-if (notes.length()>1) {
 mbody=combinestring(mbody,"<tr><td><b>NOTES: DO NOT PRINT FOR CUSTOMER!!</td></tr><tr><td>"+notes);
-mbody=combinestring(mbody,"</td></tr>");
-}
+mbody=combinestring(mbody,"</td></tr><tr><td>");
+
+	mbody=combinestring(mbody,"<h3>Notes</h3>");
+
+	Vector vn;
+        vn = InspectNotes.getAllItems(con,custsite, sitenum, callslip);
+        mbody=combinestring(mbody,"<table border=1 width=100%>");
+        mbody=combinestring(mbody,"<th>Date</th><th>User</th><th>Note</th>");
+	String note="";
+	String ndate="";
+	String ncallslip="";
+	String nuserlogin="";
+	String nnote="";
+	int nrecnum=0;
+	int nservsync=0;
+		
+                for (int in = 0 ; in < vn.size(); in++)
+                {
+                InspectNotes tn = (InspectNotes) vn.elementAt(in);
+		nnote=tn.getNote();
+		ncallslip=tn.getCallslip();
+		nuserlogin=tn.getUserLogin();
+		nrecnum=tn.getRecNum();
+		ndate=tn.getNDate();
+		nservsync=tn.getServsync();
+                mbody=combinestring(mbody,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+                }
+		mbody=combinestring(mbody,"</table></td></tr>");
+	
 }
 mbody=combinestring(mbody,"</font>");
 mbody=combinestring(mbody,"</table>");
@@ -1045,6 +1073,8 @@ mbody=combinestring(mbody,"</html>");
 		String  ref_electrical=null;
 		String  ref_compamprated=null;
 		String  ref_compampactual=null;
+		String sitenum=null;
+		String custsite=null;
 
 		String cname=null;
 		String address1=null;
@@ -1210,6 +1240,8 @@ mbody=combinestring(mbody,"</html>");
 		ref_electrical=t.ref_electrical();
 		ref_compamprated=t.ref_compamprated();
 		ref_compampactual=t.ref_compampactual();
+		custsite=t.getCustSite();
+		sitenum=t.getSiteNum();
 
  		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
@@ -1462,6 +1494,33 @@ mbody=combinestring(mbody,"The following recommendations are made by our service
 	if (notes.length()>1) {
 	mbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
 	}
+	mbody=combinestring(mbody,"<h3>Notes</h3>");
+
+	Vector vn;
+        vn = InspectNotes.getAllItems(con,custsite, sitenum, callslip);
+        mbody=combinestring(mbody,"<table border=1 width=100%>");
+        mbody=combinestring(mbody,"<th>Date</th><th>User</th><th>Note</th>");
+	String note="";
+	String ndate="";
+	String ncallslip="";
+	String nuserlogin="";
+	String nnote="";
+	int nrecnum=0;
+	int nservsync=0;
+		
+                for (int in = 0 ; in < vn.size(); in++)
+                {
+                InspectNotes tn = (InspectNotes) vn.elementAt(in);
+		nnote=tn.getNote();
+		ncallslip=tn.getCallslip();
+		nuserlogin=tn.getUserLogin();
+		nrecnum=tn.getRecNum();
+		ndate=tn.getNDate();
+		nservsync=tn.getServsync();
+                mbody=combinestring(mbody,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+                }
+		mbody=combinestring(mbody,"</table>");
+	
 ////////////////////////////////////////////////////////
 // Here is where we add timesheet information
 ////////////////////////////////////////////////////////

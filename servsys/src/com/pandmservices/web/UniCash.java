@@ -2139,6 +2139,18 @@ out.println("</CENTER>");
 			{
 				doSaveRemind(req, res, out, session,username);
 			}
+			else if (action.equalsIgnoreCase("savenote"))
+			{
+				doSaveNote(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("addnote"))
+			{
+				doAddNote(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("deletenote"))
+			{
+				doDeleteNote(req, res, out, session, username);
+			}
 			else if (action.equalsIgnoreCase("updateremind"))
 			{
 				doSaveRemind(req, res, out, session,username);
@@ -2633,6 +2645,10 @@ private void doSyncCustTable(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("Preventative Sync Complete<br>");
 	SyncTimeSheets st = new SyncTimeSheets(con,conu);
 	out.println("Time Sheet Sync Complete<br>");
+	SyncCallNotes scn=new SyncCallNotes(con,conu);
+	out.println("Callslip Notes Sync Complete<br>");
+	SyncInspectNotes sin=new SyncInspectNotes(con,conu);
+	out.println("Inspection Notes Sync Complete<br>");
 	SyncQuotes sq = new SyncQuotes(con,conu);
 	out.println("Quote Sync Complete<br>");
 	SyncWorksheets sw = new SyncWorksheets(con,conu);
@@ -5750,7 +5766,42 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.24";
+			vnumber = "2.25";
+			if (dbvnumber.equalsIgnoreCase("2.24")) {
+			Statement stmtu2 = con.createStatement();
+			int result225a1 = stmtu2.executeUpdate("drop table if exists callnotes;");
+			int result225a2 = stmtu2.executeUpdate("create table callnotes (recnum int(11) NOT NULL auto_increment,userlogin text, custnum text, sitenum text, callslip text, ndate date, note text, servsync int(11),PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
+			int result225a3 = stmtu2.executeUpdate("drop table if exists inspectnotes;");
+			int result225a4 = stmtu2.executeUpdate("create table inspectnotes (recnum int(11) NOT NULL auto_increment,userlogin text, custnum text, sitenum text, callslip text, ndate date, note text, servsync int(11),PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
+			Statement stmtu3 = con.createStatement();
+			ResultSet rsu3 = stmtu3.executeQuery("select custsite, sitenum, techid, cdate, callslip, servsync, rtrim(ltrim(notes)) as notes from callslip where length(callslip.notes)>4;");
+					 while(rsu3.next())
+					 	{
+							String custsite=rsu3.getString("custsite");
+							String callslip=rsu3.getString("callslip");
+							String sitenum=rsu3.getString("sitenum");
+							String techid=rsu3.getString("techid");
+							String cdate=rsu3.getString("cdate");
+							String notes=rsu3.getString("notes");
+							int servsync=rsu3.getInt("servsync");
+							int result225a5 = stmtu2.executeUpdate("insert into callnotes (userlogin, custnum, sitenum, callslip, ndate, note, servsync) values ('"+techid+"','"+custsite+"','"+sitenum+"','"+callslip+"','"+cdate+"','"+notes+"','"+servsync+"');");				
+						}
+						ResultSet rsu4 = stmtu3.executeQuery("select custsite, sitenum, techid, idate, callslip, servsync, rtrim(ltrim(notes)) as notes from inspection where length(inspection.notes)>4;");
+					 while(rsu4.next())
+					 	{
+							String custsite=rsu4.getString("custsite");
+							String callslip=rsu4.getString("callslip");
+							String sitenum=rsu4.getString("sitenum");
+							String techid=rsu4.getString("techid");
+							String cdate=rsu4.getString("idate");
+							String notes=rsu4.getString("notes");
+							int servsync=rsu4.getInt("servsync");
+							int result225a6 = stmtu2.executeUpdate("insert into inspectnotes (userlogin, custnum, sitenum, callslip, ndate, note, servsync) values ('"+techid+"','"+custsite+"','"+sitenum+"','"+callslip+"','"+cdate+"','"+notes+"','"+servsync+"');");				
+						}
+						int result225a7=stmtu2.executeUpdate("alter table configcompany add nocustonlaptop text after enabcustomer;");
+						int result225a8=stmtu2.executeUpdate("alter table configcompany add laptopretentiontime int(11) after nocustonlaptop;");
+						int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.25';");				
+			}
 			if (dbvnumber.equalsIgnoreCase("2.23")) {
 			Statement stmtu2 = con.createStatement();
 			int result224a=stmtu2.executeUpdate("alter table packcompare add best6 text after desc3;");
@@ -10863,6 +10914,8 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
       String smtppassword = doGetSmtpPassword(username);
         int ecustnum=0;
 	int custnum=0;
+	String custsite=null;
+	String sitenum=null;
         String brand=null;
         String modelnum=null;
         String serialnum=null;
@@ -10922,7 +10975,6 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
                 for (int i = 0 ; i < v.size(); i++)
                 {
                        	UniCallslip t = (UniCallslip) v.elementAt(i);
-
 		custnum=t.getCustnum();
 		callslip=t.getCallslip();
 		cdate=t.getCdate();
@@ -10931,12 +10983,41 @@ private void doSendCallSlips(HttpServletRequest req, HttpServletResponse res, Pr
 		equip3=t.getEquip3();
 		equip4=t.getEquip4();
 		reason=t.getReason();
+		custsite=t.getCustSite();
+		sitenum=t.getSiteNum();
 		services=t.getServices();
 		recommendations=t.getRecommendations();
 		rscheduled=t.getRscheduled();
 		charges=t.getCharges();
 		collected=t.getCollected();
-		notes=t.getNotes();
+		//notes=t.getNotes();
+		notes="";		
+		Vector vcn;
+		vcn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
+		if (vcn.size() > 0 ) {
+		notes=combinestring(notes,"<table border=1 width=100%>");
+		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
+		String note="";
+		String ndate="";
+		String ncallslip="";
+		String nuserlogin="";
+		String nnote="";
+		int nrecnum=0;
+		int nservsync=0;
+                for (int icn = 0 ; icn < vcn.size(); icn++)
+                {
+                CallslipNotes tcn = (CallslipNotes) vcn.elementAt(icn);
+		nnote=tcn.getNote();
+		ncallslip=tcn.getCallslip();
+		nuserlogin=tcn.getUserLogin();
+		nrecnum=tcn.getRecNum();
+		ndate=tcn.getNDate();
+		nservsync=tcn.getServsync();
+                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		}
+			notes=combinestring(notes,"</table>");
+		}
+		
 		parts=t.getParts();
 		followup=t.getFollowup();
 
@@ -11073,7 +11154,7 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	///////////////////////////////////////////////////
 	if (parts.length()>1) {
 	mbody=combinestring(mbody,"<br>The following parts are needed:<br>"+parts+"<br>");
-	pmbody=combinestring(mbody,"<br>The following parts are needed:<br>"+parts+"<br>");
+	pmbody=combinestring(pmbody,"<br>The following parts are needed:<br>"+parts+"<br>");
 	}
 
 
@@ -11089,10 +11170,42 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	//Print Notes
 	///////////////////////////////////////////////////
 	if (notes.length()>1) {
-	mbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
-	pmbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>"+notes+"<br>");
+	mbody=combinestring(mbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>");
+	pmbody=combinestring(pmbody,"<br>---------------------------<br>OFFICE: The following notes are OFFICE ONLY - NOT FOR CUSTOMER:<br>");
 	}
 
+/*			out.println("<h3>Notes</h3>");
+
+	Vector vn;
+        vn = InspectNotes.getAllItems(con,custsite, sitenum, callslip);
+        mbody=combinestring(mbody,"<table border=1 width=100%>");
+        mbody=combinestring(mbody,"<th>Date</th><th>User</th><th>Note</th>");
+	pmbody=combinestring(pmbody,"<table border=1 width=100%>");
+        pmbody=combinestring(pmbody,"<th>Date</th><th>User</th><th>Note</th>");
+	String note="";
+	String ndate="";
+	String ncallslip="";
+	String nuserlogin="";
+	String nnote="";
+	int nrecnum=0;
+	int nservsync=0;
+		
+                for (int in = 0 ; in < vn.size(); in++)
+                {
+                InspectNotes tn = (InspectNotes) vn.elementAt(in);
+		nnote=tn.getNote();
+		ncallslip=tn.getCallslip();
+		nuserlogin=tn.getUserLogin();
+		nrecnum=tn.getRecNum();
+		ndate=tn.getNDate();
+		nservsync=tn.getServsync();
+                mbody=combinestring(mbody,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		pmbody=combinestring(pmbody,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+                }
+		mbody=combinestring(mbody,"</table>");
+		pmbody=combinestring(pmbody,"</table>");
+*/	
+	
 ////////////////////////////////////////////////////////
 // Here is where we add timesheet information
 ////////////////////////////////////////////////////////
@@ -11510,6 +11623,8 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 	String cust_notes=null;
 	String parts=null;
 	String etype="";
+	String custsite="";
+	String sitenum="";
             String mbody = "";
 	    String pmbody="";
 	    int csrec=Integer.parseInt(callslip);
@@ -11530,6 +11645,8 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 
 		custnum=t.getCustnum();
 		callslip=t.getCallslip();
+		custsite=t.getCustSite();
+		sitenum=t.getSiteNum();
 		cdate=t.getCdate();
 		equip1=t.getEquip1();
 		equip2=t.getEquip2();
@@ -11541,7 +11658,34 @@ private void doExtraTime(HttpServletRequest req, HttpServletResponse res, PrintW
 		rscheduled=t.getRscheduled();
 		charges=t.getCharges();
 		collected=t.getCollected();
-		notes=t.getNotes();
+		//notes=t.getNotes();
+						notes="";		
+		Vector vcn;
+		vcn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
+		if (vcn.size() > 0 ) {
+		notes=combinestring(notes,"<table border=1 width=100%>");
+		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
+		String note="";
+		String ndate="";
+		String ncallslip="";
+		String nuserlogin="";
+		String nnote="";
+		int nrecnum=0;
+		int nservsync=0;
+                for (int icn = 0 ; icn < vcn.size(); icn++)
+                {
+                CallslipNotes tcn = (CallslipNotes) vcn.elementAt(icn);
+		nnote=tcn.getNote();
+		ncallslip=tcn.getCallslip();
+		nuserlogin=tcn.getUserLogin();
+		nrecnum=tcn.getRecNum();
+		ndate=tcn.getNDate();
+		nservsync=tcn.getServsync();
+                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		}
+			notes=combinestring(notes,"</table>");
+		}
+		
 		followup=t.getFollowup();
 		parts=t.getParts();
 
@@ -11792,6 +11936,8 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String altphone=null;
 	String cust_notes=null;
 	String etype="";
+	String custsite="";
+	String sitenum="";
             String mbody = "";
 	    String pmbody  = "";
             tcsrec = req.getParameter("csrec");
@@ -11821,6 +11967,8 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 		custnum=t.getCustnum();
 		callslip=t.getCallslip();
 		cdate=t.getCdate();
+		custsite=t.getCustSite();
+		sitenum=t.getSiteNum();
 		equip1=t.getEquip1();
 		equip2=t.getEquip2();
 		equip3=t.getEquip3();
@@ -11831,7 +11979,35 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 		rscheduled=t.getRscheduled();
 		charges=t.getCharges();
 		collected=t.getCollected();
-		notes=t.getNotes();
+		//notes=t.getNotes();
+		
+						notes="";		
+		Vector vcn;
+		vcn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
+		if (vcn.size() > 0 ) {
+		notes=combinestring(notes,"<table border=1 width=100%>");
+		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
+		String note="";
+		String ndate="";
+		String ncallslip="";
+		String nuserlogin="";
+		String nnote="";
+		int nrecnum=0;
+		int nservsync=0;
+                for (int icn = 0 ; icn < vcn.size(); icn++)
+                {
+                CallslipNotes tcn = (CallslipNotes) vcn.elementAt(icn);
+		nnote=tcn.getNote();
+		ncallslip=tcn.getCallslip();
+		nuserlogin=tcn.getUserLogin();
+		nrecnum=tcn.getRecNum();
+		ndate=tcn.getNDate();
+		nservsync=tcn.getServsync();
+                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		}
+			notes=combinestring(notes,"</table>");
+		}
+		
 		followup=t.getFollowup();
 		parts=t.getParts();
 
@@ -12842,7 +13018,10 @@ private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse r
 	SyncQuotes sq = new SyncQuotes(con,conu);
 	out.println("Quote Sync Complete\n");
 	SyncWorksheets sw = new SyncWorksheets(con,conu);
-
+		SyncCallNotes scn=new SyncCallNotes(con,conu);
+	out.println("Callslip Notes Sync Complete<br>");
+	SyncInspectNotes sin=new SyncInspectNotes(con,conu);
+	out.println("Inspection Notes Sync Complete<br>");
 
 	int ocrecnum;	
 	int custnum;
@@ -15832,6 +16011,7 @@ private void doEditReminder(HttpServletRequest req, HttpServletResponse res, Pri
 		con.close();
        } 
 }
+
 private void doAddRemindForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
 		        {
@@ -15860,6 +16040,102 @@ private void doAddRemindForm(HttpServletRequest req, HttpServletResponse res, Pr
 		con.close();
         }
 
+private void doSaveNote(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+		        {
+				 String classdir = (String) config.getInitParameter("web.classdir");
+			String action = req.getParameter("action");
+			String custnum  = req.getParameter("custnum");
+			String custsitenum = req.getParameter("custsitenum");
+			String sitenum = req.getParameter("sitenum");
+			String callslip = req.getParameter("callslip");
+			String psource = req.getParameter("psource");
+			String crecnum=req.getParameter("crecnum");
+			String note = req.getParameter("note");
+			String ndate=req.getParameter("ndate");
+			int servsync=0;	
+	    if (psource.equalsIgnoreCase("editinspection")) {
+            InspectNotes.AddItem(con, custsitenum, sitenum, username, callslip, ndate, note, servsync);
+	    res.sendRedirect(""+classdir+"UniCash?action=editinspection&icrecnum="+crecnum+"&custnum="+custnum+"");
+	    }
+	    if (psource.equalsIgnoreCase("editcallslip")) {
+            CallslipNotes.AddItem(con, custsitenum, sitenum, username, callslip, ndate, note, servsync);
+	    res.sendRedirect(""+classdir+"UniCash?action=editcallslip&crecnum="+crecnum+"&custnum="+custnum+"&callslip="+callslip+"");
+	    }
+	
+	    con.close();
+        }
+
+
+private void doDeleteNote(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+		        {
+				 String classdir = (String) config.getInitParameter("web.classdir");
+			String action = req.getParameter("action");
+			String custnum  = req.getParameter("custnum");
+			String custsitenum = req.getParameter("custsitenum");
+			String sitenum = req.getParameter("sitenum");
+			String callslip = req.getParameter("callslip");
+			String psource = req.getParameter("psource");
+			String crecnum=req.getParameter("crecnum");
+			String note = req.getParameter("note");
+			String recnum=req.getParameter("recnum");
+			String ndate=req.getParameter("ndate");
+			int servsync=0;	
+	    if (psource.equalsIgnoreCase("editinspection")) {
+            InspectNotes.deleteItem(con, recnum);
+	    res.sendRedirect(""+classdir+"UniCash?action=editinspection&icrecnum="+crecnum+"&custnum="+custnum+"");
+	    }
+	   if (psource.equalsIgnoreCase("editcallslip")) {
+            CallslipNotes.deleteItem(con, recnum);
+	    res.sendRedirect(""+classdir+"UniCash?action=editcallslip&crecnum="+crecnum+"&custnum="+custnum+"&callslip="+callslip+"");
+	    }
+	    con.close();
+        }
+
+private void doAddNote(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+		        {
+			String action = req.getParameter("action");
+			String custnum  = req.getParameter("custnum");
+			String custsitenum = req.getParameter("custsite");
+			String sitenum = req.getParameter("sitenum");
+			String callslip = req.getParameter("callslip");
+			String psource = req.getParameter("psource");
+			String crecnum=req.getParameter("crecnum");
+			Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd");
+        printHeader(req, res, out, username);
+       SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+       formatter = new SimpleDateFormat("yyyy-MM-dd");
+	String s = formatter.format(date);
+            String classdir = (String) config.getInitParameter("web.classdir");
+            out.println("<p><form action= " + classdir + "UniCash?action=savenote method=POST> ");
+	    out.println("<table border=1 cols=2 width=\"90%\" NOSAVE> ");
+	    out.println("<tr><td>Notes:</td><td>");
+	    out.println("<textarea name=\"note\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width:500px\"></textarea>");
+	    out.println("</td></tr>");
+            out.println("<tr><td>Save</td><td><input type=\"submit\" name=\"submit\"></td></tr>");
+            out.println("</table>");
+	    out.println("<input type=\"hidden\" name=\"ndate\" value=\""+s+"\">");
+	    out.println("<input type=\"hidden\" name=\"userlogin\" value=\""+username+"\">");
+	    out.println("<input type=\"hidden\" name=\"custsitenum\" value=\""+custsitenum+"\">");
+	    out.println("<input type=\"hidden\" name=\"sitenum\" value=\""+sitenum+"\">");
+	    out.println("<input type=\"hidden\" name=\"callslip\" value=\""+callslip+"\">");
+	    out.println("<input type=\"hidden\" name=\"psource\" value=\""+psource+"\">");
+	    out.println("<input type=\"hidden\" name=\"custnum\" value=\""+custnum+"\">");
+	    out.println("<input type=\"hidden\" name=\"crecnum\" value=\""+crecnum+"\">");
+	    out.println("</form><br><br> ");
+	    if (psource.equalsIgnoreCase("editinspection")) {
+	    out.println("<a href=\""+ classdir + "UniCash?action=editinspection&icrecnum="+crecnum+"&custnum="+custnum+"\">Return to Inspection</a>");
+	    }
+	    if (psource.equalsIgnoreCase("editcallslip")) {
+	    out.println("<a href=\""+ classdir + "UniCash?action=editcallslip&crecnum="+crecnum+"&custnum="+custnum+"&callslip="+callslip+"\">Return to Inspection</a>");
+	    }	
+	    con.close();
+        }
 
 private void doSaveRemind(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -16887,6 +17163,8 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
         String filter=null;
         String notes=null;
 	String callslip=null;
+	String custsite=null;
+	String sitenum=null;
 	String cdate=null;
 	String crectype=null;
 	int equip1=0;
@@ -16927,12 +17205,14 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 		reason=rs.getString("reason");
 		reason=rs.getString("reason");
 		services=rs.getString("services");
+		custsite=rs.getString("custsite");
+		sitenum=rs.getString("sitenum");
 		recommendations=rs.getString("recommendations");
 		rscheduled=rs.getString("rscheduled");
 		//charges=rs.getString("charges");
 		//collected=rs.getString("collected");
 		crectype=rs.getString("crectype");
-		notes=rs.getString("notes");
+		//notes=rs.getString("notes");
 		parts=rs.getString("parts");
 		followup=rs.getInt("followup");
 		if (followup==1)
@@ -16980,9 +17260,9 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("<tr><td>Parts Needed</td><td>");
 	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+parts+"</textarea>");
 	out.println("</td></tr>");
-	out.println("<tr><td>Notes</td><td>");
-	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+notes +"</textarea>");
-	out.println("</td></tr>");
+	//out.println("<tr><td>Notes</td><td>");
+	//out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+notes +"</textarea>");
+	//out.println("</td></tr>");
 
 	out.println("<tr><td>Add Follow-up</td><td>");
 	if (followup==0)
@@ -16995,6 +17275,41 @@ private void doEditCallslip(HttpServletRequest req, HttpServletResponse res, Pri
 
 	out.println("</table>");
 
+
+		out.println("<h3>Notes</h3>");
+
+	Vector vn;
+        vn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
+        out.println("<table border=1 width=100%>");
+        out.println("<th>Date</th><th>User</th><th>Note</th>");
+	String note="";
+	String ndate="";
+	String ncallslip="";
+	String nuserlogin="";
+	String nnote="";
+	int nrecnum=0;
+	int nservsync=0;
+		
+                for (int in = 0 ; in < vn.size(); in++)
+                {
+                CallslipNotes tn = (CallslipNotes) vn.elementAt(in);
+		nnote=tn.getNote();
+		ncallslip=tn.getCallslip();
+		nuserlogin=tn.getUserLogin();
+		nrecnum=tn.getRecNum();
+		ndate=tn.getNDate();
+		nservsync=tn.getServsync();
+                out.println("<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td>");
+		if ((nuserlogin.equalsIgnoreCase(username))&&(nservsync==0)) {
+			out.println("<td><a href="+classdir+"UniCash?action=deletenote&recnum="+nrecnum+"&custnum="+custnum+"&custsite="+custsite+"&sitenum="+sitenum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+action+">Delete</a></td>");
+		}
+			out.println("</tr>");
+                }
+
+		out.println("</table><a href="+classdir+"UniCash?action=addnote&custnum="+custnum+"&custsite="+custsite+"&sitenum="+sitenum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+action+">Add Notes to Callslip</a><br><br>");
+	
+	
+	
 	out.println("<h3>Equipment List</h3>");
         Vector v;
         v = UniEquip.getAllItems(con,custnum);
@@ -17729,6 +18044,8 @@ ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecn
 	{
 	crecnum=rs.getInt("crecnum");
 	callslip=rs.getString("callslip");
+	custsite=rs.getString("custsite");
+	sitenum=rs.getString("sitenum");
 	techid=rs.getString("techid");
 	cdate=rs.getString("cdate");
 	equip1=rs.getInt("equip1");
@@ -17741,7 +18058,33 @@ ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecn
 	rscheduled=rs.getString("rscheduled");
 	charges=rs.getString("charges");
 	collected=rs.getString("collected");
-	notes=rs.getString("notes");
+//	notes=rs.getString("notes");
+						notes="";		
+		Vector vcn;
+		vcn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
+		if (vcn.size() > 0 ) {
+		notes=combinestring(notes,"<table border=1 width=100%>");
+		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
+		String note="";
+		String ndate="";
+		String ncallslip="";
+		String nuserlogin="";
+		String nnote="";
+		int nrecnum=0;
+		int nservsync=0;
+                for (int icn = 0 ; icn < vcn.size(); icn++)
+                {
+                CallslipNotes tcn = (CallslipNotes) vcn.elementAt(icn);
+		nnote=tcn.getNote();
+		ncallslip=tcn.getCallslip();
+		nuserlogin=tcn.getUserLogin();
+		nrecnum=tcn.getRecNum();
+		ndate=tcn.getNDate();
+		nservsync=tcn.getServsync();
+                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		}
+			notes=combinestring(notes,"</table>");
+		}
 	parts = rs.getString("parts");
 	followup=rs.getInt("followup");
 }
@@ -18168,7 +18511,8 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 		String  ref_electrical=null;
 		String  ref_compamprated=null;
 		String  ref_compampactual=null;
-	
+		String custsite=null;
+		String sitenum=null;
 //////////////////////////////////////////////////////
 // Get Origional Call Information
 //////////////////////////////////////////////////////
@@ -18182,6 +18526,8 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
                 UniInspection t = (UniInspection) v.elementAt(i);
 		crecnum=t.getCrecnum();
 		custnum=t.getCustnum();
+		custsite=t.getCustSite();
+		sitenum=t.getSiteNum();
                 callslip=t.getCallslip();
                 idate=t.getIdate();
                 equip1=t.getEquip1();
@@ -18586,10 +18932,8 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 	out.println("<tr><td>Parts Needed</td><td>");
 	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+parts+"</textarea>");
 	out.println("</td></tr>");
-	out.println("<tr><td>Notes</td><td>");
-	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+notes+"</textarea>");
-	out.println("</td></tr>");
-
+	
+	
 	out.println("<tr><td>Add Follow-up</td><td>");
 	if (followup==0)
 		{
@@ -18601,6 +18945,45 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
 
 	out.println("</table>");
 
+	
+	//out.println("<tr><td>Notes</td><td>");
+	
+		out.println("<h3>Notes</h3>");
+
+	Vector vn;
+        vn = InspectNotes.getAllItems(con,custsite, sitenum, callslip);
+        out.println("<table border=1 width=100%>");
+        out.println("<th>Date</th><th>User</th><th>Note</th>");
+	String note="";
+	String ndate="";
+	String ncallslip="";
+	String nuserlogin="";
+	String nnote="";
+	int nrecnum=0;
+	int nservsync=0;
+		
+                for (int in = 0 ; in < vn.size(); in++)
+                {
+                InspectNotes tn = (InspectNotes) vn.elementAt(in);
+		nnote=tn.getNote();
+		ncallslip=tn.getCallslip();
+		nuserlogin=tn.getUserLogin();
+		nrecnum=tn.getRecNum();
+		ndate=tn.getNDate();
+		nservsync=tn.getServsync();
+                out.println("<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td>");
+		if ((nuserlogin.equalsIgnoreCase(username))&&(nservsync==0)) {
+			out.println("<td><a href="+classdir+"UniCash?action=deletenote&recnum="+nrecnum+"&custnum="+custnum+"&custsite="+custsite+"&sitenum="+sitenum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+action+">Delete</a></td>");
+		}
+			out.println("</tr>");
+                }
+
+		out.println("</table><a href="+classdir+"UniCash?action=addnote&custnum="+custnum+"&custsite="+custsite+"&sitenum="+sitenum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+action+">Add Notes to Callslip</a><br><br>");
+
+	//out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\">"+notes+"</textarea>");
+	//out.println("</td></tr></table>");
+
+	
 /////////////////////////////////////////////
 // Here is where the equipment section starts 
 /////////////////////////////////////////////
@@ -18690,6 +19073,9 @@ private void doEditInspection(HttpServletRequest req, HttpServletResponse res, P
                 }
 	out.println("</table><br><br><a href="+classdir+"UniCash?action=addchargemenu&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum+"&psource="+action+">Add Charges to Callslip</a>");
 	out.println("<br><br>");
+	
+	
+	
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Update\">");
 	out.println("<INPUT TYPE=\"reset\">");
 		con.close();
@@ -24720,6 +25106,8 @@ private void doFollowUpReport(HttpServletRequest req, HttpServletResponse res, P
         		String  charges=null;
         		String  collected=null;
         		String  notes=null;
+			String custsite=null;
+			String sitenum=null;
 			int crecnum=0;
 			String cname=null;
 			if (action.equalsIgnoreCase("showhomepage"))
@@ -24752,8 +25140,40 @@ private void doFollowUpReport(HttpServletRequest req, HttpServletResponse res, P
 				callslip=t.getCallslip();
 				custnum=t.getCustnum();
 				cdate=t.getCdate();
+				custsite=t.getCustSite();
+				sitenum=t.getSiteNum();
 				recommendations=t.getRecommendations();
-				notes=t.getNotes();
+				//notes=t.getNotes();
+				notes="";		
+		Vector vcn;
+		vcn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
+		if (vcn.size() > 0 ) {
+		notes=combinestring(notes,"<table border=0 width=100%>");
+		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
+		String note="";
+		String ndate="";
+		String ncallslip="";
+		String nuserlogin="";
+		String nnote="";
+		int nrecnum=0;
+		int nservsync=0;
+                for (int icn = 0 ; icn < vcn.size(); icn++)
+                {
+                CallslipNotes tcn = (CallslipNotes) vcn.elementAt(icn);
+		nnote=tcn.getNote();
+		ncallslip=tcn.getCallslip();
+		nuserlogin=tcn.getUserLogin();
+		nrecnum=tcn.getRecNum();
+		ndate=tcn.getNDate();
+		nservsync=tcn.getServsync();
+                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		}
+			notes=combinestring(notes,"</table>");
+		}
+		
+				
+				
+				
 				     Statement stmt = con.createStatement();
         				ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
 				                 while(rs.next())
@@ -24784,9 +25204,43 @@ private void doFollowUpReport(HttpServletRequest req, HttpServletResponse res, P
                        		crecnum=ti.getCrecnum();	
 				callslip=ti.getCallslip();
 				custnum=ti.getCustnum();
+				custsite=ti.getCustSite();
+				sitenum=ti.getSiteNum();
 				cdate=ti.getIdate();
 				recommendations=ti.getRecommendations();
-				notes=ti.getNotes();
+				//notes=ti.getNotes();
+				notes="";		
+		Vector vn;
+		vn = InspectNotes.getAllItems(con,custsite, sitenum, callslip);
+		if (vn.size() > 0 ) {
+		notes=combinestring(notes,"<table border=0 width=100%>");
+		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
+		String note="";
+		String ndate="";
+		String ncallslip="";
+		String nuserlogin="";
+		String nnote="";
+		int nrecnum=0;
+		int nservsync=0;
+                for (int in = 0 ; in < vn.size(); in++)
+                {
+                InspectNotes tn = (InspectNotes) vn.elementAt(in);
+		nnote=tn.getNote();
+		ncallslip=tn.getCallslip();
+		nuserlogin=tn.getUserLogin();
+		nrecnum=tn.getRecNum();
+		ndate=tn.getNDate();
+		nservsync=tn.getServsync();
+                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
+		}
+			notes=combinestring(notes,"</table>");
+		}
+		
+                
+		
+				
+				
+				
 				     Statement stmti = con.createStatement();
         				ResultSet rsi = stmti.executeQuery("SELECT * FROM customers where custnum="+custnum+"");
 				                 while(rsi.next())
@@ -25635,9 +26089,9 @@ private void doAddInspection(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("<tr><td>Parts Needed</td><td>");
 	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
 	out.println("</td></tr>");
-	out.println("<tr><td>Notes</td><td>");
-	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
-	out.println("</td></tr>");
+	//out.println("<tr><td>Notes</td><td>");
+	//out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
+	//out.println("</td></tr>");
 
 	out.println("<tr><td>Add Follow-up</td><td>");
 	out.println("<input type=\"checkbox\" name=\"followup\" value=1></td></tr>");
@@ -27393,9 +27847,9 @@ private void doAddCallslip(HttpServletRequest req, HttpServletResponse res, Prin
 	out.println("<tr><td>Parts Needed</td><td>");
 	out.println("<textarea name=\"parts\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
 	out.println("</td></tr>");
-	out.println("<tr><td>Notes</td><td>");
-	out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
-	out.println("</td></tr>");
+	//out.println("<tr><td>Notes</td><td>");
+	//out.println("<textarea name=\"notes\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea>");
+	//out.println("</td></tr>");
 
 	out.println("<tr><td>Add Follow-up</td><td>");
 	out.println("<input type=\"checkbox\" name=\"followup\" value=\"1\"></td></tr>");

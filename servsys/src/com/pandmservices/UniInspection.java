@@ -167,6 +167,8 @@ public class UniInspection
 		private String  ref_electrical=null;
 		private String  ref_compamprated=null;
 		private String  ref_compampactual=null;
+		private String custsite=null;
+		private String sitenum=null;
 		
 
         public UniInspection (Connection c, int crecnum)
@@ -181,6 +183,8 @@ public class UniInspection
 		this.crecnum = rs.getInt("crecnum");
 		this.custnum = rs.getInt("custnum");
 		this.callslip = rs.getString("callslip");
+		this.custsite=rs.getString("custsite");
+		this.sitenum=rs.getString("sitenum");
 		this.idate = rs.getString("idate");
 		this.equip1 = rs.getInt("equip1");
 		this.equip2 = rs.getInt("equip2");
@@ -452,8 +456,8 @@ public static void AddItem(Connection con, int custnum, String callslip, String 
 
 		public int getCrecnum()  { return crecnum ;}
 		public int getCustnum()  { return custnum ;}
-		public String getCustSite() { return CustSite;}
-		public String getSiteNum() { return SiteNum;}
+		public String getCustSite() { return custsite;}
+		public String getSiteNum() { return sitenum;}
 		public String getCallslip()  { return callslip ;}
 		public String getIdate()  { return idate ;}
 		public int getEquip1()  { return equip1 ;}
