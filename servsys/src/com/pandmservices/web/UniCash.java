@@ -1791,6 +1791,14 @@ out.println("</CENTER>");
 	                        {
                                 doAddCustomerEntry(req, res, out, session, username);
 	                        }
+			else if (action.equalsIgnoreCase("addcustomerserver"))
+			{
+				doAddCustomerServer(req,res,out,session,username);
+			}
+			else if (action.equalsIgnoreCase("searchcustserver"))
+			{
+				doSearchCustomerServer(req,res,out,session,username);
+			}
 			else if (action.equalsIgnoreCase("savetimeentry"))
 			{
 				doSaveTimeEntry(req, res, out, session, username);
@@ -8980,7 +8988,6 @@ private void doUpdateComplCode(HttpServletRequest req, HttpServletResponse res, 
 		out.println("<a href=\""+ classdir + "UniCash?action=showcatitems&catnum="+catnum+"&keyprefix="+keyprefix+"\">Return Item List</a>");
 			con.close();
         }
-
   private void doAddCustomerEntry(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
@@ -9052,11 +9059,188 @@ private void doUpdateComplCode(HttpServletRequest req, HttpServletResponse res, 
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
 	out.println("<INPUT TYPE=\"reset\">");
 	out.println("</CENTER>");
+	con.close();
+	}
+	
+  private void doSearchCustomerServer(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+		String custstart = req.getParameter("custstart");
+		String custstop = req.getParameter("custstop");
+		String reqsource = req.getParameter("reqsource");
+		String custsite=req.getParameter("custsite");
+		String remotecrecnum=null;
+		String sitenum=req.getParameter("sitenum");
+		String dbserver=doGetDbServer();
+			String dbpasswd=doGetDbPassword();
+			String dbuser=doGetDbUser();
+			String dbname=doGetDbName();
+			String thismainserver=doGetThisMainServer();
+			String protocol = (String) config.getInitParameter("db.protocol");
+			String subProtocol = (String) config.getInitParameter("db.subprotocol");
+			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);		
+
+// CHECK LOCAL MACHINE FOR CUSTOMER		
+		Vector vcl;
+                vcl = UniCustomer.getCustNumSite(con,custsite,sitenum);
+                	if (vcl.size()>0) {
+                				for (int icl = 0 ; icl < vcl.size(); icl++)
+                				{
+// CUSTOMER IS LOCAL
+                        			UniCustomer tcl = (UniCustomer) vcl.elementAt(icl);
+                				}
+                         		} else {
+			Vector vcs;
+			vcs = UniCustomer.getCustNumSite(conu,custsite,sitenum);
+			if (vcs.size()>0) {
+			for (int ics=0 ; ics< vcs.size(); ics++)
+			{
+			UniCustomer tcs = (UniCustomer) vcs.elementAt(ics);
+                  	String custtype = tcs.getCustType();
+			String custname=tcs.getCustomerName();
+			String address1=tcs.getAddress1();
+			String address2=tcs.getAddress2();
+			String city =tcs.getCity();
+			String state=tcs.getState();
+			String zip=tcs.getZip();
+			String homephone=tcs.getHomePhone();
+			String altphone=tcs.getAltPhone();
+			String custnotes=tcs.getCustomerNotes();
+			custsite=tcs.getCustSite();
+			sitenum=tcs.getSiteNum();
+			String cemail=tcs.getCEmail();
+			
+			
+				String tcustnotes="";
+				if (custnotes!=null) {
+				tcustnotes = custnotes.replaceAll("'","''");
+						}
+				String tcustname="";
+				if (custname!=null) {
+				tcustname = custname.replaceAll("'","''");
+						}
+				String tcaddress1="";
+				if (address1!=null) {
+				tcaddress1 = address1.replaceAll("'","''");
+						}
+				String tcaddress2="";
+				if (address2!=null) {
+				tcaddress2 = address2.replaceAll("'","''");
+						}
+			    UniCustomer.addCustomer(con, tcustname, tcaddress1, tcaddress2, city, state, zip, homephone, altphone, custnotes, cemail, custsite, sitenum, custtype);
+			    	int servsync=0;
+	int equipnum=0;
+	String brand="";
+	String modelnum="";
+	String serialnum="";
+	String filter="";
+	String enoutes="";
+	String type="";
+	String seer="";
+	String btuout="";
+	String notes="";
+	
+	int eremote = 0;
+	int esynced = 0;
+
+                Vector v;
+        	v = UniEquip.getCustomerItems(conu, custsite, sitenum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniEquip t = (UniEquip) v.elementAt(i);
+			servsync=t.getServSync();
+			equipnum=t.getId();
+			custsite=t.getCustSite();
+			sitenum=t.getSiteNum();
+			brand=t.getBrand();
+			modelnum=t.getModelnum();
+			serialnum=t.getSerialnum();
+			filter=t.getFilter();
+			notes=t.getNotes();
+			type=t.getEtype();
+			seer=t.getCSeer();
+			btuout=t.getBtuOut();
+			eremote++;
+			// Now we have remote - now let's check the local database for an exact match
+			// 
+			String tserialnum="";
+			if (serialnum!=null) {                                
+				tserialnum = serialnum.replaceAll("'","''");
+			}
+			Statement stmt = con.createStatement();
+			ResultSet rsu = stmt.executeQuery("SELECT enum  FROM equipment where brand='"+brand+"' and modelnum like '"+modelnum+"' and serialnum like '"+tserialnum+"' and notes like '"+notes+"' and etype='"+type+"' ORDER BY enum;");
+			if (!rsu.first()) {
+				//////////////////////////////////////////////
+				// Not on server - find customer number on localmachine
+				/////////////////////////////////////////////
+				Vector vc;
+				vc = UniCustomer.getCustNumSite(con,custsite,sitenum);
+				if (vc.size()>0) {
+					for (int ic = 0 ; ic < vc.size(); ic++)
+					{
+						UniCustomer tc = (UniCustomer) vc.elementAt(ic);
+						remotecrecnum = tc.getCusNum();
+					}
+					//////////////////////////////////////////////
+					// No Match - Add to local machine
+					/////////////////////////////////////////////
+					String tmodelnum="";
+					if (modelnum!=null) {
+						tmodelnum = modelnum.replaceAll("'","''");
+							}
+							String ttserialnum="";
+							if (serialnum!=null) {
+								ttserialnum = serialnum.replaceAll("'","''");
+							}
+							UniEquip.AddItem(con,Integer.parseInt(remotecrecnum),brand,tmodelnum,ttserialnum, filter, notes, type, seer, btuout, custsite, sitenum, 2);
+							esynced++;
+				}
+			}
+		}
+			    
+			    
+			    SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsite, sitenum);
+			    SyncCustInspection sli = new SyncCustInspection(con, conu, custsite, sitenum);
+			    out.println ("<br><br>Customer Added - Continue");
+                			}
+			} else {
+			// no server records found
+			out.println("<br><br>No server record found - Add customer manually <br><br>");
+			
+			}
+					}
+					
+	}
+
+  private void doAddCustomerServer(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+	String custstart = req.getParameter("custstart");
+	String custstop = req.getParameter("custstop");
+	String reqsource = req.getParameter("reqsource");
 
 
-
-
-			con.close();
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add Customer</title>");
+	out.println("</head>");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=searchcustserver&custstart="+custstart+"&custstop="+custstop+"&reqsource="+reqsource+"\" name=\"addcust\">");
+	out.println("<table><tr><td>");
+	out.println("Customer Number :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"custsite\" size=\"15\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Site Number :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"sitenum\" size=\"15\">");
+	out.println("</td></tr></table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+	
+	con.close();
 	}
 
 
@@ -12875,12 +13059,12 @@ if (serialnum!=null) {
 		}
 	}
 	}
-	SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsitenum, sitenum);
+		SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsitenum, sitenum);
 		out.println("<br>Number of pieces of equipment on server was: "+eremote+"<br>");
 		out.println("Number of pieces of equipment synced to laptop was: "+esynced+"<br>");
 		out.println("Missing Callslips are now downloaded<br>");
                 out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
-	out.println("</html>");
+		out.println("</html>");
 	}
 
 private void doDownloadEquipment(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -12924,63 +13108,60 @@ private void doDownloadEquipment(HttpServletRequest req, HttpServletResponse res
                 for (int i = 0 ; i < v.size(); i++)
                 {
                        	UniEquip t = (UniEquip) v.elementAt(i);
-			
-		servsync=t.getServSync();
-		equipnum=t.getId();
-		custsitenum=t.getCustSite();
-		sitenum=t.getSiteNum();
-		brand=t.getBrand();
-		modelnum=t.getModelnum();
-		serialnum=t.getSerialnum();
-		filter=t.getFilter();
-		notes=t.getNotes();
-		type=t.getEtype();
-		seer=t.getCSeer();
-		btuout=t.getBtuOut();
-		eremote++;
-// Now we have remote - now let's check the local database for an exact match
-// 
-
-String tserialnum="";
-if (serialnum!=null) {                                
-	tserialnum = serialnum.replaceAll("'","''");
-                    }
-		Statement stmt = con.createStatement();
-		ResultSet rsu = stmt.executeQuery("SELECT enum  FROM equipment where brand='"+brand+"' and modelnum like '"+modelnum+"' and serialnum like '"+tserialnum+"' and notes like '"+notes+"' and etype='"+type+"' ORDER BY enum;");
-		if (!rsu.first()) {
-//////////////////////////////////////////////
-// Not on server - find customer number on localmachine
-/////////////////////////////////////////////
-
-	Vector vc;
-	vc = UniCustomer.getCustNumSite(con,custsitenum,sitenum);
-	if (vc.size()>0) {
-		for (int ic = 0 ; ic < vc.size(); ic++)
-		{
-		UniCustomer tc = (UniCustomer) vc.elementAt(ic);
-		remotecrecnum = tc.getCusNum();
+			servsync=t.getServSync();
+			equipnum=t.getId();
+			custsitenum=t.getCustSite();
+			sitenum=t.getSiteNum();
+			brand=t.getBrand();
+			modelnum=t.getModelnum();
+			serialnum=t.getSerialnum();
+			filter=t.getFilter();
+			notes=t.getNotes();
+			type=t.getEtype();
+			seer=t.getCSeer();
+			btuout=t.getBtuOut();
+			eremote++;
+			// Now we have remote - now let's check the local database for an exact match
+			// 
+			String tserialnum="";
+			if (serialnum!=null) {                                
+				tserialnum = serialnum.replaceAll("'","''");
+			}
+			Statement stmt = con.createStatement();
+			ResultSet rsu = stmt.executeQuery("SELECT enum  FROM equipment where brand='"+brand+"' and modelnum like '"+modelnum+"' and serialnum like '"+tserialnum+"' and notes like '"+notes+"' and etype='"+type+"' ORDER BY enum;");
+			if (!rsu.first()) {
+				//////////////////////////////////////////////
+				// Not on server - find customer number on localmachine
+				/////////////////////////////////////////////
+				Vector vc;
+				vc = UniCustomer.getCustNumSite(con,custsitenum,sitenum);
+				if (vc.size()>0) {
+					for (int ic = 0 ; ic < vc.size(); ic++)
+					{
+						UniCustomer tc = (UniCustomer) vc.elementAt(ic);
+						remotecrecnum = tc.getCusNum();
+					}
+					//////////////////////////////////////////////
+					// No Match - Add to local machine
+					/////////////////////////////////////////////
+					String tmodelnum="";
+					if (modelnum!=null) {
+						tmodelnum = modelnum.replaceAll("'","''");
+							}
+							String ttserialnum="";
+							if (serialnum!=null) {
+								ttserialnum = serialnum.replaceAll("'","''");
+							}
+							UniEquip.AddItem(con,Integer.parseInt(remotecrecnum),brand,tmodelnum,ttserialnum, filter, notes, type, seer, btuout, custsitenum, sitenum, 2);
+							esynced++;
+				}
+			}
 		}
-//////////////////////////////////////////////
-// No Match - Add to local machine
-/////////////////////////////////////////////
-				String tmodelnum="";
-				if (modelnum!=null) {
-				tmodelnum = modelnum.replaceAll("'","''");
-						}
-				String ttserialnum="";
-				if (serialnum!=null) {
-				ttserialnum = serialnum.replaceAll("'","''");
-						}
-		UniEquip.AddItem(con,Integer.parseInt(remotecrecnum),brand,tmodelnum,ttserialnum, filter, notes, type, seer, btuout, custsitenum, sitenum, 2);
-		esynced++;
-		}
-	}
-	}
 		out.println("<br>Number of pieces of equipment on server was: "+eremote+"<br>");
 		out.println("Number of pieces of equipment synced to laptop was: "+esynced+"<br>");
                 out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&custnum="+custnum+">Click here to continue</a>");
-	out.println("</html>");
-	}
+		out.println("</html>");
+		}
 
 private void doUploadCallslipDaily(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
@@ -15674,7 +15855,8 @@ mbody=null;
 		out.println("<title>Select Customer</title>");
 		out.println("</head>");
 		out.println("<BODY TEXT=#000000 LINK=#0000ff VLINK=#000080 BGCOLOR=#ffffff> ");
-		out.println("<a href="+classdir+"UniCash?action=addcustomer&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Add a Customer</a>");
+		out.println("<a href="+classdir+"UniCash?action=addcustomer&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Add a Customer</a><br>");
+		out.println("<a href="+classdir+"UniCash?action=addcustomerserver&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Add a Customer From Server</a>");
 		out.println("<table border=0 width=100%>");
 		out.println("<th>Name</th><th>Address</th><th>City</th><th>State</th>");
 
@@ -15713,7 +15895,8 @@ mbody=null;
                 out.println("</table>");
 		out.println("</table>");
 		out.println("<P><P>");
-		out.println("<a href="+classdir+"UniCash?action=addcustomer&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Add a Customer</a>");
+		out.println("<a href="+classdir+"UniCash?action=addcustomer&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Add a Customer</a><br>");
+		out.println("<a href="+classdir+"UniCash?action=addcustomerserver&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Add a Customer From Server</a>");
 		con.close();
 	}
 

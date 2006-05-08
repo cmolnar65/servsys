@@ -23,6 +23,8 @@ RELEASE 2.25
 (N) Added printing and emailing for inspection and callslip notes.
 (N) Added delete for inspection and callslip notes.
 (C) Fixed follow-up report for inspection and callslip notes.
+(N) Now add customer from server using Sitenum and Custnum.
+(N) Once site added from server download equipment and inspections.
 
 =================================================================
 RELEASE 2.24
