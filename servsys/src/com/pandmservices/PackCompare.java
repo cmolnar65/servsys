@@ -138,6 +138,14 @@ public static void UpdateItem(Connection con, String recnum, String description,
 		stmt.executeUpdate("Delete From packcompare Where recnum='" + x + "';");
 	}
 
+		public static void deleteAllItems(Connection con, String custsite, String sitenum)
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("Delete From packcompare Where custsitenum='" + custsite + "' and sitenum='"+sitenum+"';");
+	}
+
+	
 public static void AddItem(Connection con, String description, String best1, String best2, String best3, String best4, String best5, String better1, String better2, String better3, String better4, String better5, String good1, String good2, String good3, String good4, String good5, String username, String custsitenum, String sitenum, String packdate, String desc1, String desc2, String desc3, String best6, String best7, String best8, String better6, String better7, String better8, String good6, String good7, String good8)
                 throws SQLException
 		        {

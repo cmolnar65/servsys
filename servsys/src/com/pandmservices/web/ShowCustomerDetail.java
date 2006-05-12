@@ -6,6 +6,7 @@ import java.lang.String;
 import java.sql.*;
 import com.pandmservices.core.*;
 import com.pandmservices.web.*;
+import com.pandmservices.dbserver.*;
 import com.pandmservices.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -29,7 +30,7 @@ import java.sql.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-public class ShowCustomerDetail
+public class ShowCustomerDetail extends UniCash
 {
 	public static String getIndividualItem (Connection con, HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username, String classdir, String tcustnum, String custstart, String custstop, String action, String csection)
 	throws SQLException, TodoException, Exception
@@ -175,6 +176,21 @@ public class ShowCustomerDetail
 	
 	out.println("</td></tr>");
 	out.println("</table>");
+	
+	String thismaindbserver="";
+                Vector vd;
+                vd = UniDbServer.getAllItems(con);
+               
+		String dbserver = null;
+                for (int i = 0 ; i < vd.size(); i++)
+                {
+                        UniDbServer t = (UniDbServer) vd.elementAt(i);
+                        thismaindbserver = t.getThisMainServer();
+                }
+        
+			if (thismaindbserver.equalsIgnoreCase("yes")) {
+               out.println("<a href="+classdir+"UniCash?action=unlockcustomer&custsite="+custsite+"&sitenum="+sitenum+"&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Unlock Customer for Laptops</a><br>");
+		}
 	
 	out.println("<br>");
 	out.println("<a href="+classdir+"UniCash?action=editcustomer&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"&reqsource=UniCash>Edit Customer Info</a><br>");
@@ -665,6 +681,8 @@ public static Date getDate( String token ) {
               }
 	return visited;
       }
+
+
 
 //		public String getAgreement() { return mbody; }
 

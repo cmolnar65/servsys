@@ -91,6 +91,14 @@ public class CallslipNotes
 		stmt.executeUpdate("Delete From callnotes Where recnum='" + x + "';");
 	}
 
+		public static void deleteAllCustSiteItems(Connection con, String custsite, String sitenum)
+		throws SQLException
+	{
+		
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("Delete From callnotes Where custnum='" + custsite + "' and sitenum='"+sitenum+"';");
+	}
+	
 
        public int getServsync() { return servsync; }
 	public String getUserLogin() { return userlogin; }

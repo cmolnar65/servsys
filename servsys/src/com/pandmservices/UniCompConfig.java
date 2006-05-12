@@ -23,6 +23,8 @@ public class UniCompConfig
 	private String yearenddate;
 	private String enabcustomer;
 	private String reportemail;
+	private String laptopretentiontime;
+	private String nocustonlaptop;
 
         public UniCompConfig (Connection c, String image)
 		throws SQLException, TodoException
@@ -45,6 +47,8 @@ public class UniCompConfig
 		this.yearenddate=rs.getString("yearenddate");
 		this.enabcustomer=rs.getString("enabcustomer");
 		this.reportemail=rs.getString("reportemail");
+		this.laptopretentiontime=rs.getString("laptopretentiontime");
+		this.nocustonlaptop=rs.getString("nocustonlaptop");
 	}
 
 
@@ -64,11 +68,11 @@ public class UniCompConfig
 	}
 
 
-	public static void UpdateItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail, String yearenddate)
+	public static void UpdateItem(Connection con, String image, String imagewidth, String imagehight, String coname, String cologo, String coaddress, String cophone, String useletterhead, String enabcustomer, String reportemail, String yearenddate, String laptopretentiontime, String nocustonlaptop)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update configcompany Set image='" +image+ "' ,imagehight='"+imagehight+"' , imagewidth='"+imagewidth+"', coname='"+coname+"', cologo='"+cologo+"',coaddress='"+coaddress+"',cophone='"+cophone+"', useletterhead='"+useletterhead+"', enabcustomer='"+enabcustomer+"', reportemail='"+reportemail+"', yearenddate='"+yearenddate+"';");
+      		stmt.executeUpdate("Update configcompany Set image='" +image+ "' ,imagehight='"+imagehight+"' , imagewidth='"+imagewidth+"', coname='"+coname+"', cologo='"+cologo+"',coaddress='"+coaddress+"',cophone='"+cophone+"', useletterhead='"+useletterhead+"', enabcustomer='"+enabcustomer+"', reportemail='"+reportemail+"', yearenddate='"+yearenddate+"', laptopretentiontime='"+laptopretentiontime+"', nocustonlaptop='"+nocustonlaptop+"';");
       	}
 
 
@@ -93,4 +97,7 @@ public class UniCompConfig
         public String getYearEndDate() { return yearenddate; }
 	public String getEnabCustomer() { return enabcustomer; }
 	public String getReportEmail() { return reportemail; }
+	public String getLaptopRetentionTime() { return laptopretentiontime; }
+	public String getNoCustOnLaptop() { return nocustonlaptop; }
+	
 }

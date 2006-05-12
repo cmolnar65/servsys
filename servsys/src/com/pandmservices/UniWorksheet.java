@@ -112,7 +112,22 @@ public class UniWorksheet
 		stmt.executeUpdate("Delete From worksheet Where wsrec=" + x + ";");
 		stmt.executeUpdate("Delete From wsitem Where wsrec=" + x + ";");
 	}
-	  
+	
+		public static void deleteAllCustItems(Connection con, String custsite, String sitenum)
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("Delete From worksheet Where custsite=" + custsite + " and sitenum='"+sitenum+"';");
+		stmt.executeUpdate("Delete From wsitem Where custsite=" + custsite + " and sitenum='"+sitenum+"';");
+	}
+	
+		public static void deleteAllNoCustSite(Connection con)
+		throws SQLException
+	{
+		Statement stmt = con.createStatement();
+		stmt.executeUpdate("Delete From worksheet Where custsite=NULL and sitenum=NULL;");
+		stmt.executeUpdate("Delete From wsitem Where custsite=NULL and sitenum=NULL;");
+	}
 
 	public static void UpdateItem(Connection con, int wsrec, int crec, String wsdate, String wsdescription, String wsmult)
 		throws SQLException

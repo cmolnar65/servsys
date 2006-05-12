@@ -356,6 +356,20 @@ public class UniInspection
 		}
 		return V;
 	}
+	public static Vector getCustInspectionFollowup(Connection c, String custsite, String sitenum)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT crecnum  FROM inspection where followup=1 and custsite='"+custsite+"' and sitenum='"+sitenum+"' order by idate ");
+		while(rs.next())
+		{
+			
+			UniInspection t = new UniInspection(c,rs.getInt("crecnum"));
+			V.addElement(t);
+		}
+		return V;
+	}
 
 
 	public static Vector getAllItems(Connection c, int custnum)
@@ -454,6 +468,15 @@ public static void AddItem(Connection con, int custnum, String callslip, String 
                 stmt.executeUpdate("Delete From inspection  Where crecnum=" + x + ";");
         }
 
+	
+	        public static void deleteCustItems(Connection con, int d)
+                throws SQLException
+        {
+                
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From inspection  Where custnum=" + d + ";");
+        }
+	
 		public int getCrecnum()  { return crecnum ;}
 		public int getCustnum()  { return custnum ;}
 		public String getCustSite() { return custsite;}

@@ -93,6 +93,21 @@ public class UniCallslip
 		return V;
 	}
 
+		public static Vector getFollowupItems(Connection c, String custsite, String sitenum)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT crecnum  FROM callslip where custsite='"+custsite+"' and sitenum='"+sitenum+"' and followup=1 ORDER BY cdate;");
+		while(rs.next())
+		{
+			UniCallslip t = new UniCallslip(c,rs.getInt("crecnum"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
+	
         public static void deleteItem(Connection con, String d)
                 throws SQLException
         {
@@ -101,7 +116,14 @@ public class UniCallslip
                 stmt.executeUpdate("Delete From callslip  Where crecnum=" + x + ";");
         }
 
-
+        public static void deleteCustItems(Connection con, int custnum)
+                throws SQLException
+        {
+                
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From callslip  Where custnum=" + custnum + ";");
+        }
+	
 	public static Vector getIncludedDateItems(Connection c, String startdate, String enddate)
 		throws SQLException, TodoException
 	{	

@@ -163,7 +163,16 @@ public static void UpdateItem(Connection con, String recnum, String CustSite, St
 		Statement stmt = con.createStatement();
 		stmt.executeUpdate("Delete From heatloads Where recnum='" + x + "';");
 	}
-
+	
+        public static void deleteCustItems(Connection con, String custsite, String sitenum)
+                throws SQLException
+        {
+                
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From heatloads  Where custsitenum='" + custsite + "' and sitenum='"+sitenum+"';");
+        }
+	
+	
 public static void AddItem(Connection con, String CustSite, String SiteNum, String LoadDate, String ceilingsqft, String wallsqft, String nwinsqft, String swinsqft, String ewinsqft, String wwinsqft, String nsldoorsqft, String ssldoorsqft, String esldoorsqft, String wsldoorsqft, String doorsqft, String totglasssqft, String nframewall, String nmasawall, String nmasbwall, String basfloorsqft, String slabnoperim, String slabwperim, String flooruncond, String mechvent, String numpeople, String ceiltype, String walltype, String nwintype, String swintype, String ewintype, String wwintype, String nsldoortype, String ssldoortype, String esldoortype, String wsldoortype, String doortype, String nframewalltype, String nmasawalltype, String nmasbwalltype, String slabnoperimtype, String slabwperimtype, String flooruncondtype, String bldlength, String bldwidth, String bldheight)
                 throws SQLException
 		        {

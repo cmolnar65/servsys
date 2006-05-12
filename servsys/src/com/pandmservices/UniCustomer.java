@@ -104,14 +104,29 @@ public class UniCustomer
 		}
 		return V;
 	}
-
-
+	
 	public static Vector getNoSiteNum(Connection c)
 		throws SQLException, TodoException
 	{	
 		Vector V = new Vector();
 		Statement stmt = c.createStatement();
 		ResultSet rs = stmt.executeQuery("select * from customers where sitenum='' or sitenum=NULL or custsite='' or custsite=NULL order by cname;");
+		while(rs.next())
+		{
+			UniCustomer t = new UniCustomer(c,rs.getInt("custnum"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
+
+	
+	public static Vector getAllItems(Connection c)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("select * from customers order by custnum;");
 		while(rs.next())
 		{
 			UniCustomer t = new UniCustomer(c,rs.getInt("custnum"));
@@ -240,12 +255,11 @@ public class UniCustomer
 	}
 
 
-	public static void deleteItem(Connection con, String d)
+	public static void deleteItem(Connection con, int x)
 		throws SQLException
 	{
-		int x = Integer.parseInt(d);
 		Statement stmt = con.createStatement();
-		stmt.executeUpdate("Delete From Todo Where ID=" + x + ";");
+		stmt.executeUpdate("Delete From customers Where custnum=" + x + ";");
 	}
 	  
 
@@ -253,7 +267,7 @@ public class UniCustomer
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update customer Set servsync=1 Where custnum=" + id + ";");
+      		stmt.executeUpdate("Update customers Set servsync=1 Where custnum=" + id + ";");
       	}
 
 	public static void UpdateItem(Connection con, int custnum, String cname, String address1, String address2, String city, String state, String zip, String homephone, String altphone, String cust_notes, String cemail, String custsite, String sitenum, String custtype)

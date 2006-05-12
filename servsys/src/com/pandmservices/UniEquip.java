@@ -111,7 +111,15 @@ public class UniEquip
 		stmt.executeUpdate("Delete From equipment Where enum=" + x + ";");
 	}
 	  
-
+	
+	        public static void deleteCustItems(Connection con, int d)
+                throws SQLException
+        {
+                
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From equipment Where custnum=" + d + ";");
+        }
+	
 	public static void UpdateItem(Connection con, int id, int custnum, String brand, String modelnum, String serialnum, String filter, String notes, String etype, String cseer, String btuout, String custsite, String sitenum, int servsync)
 		throws SQLException
 	{

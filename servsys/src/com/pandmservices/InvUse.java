@@ -119,7 +119,14 @@ public static void deleteItem(Connection con, int transnum)
                 stmt.executeUpdate("Delete From inv_use Where recnum =" + transnum + ";");
         }
 
+public static void deleteAllItems(Connection con, String callslip)
+                throws SQLException
+        {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From inv_use Where callslip ='" + callslip + "';");
+	}
 
+	
         public int getTransnum() { return recnum; }
         public int getItemnum() { return recnum; }
 	public int getServSync() { return servsync; }

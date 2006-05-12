@@ -1791,6 +1791,18 @@ out.println("</CENTER>");
 	                        {
                                 doAddCustomerEntry(req, res, out, session, username);
 	                        }
+			else if (action.equalsIgnoreCase("unlockcustomer"))
+	                        {
+                                doAddCustomerUnlock(req, res, out, session, username);
+	                        }
+			else if (action.equalsIgnoreCase("savecustunlock"))
+	                        {
+                                doSaveCustUnlock(req, res, out, session, username);
+	                        }
+				else if (action.equalsIgnoreCase("runcustunlock"))
+	                        {
+                                doUpdateLocalCustUnlock(req, res, out, session, username);
+	                        }
 			else if (action.equalsIgnoreCase("addcustomerserver"))
 			{
 				doAddCustomerServer(req,res,out,session,username);
@@ -3827,8 +3839,12 @@ private void doUpdateCompInfo(HttpServletRequest req, HttpServletResponse res, P
 		String useletterhead = req.getParameter("useletterhead");
 		String reportemail = req.getParameter("reportemail");
 		String yearenddate = req.getParameter("yearenddate");
-                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail,  doFormatDateDb(getDateDb(yearenddate)));
-                out.println("Your item has been updated in the database<br>");
+		String laptopretentiontime=req.getParameter("laptopretentiontime");
+		String nocustonlaptop=req.getParameter("nocustonlaptop");
+		
+                UniCompConfig.UpdateItem(con, imagename, imagewidth, imagehight, compname, complogo, compaddress, compphone, useletterhead, enabcustomer, reportemail,  doFormatDateDb(getDateDb(yearenddate)), laptopretentiontime, nocustonlaptop);
+                
+		out.println("Your item has been updated in the database<br>");
                 res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
 		con.close();
             }
@@ -4474,6 +4490,8 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 		String enabcustomer=null;
 		String reportemail=null;
 		String yearenddate=null;
+		String laptopretentiontime=null;
+		String nocustonlaptop=null;
                 Vector v;
                 v = UniCompConfig.getAllItems(con);
 		int counter=0;
@@ -4491,6 +4509,8 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 			enabcustomer=t.getEnabCustomer();
 			reportemail=t.getReportEmail();
 			yearenddate=t.getYearEndDate();
+			laptopretentiontime=t.getLaptopRetentionTime();
+			nocustonlaptop=t.getNoCustOnLaptop();
 		}
 
 	out.println("<html>");
@@ -4510,6 +4530,14 @@ private void doEditCompInfo(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("Image Height  :");
 	out.println("</td><td>");
 	out.println("<input type=\"text\" name=\"imagehight\" size=\"40\" value=\""+imagehight +"\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Customers on Laptops (yes or no):");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"nocustonlaptop\" size=\"40\" value=\""+nocustonlaptop+"\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Laptop Retention Time  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"laptopretentiontime\" size=\"40\" value=\""+laptopretentiontime+"\">");
 	out.println("</td></tr><tr><td>");
 	out.println("Report Email Address  :");
 	out.println("</td><td>");
@@ -5558,7 +5586,7 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
         }
 
 
-	public String doGetDbServer()
+	public static String doGetDbServer()
         throws Exception
         {
                 Vector v;
@@ -5774,7 +5802,14 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.25";
+			vnumber = "2.26";
+						if (dbvnumber.equalsIgnoreCase("2.25")) {
+			Statement stmtu2 = con.createStatement();
+			int result225a1 = stmtu2.executeUpdate("drop table if exists locktable;");
+			int result225a2 = stmtu2.executeUpdate("create table locktable (recnum int(11) NOT NULL auto_increment,userlogin text, custnum text, sitenum text, callslip text, ndate date, expiredate date,PRIMARY KEY  (recnum), UNIQUE KEY recnum (recnum));");
+							int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.26';");
+						int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-11';");
+						}
 			if (dbvnumber.equalsIgnoreCase("2.24")) {
 			Statement stmtu2 = con.createStatement();
 			int result225a1 = stmtu2.executeUpdate("drop table if exists callnotes;");
@@ -6045,18 +6080,12 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
 		}
 		return compname;
 	}
- 
-	public static String doGetCompanyReportEmail()
+
+	
+	public static int doGetCompanyLaptopRetention()
 	throws Exception
 	{
-		String imagename=null;
-		String imagewidth=null;
-		String imagehight=null;
-		String compname=null;
-		String complogo=null;
-		String compaddress=null;
-		String compphone=null;
-		String enabcustomer=null;
+		//String laptopretentiontime=null;
 		String reportemail=null;
                 Vector v;
                 v = UniCompConfig.getAllItems(con);
@@ -6064,19 +6093,48 @@ int result215d=stmtu2.executeUpdate("CREATE TABLE custformparts (recnum int(11) 
                 for (int i = 0 ; i < v.size(); i++)
                 {
                        	UniCompConfig t = (UniCompConfig) v.elementAt(i);
-			imagename=t.getImage();
-			imagewidth=t.getImageWidth();
-			imagehight=t.getImageHight();
-			compname=t.getCoName();
-			complogo=t.getCoLogo();
-			compaddress=t.getCoAddress();
-			compphone=t.getCoPhone();
-			enabcustomer = t.getEnabCustomer();
-			reportemail=t.getReportEmail();
+			
+			reportemail=t.getLaptopRetentionTime();
 		}
-		return reportemail;
+		int laptopretentiontime=Integer.parseInt(reportemail);
+		return laptopretentiontime;
 	}
-         	
+
+		
+	public static String doGetCompanyReportEmail()
+	throws Exception
+	{
+		String custonlaptop=null;
+                Vector v;
+                v = UniCompConfig.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniCompConfig t = (UniCompConfig) v.elementAt(i);
+			
+			custonlaptop=t.getReportEmail();
+		}
+		
+		return custonlaptop;
+	}
+
+	
+	public static String doGetCompanyCustOnLaptop()
+	throws Exception
+	{
+		String custonlaptop=null;
+                Vector v;
+                v = UniCompConfig.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniCompConfig t = (UniCompConfig) v.elementAt(i);
+			
+			custonlaptop=t.getNoCustOnLaptop();
+		}
+		
+		return custonlaptop;
+	}
 
 	public String doVersionInfo_VDate()
         throws Exception
@@ -9244,6 +9302,370 @@ private void doUpdateComplCode(HttpServletRequest req, HttpServletResponse res, 
 	}
 
 
+  private void doAddCustomerUnlock(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+	String custnum = req.getParameter("custnum");
+	String custsite = req.getParameter("custsite");
+	String sitenum = req.getParameter("sitenum");
+
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add Customer Unlock</title>");
+	out.println("</head>");
+	Format formatter;
+	Date texpiredate;
+	Date tunlockdate;
+	String expiredate="";
+	String unlockdate="";
+	Calendar calendar = Calendar.getInstance();
+	tunlockdate=calendar.getTime();
+	calendar.add(Calendar.DATE,doGetCompanyLaptopRetention());
+	texpiredate=calendar.getTime();
+
+	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+	formatter = new SimpleDateFormat("yyyy-MM-dd");
+	expiredate = formatter.format(texpiredate);
+	unlockdate = formatter.format(tunlockdate);
+	out.println("Unlock Date: "+unlockdate+"<br>");
+	out.println("Expire Date: "+expiredate+"<br>");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=savecustunlock\" name=\"addcust\">");
+	out.println("<table><tr><td>");
+	out.println("Callslip :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"callslip\" size=\"15\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Tech ID :");
+	out.println("</td>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
+                Vector vp = UniTechInfo.getAllItems(con);
+		out.println("<option value=\"-\">-</option>");
+                for (int i = 0 ; i < vp.size(); i++)
+                {
+                UniTechInfo t = (UniTechInfo) vp.elementAt(i);
+		out.println("<option value="+t.getUserName()+">"+t.getUserName()+"</option>");
+		}
+		out.println("</select></td></tr>");
+	
+	out.println("</table>");
+	out.println("<input type=\"hidden\" name=\"custsite\" value=\""+custsite+"\">");
+	out.println("<input type=\"hidden\" name=\"sitenum\" value=\""+sitenum+"\">");
+	out.println("<input type=\"hidden\" name=\"custnum\" value=\""+custnum+"\">");
+	out.println("<input type=\"hidden\" name=\"expiredate\" value=\""+expiredate+"\">");
+	out.println("<input type=\"hidden\" name=\"unlockdate\" value=\""+unlockdate+"\">");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+	con.close();
+	}
+
+ private void doSaveCustUnlock(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+	String custnum = req.getParameter("custnum");
+	String custsite = req.getParameter("custsite");
+	String sitenum = req.getParameter("sitenum");
+	String callslip = req.getParameter("callslip");
+	String techid=req.getParameter("techid");
+	String expiredate=req.getParameter("expiredate");
+	String unlockdate=req.getParameter("unlockdate");
+
+	//Format formatter;
+	//Date texpiredate;
+	//Date tunlockdate;
+	//String expiredate="";
+	//String unlockdate="";
+	//Calendar calendar = Calendar.getInstance();
+	//tunlockdate=calendar.getTime();
+	//calendar.add(Calendar.DATE,2);
+	//texpiredate=calendar.getTime();
+
+	//SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+	//formatter = new SimpleDateFormat("yyyy-MM-dd");
+	//expiredate = doFormatDate(texpiredate);
+	//unlockdate = doFormatDate(tunlockdate);
+	
+	CustUnlock.AddItem(con, username, custsite, sitenum, callslip, unlockdate, expiredate);
+	//out.println("
+	con.close();
+	res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=1&custnum="+custnum+"");
+	}
+	
+ private void doUpdateLocalCustUnlock(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+	Format formatter;
+	Date texpiredate;
+	Date tunlockdate;
+	String expiredate="";
+	String unlockdate="";
+	String todaydate="";
+	Calendar calendar = Calendar.getInstance();
+	tunlockdate=calendar.getTime();
+	calendar.add(Calendar.DATE,doGetCompanyLaptopRetention());
+	texpiredate=calendar.getTime();
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String localdate=null;
+	String remotedate=null;
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
+	
+	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+	formatter = new SimpleDateFormat("yyyy-MM-dd");
+	
+	todaydate = formatter.format(tunlockdate);
+	CustUnlock.CustUnlockDownloadInfo(con, conu, username, todaydate);
+	out.println ("Customer Lock Table is now Downloaded and Updated.<br>Next comes the delete all customers without customer numbers.<br>");
+	
+	//Add IF statement here to make sure this is NEVER run on main server.
+	
+	//In this spot make sure we add a IF statement based on user record to allow some users to save the database on the laptops.
+	
+	//Now select customers from local base without customer numbers.
+	
+	     Vector v;
+                v = UniCustomer.getNoSiteNum(con);
+                int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+                        int crecnum  = Integer.parseInt(t.getCusNum());
+			String sitenum=t.getSiteNum();
+			String custsite=t.getCustSite();
+			counter++;
+	// Select all callslip - delete inventory and charges and completion codes from each.
+		
+		CustUnlock.deleteCustomerInfo(con, custsite, sitenum, crecnum);
+		}
+	out.println(counter+" Customer's Deleted because of no customer number<br>");
+	
+	out.println("Now Select All Customers and delete those not in unlock list<br>");
+	
+	        v = UniCustomer.getAllItems(con);
+                counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+                        int crecnum  = Integer.parseInt(t.getCusNum());
+			String sitenum=t.getSiteNum();
+			String custsite=t.getCustSite();
+			counter++;
+	
+			// check unlock list
+			
+		Vector vl;
+		vl = CustUnlock.getSingleItem(con, custsite, sitenum);
+		if (vl.size()==0) {
+			// here is anything that does not appear in unlock list.
+			// now check for follow-ups in callslips and inspections.
+			Vector vcf;
+			vcf=UniCallslip.getFollowupItems(con, custsite, sitenum);
+			
+			Vector vci;
+			vci=UniInspection.getCustInspectionFollowup(con, custsite, sitenum);
+			
+			if ((vcf.size()==0) && (vci.size()==0))	
+			{
+			// record deleted - not in lock
+			//out.println("Record with custsite of "+custsite+" and sitenum of "+sitenum+" has been deleted from database.<br>");
+	
+	     Vector v2;
+                v2 = UniCustomer.getCustNumSite(con, custsite, sitenum);
+                int counter2=0;
+                for (int i2 = 0 ; i2 < v2.size(); i2++)
+                {
+                        UniCustomer t2 = (UniCustomer) v2.elementAt(i2);
+                        int crecnum2  = Integer.parseInt(t2.getCusNum());
+			sitenum=t2.getSiteNum();
+			custsite=t2.getCustSite();
+			counter2++;
+
+	CustUnlock.deleteCustomerInfo(con, custsite, sitenum, crecnum2);
+
+	}
+
+			
+			} else {
+			// record saved - some followup exists	
+			out.println("Record with custsite of "+custsite+" and sitenum of "+sitenum+" has been saved = followup present.<br>");
+			}
+		} else {
+		// Unlock record exists
+		out.println("Record with custsite of "+custsite+" and sitenum of "+sitenum+" has been saved = Unlock Record present.<br>");
+		
+		}
+		}		
+	
+	
+	
+	out.println("Now need to download customers that are on the unlocktable and not on local machine.<br>");
+String remotecrecnum="";
+		Vector vl;
+		vl = CustUnlock.getAllItems(con);
+		for (int i4 = 0; i4 < vl.size(); i4++)
+		{
+		CustUnlock t3 = (CustUnlock) vl.elementAt(i4);
+		String custsite=t3.getCustNum();
+		String sitenum=t3.getSiteNum();
+		
+		Vector vc;
+		vc=UniCustomer.getCustNumSite(con, custsite, sitenum);
+		if (vc.size()==0) {
+		// get server information here - customer not on local database
+
+			Vector vcs;
+			vcs = UniCustomer.getCustNumSite(conu,custsite,sitenum);
+			if (vcs.size()>0) {
+			for (int ics=0 ; ics< vcs.size(); ics++)
+			{
+			UniCustomer tcs = (UniCustomer) vcs.elementAt(ics);
+                  	String custtype = tcs.getCustType();
+			String custname=tcs.getCustomerName();
+			String address1=tcs.getAddress1();
+			String address2=tcs.getAddress2();
+			String city =tcs.getCity();
+			String state=tcs.getState();
+			String zip=tcs.getZip();
+			String homephone=tcs.getHomePhone();
+			String altphone=tcs.getAltPhone();
+			String custnotes=tcs.getCustomerNotes();
+			custsite=tcs.getCustSite();
+			sitenum=tcs.getSiteNum();
+			String cemail=tcs.getCEmail();
+			
+			
+				String tcustnotes="";
+				if (custnotes!=null) {
+				tcustnotes = custnotes.replaceAll("'","''");
+						}
+				String tcustname="";
+				if (custname!=null) {
+				tcustname = custname.replaceAll("'","''");
+						}
+				String tcaddress1="";
+				if (address1!=null) {
+				tcaddress1 = address1.replaceAll("'","''");
+						}
+				String tcaddress2="";
+				if (address2!=null) {
+				tcaddress2 = address2.replaceAll("'","''");
+						}
+			    UniCustomer.addCustomer(con, tcustname, tcaddress1, tcaddress2, city, state, zip, homephone, altphone, custnotes, cemail, custsite, sitenum, custtype);
+			    	int servsync=0;
+	int equipnum=0;
+	String brand="";
+	String modelnum="";
+	String serialnum="";
+	String filter="";
+	String enoutes="";
+	String type="";
+	String seer="";
+	String btuout="";
+	String notes="";
+	
+	int eremote = 0;
+	int esynced = 0;
+
+                Vector ve;
+        	ve = UniEquip.getCustomerItems(conu, custsite, sitenum);
+                for (int i = 0 ; i < ve.size(); i++)
+                {
+                       	UniEquip t = (UniEquip) ve.elementAt(i);
+			servsync=t.getServSync();
+			equipnum=t.getId();
+			custsite=t.getCustSite();
+			sitenum=t.getSiteNum();
+			brand=t.getBrand();
+			modelnum=t.getModelnum();
+			serialnum=t.getSerialnum();
+			filter=t.getFilter();
+			notes=t.getNotes();
+			type=t.getEtype();
+			seer=t.getCSeer();
+			btuout=t.getBtuOut();
+			eremote++;
+			// Now we have remote - now let's check the local database for an exact match
+			// 
+			String tserialnum="";
+			if (serialnum!=null) {                                
+				tserialnum = serialnum.replaceAll("'","''");
+			}
+			Statement stmt = con.createStatement();
+			ResultSet rsu = stmt.executeQuery("SELECT enum  FROM equipment where brand='"+brand+"' and modelnum like '"+modelnum+"' and serialnum like '"+tserialnum+"' and notes like '"+notes+"' and etype='"+type+"' ORDER BY enum;");
+			if (!rsu.first()) {
+				//////////////////////////////////////////////
+				// Not on server - find customer number on localmachine
+				/////////////////////////////////////////////
+				Vector vc1;
+				vc1 = UniCustomer.getCustNumSite(con,custsite,sitenum);
+				if (vc1.size()>0) {
+					for (int ic = 0 ; ic < vc1.size(); ic++)
+					{
+						UniCustomer tc = (UniCustomer) vc1.elementAt(ic);
+						remotecrecnum = tc.getCusNum();
+					}
+					//////////////////////////////////////////////
+					// No Match - Add to local machine
+					/////////////////////////////////////////////
+					String tmodelnum="";
+					if (modelnum!=null) {
+						tmodelnum = modelnum.replaceAll("'","''");
+							}
+							String ttserialnum="";
+							if (serialnum!=null) {
+								ttserialnum = serialnum.replaceAll("'","''");
+							}
+							UniEquip.AddItem(con,Integer.parseInt(remotecrecnum),brand,tmodelnum,ttserialnum, filter, notes, type, seer, btuout, custsite, sitenum, 2);
+							esynced++;
+				}
+			}
+		}
+			    
+			    
+			    SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsite, sitenum);
+			    SyncCustInspection sli = new SyncCustInspection(con, conu, custsite, sitenum);
+			    out.println ("<br><br>Customer Added - Continue");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		// get equipment records for this customer
+		
+			
+			}}
+		}
+		}
+		
+	//res.sendRedirect(""+classdir+"UniCash?action=top");
+	con.close();
+	}
+	
+	
+	
+		
   private void doAddPrevPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
@@ -25442,7 +25864,8 @@ private void doFollowUpReport(HttpServletRequest req, HttpServletResponse res, P
       String smtpuser = doGetSmtpUser(username);
       String smtppassword = doGetSmtpPassword(username);
         emailserver = doGetSmtpServer(username);
-        emailsendaddress=doGetSvc_Email(username);
+        //emailsendaddress=doGetSvc_Email(username);
+	emailsendaddress=doGetCompanyReportEmail();
         techemailaddress=doGetTech_Email(username);
 	doMailSend(emailserver, emailsendaddress, techemailaddress, " Followup Report - "+ tech_name , mbody, smtpuser, smtppassword);
 		mbody="";

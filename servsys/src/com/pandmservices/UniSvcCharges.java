@@ -86,7 +86,14 @@ public class UniSvcCharges
 		Statement stmt = con.createStatement();
 		stmt.executeUpdate("Delete From svc_charges Where recnum=" + recnum + ";");
 	}
-        
+  
+public static void deleteAllItems(Connection con, String callslip)
+                throws SQLException
+        {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From svc_charges Where callslip ='" + callslip + "';");
+        }
+	
 	public static void AddItem(Connection con, String callslip, String descript, String quant, String price, String techid, int servsync, int frcode)
                 throws SQLException
 		        {

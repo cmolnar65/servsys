@@ -15,6 +15,19 @@
   information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
   appropriate people.
 
+
+=================================================================
+RELEASE 2.26
+=================================================================
+ (F) Changed followup reports to go to the reports email address.
+ (N) Added CustUnlock class to maintain unlock table for laptops.
+ (N) Added unlock retention time and tables to company configuration screen and save routine.
+ (N) Server portion of customer unlock now works correctly.
+ (N) Download users NON-Expired Customer Records now added.
+ (N) Delete customers not in unlock table and without a follow-up flag.
+ (N) Download of customer, equipment, callslips, inspections are now working for customers on locklist and not on laptops
+  
+
 =================================================================
 RELEASE 2.25
 =================================================================

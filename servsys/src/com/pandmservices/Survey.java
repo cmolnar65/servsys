@@ -149,6 +149,13 @@ public class Survey
 	                stmt.executeUpdate("INSERT INTO custsurvey (custnum, gpipingsize, dwaterfeedsize, dwatersupplysize, bwatersupplysize, bwaterreturnsize, supplymanifold, returnmanifold, numzones, zonecontrol, nfloors, olength, owidth, oheight, buse, bage, bventalation, bhumidification, bcontrols, ecurrentvoltage, ecurrentphase, evoltageneeded, ephaseneeded, epanbrand, epanelroom, epanlocation, eaddwork, fueltype, furntype, windowtype, glasstype, stormwindows, doortype, infiltration, sdate) values ('"+custnum+"', '"+gpipingsize+"','"+dwaterfeedsize+"','"+dwatersupplysize+"','"+bwatersupplysize+"','"+bwaterreturnsize+"','"+supplymanifold+"', '"+returnmanifold+"', '"+numzones+"', '"+zonecontrol+"', '"+nfloors+"', '"+olength+"', '"+owidth+"', '"+oheight+"', '"+buse+"', '"+bage+"', '"+bventalation+"', '"+bhumidification+"', '"+bcontrols+"', '"+ecurrentvoltage+"', '"+ecurrentphase+"', '"+evoltageneeded+"', '"+ephaseneeded+"', '"+epanbrand+"', '"+epanelroom+"', '"+epanlocation+"', '"+eaddwork+"', '"+fueltype+"', '"+furntype+"', '"+windowtype+"', '"+glasstype+"', '"+stormwindows+"', '"+doortype+"', '"+infiltration+"','"+sdate+"')");
 		        }
 
+	public static void DeleteAllItem( Connection con, int custnum) 
+                throws SQLException
+		        {
+			Statement stmt = con.createStatement();
+	                stmt.executeUpdate("delete from custsurvey where custnum="+custnum+";");
+		        }
+
         public int getRecnum() { return recnum; }
         public int getCustnum() { return custnum; }
         	public String getBrand() { return brand ;}

@@ -168,6 +168,13 @@ public class UniCheckMe
                 stmt.executeUpdate("Delete From checkme  Where crecnum=" + x + ";");
         }
 
+        public static void deleteAllCustItems(Connection con, int d)
+                throws SQLException
+        {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("Delete From checkme  Where crecnum=" + d + ";");
+        }
+
 
 	public static Vector getIncludedDateItems(Connection c, String startdate, String enddate)
 		throws SQLException, TodoException
