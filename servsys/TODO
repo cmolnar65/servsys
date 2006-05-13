@@ -26,8 +26,10 @@ RELEASE 2.26
  (N) Download users NON-Expired Customer Records now added.
  (N) Delete customers not in unlock table and without a follow-up flag.
  (N) Download of customer, equipment, callslips, inspections are now working for customers on locklist and not on laptops
-  
-
+ (N) Now added SyncCustQuotes
+ (N) Now added SyncCustWorksheet
+ (N) Now Added SyncCustPagreement
+ 
 =================================================================
 RELEASE 2.25
 =================================================================

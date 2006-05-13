@@ -1031,6 +1031,8 @@ out.println("</CENTER>");
                                 doSendAllWorksheets(req, res, out, session, username);
 				doOpenConnection();
 				doSyncCustTable(req,res,out,session,username);
+				doOpenConnection();
+				doUpdateLocalCustUnlock(req,res,out,session,username);
 				}
                        else if (action.equalsIgnoreCase("senddailytime"))
 	                        {
@@ -1047,6 +1049,8 @@ out.println("</CENTER>");
 				doFollowUpReport(req, res, out, session, username);
 				doOpenConnection();
 				doSyncCustTable(req,res,out,session,username);
+				doOpenConnection();
+				doUpdateLocalCustUnlock(req,res,out,session,username);
 				}
                        else if (action.equalsIgnoreCase("exportsingletime"))
 	                        {
@@ -9631,40 +9635,17 @@ String remotecrecnum="";
 			    
 			    SyncCustCallslip slc = new SyncCustCallslip(con, conu, custsite, sitenum);
 			    SyncCustInspection sli = new SyncCustInspection(con, conu, custsite, sitenum);
+			    SyncCustPagreement slp = new SyncCustPagreement(conu, con, custsite, sitenum);
+			    SyncCustWorksheets slw = new SyncCustWorksheets(conu, con, custsite, sitenum);
+			    SyncCustQuotes slq = new SyncCustQuotes(conu, con, custsite, sitenum);
+			    
 			    out.println ("<br><br>Customer Added - Continue");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
-		
-		// get equipment records for this customer
-		
-			
 			}}
 		}
 		}
-		
+	con.close();	
 	//res.sendRedirect(""+classdir+"UniCash?action=top");
-	con.close();
-	}
-	
-	
-	
+	}	
 		
   private void doAddPrevPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
