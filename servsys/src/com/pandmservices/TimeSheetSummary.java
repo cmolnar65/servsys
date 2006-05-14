@@ -38,7 +38,7 @@ public class TimeSheetSummary
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  UCASE(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  UCASE(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where ctype='"+ctype+"' and tdate='"+timesheetdate+"' group by ctype;");
+	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, sum(callcount) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  UCASE(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  UCASE(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where ctype='"+ctype+"' and tdate='"+timesheetdate+"' group by ctype;");
 	
 		if (!rs.next())
 		{
@@ -58,7 +58,7 @@ public class TimeSheetSummary
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select tech_table.department as department, ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and ctype='"+ctype+"' and tdate='"+timesheetdate+"' and department='"+department+"' group by ctype;");
+	ResultSet rs = stmt.executeQuery("select tech_table.department as department, ucase(ctype) as ctype, sum(callcount) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and ctype='"+ctype+"' and tdate='"+timesheetdate+"' and department='"+department+"' group by ctype;");
 	
 		if (!rs.next())
 		{
@@ -79,7 +79,7 @@ public class TimeSheetSummary
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select tech_table.department as department, ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and ctype='"+ctype+"' and tdate>='"+startdate+"' and tdate<='"+enddate+"' and department='"+department+"' group by ctype;");
+	ResultSet rs = stmt.executeQuery("select tech_table.department as department, ucase(ctype) as ctype, sum(callcount) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and ctype='"+ctype+"' and tdate>='"+startdate+"' and tdate<='"+enddate+"' and department='"+department+"' group by ctype;");
 	
 		if (!rs.next())
 		{
@@ -98,7 +98,7 @@ public class TimeSheetSummary
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where ctype='"+ctype+"' and tdate='"+timesheetdate+"' and login='"+login+"' group by ctype;");
+	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, sum(callcount) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where ctype='"+ctype+"' and tdate='"+timesheetdate+"' and login='"+login+"' group by ctype;");
 	
 		if (!rs.next())
 		{
@@ -119,7 +119,7 @@ public class TimeSheetSummary
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where ctype='"+ctype+"' and tdate>='"+startdate+"' and tdate<='"+enddate+"' and login='"+login+"' group by ctype;");
+	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, sum(callcount) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where ctype='"+ctype+"' and tdate>='"+startdate+"' and tdate<='"+enddate+"' and login='"+login+"' group by ctype;");
 	
 		if (!rs.next())
 		{

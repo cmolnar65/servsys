@@ -15,6 +15,15 @@
   information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
   appropriate people.
 
+=================================================================
+RELEASE 2.27
+=================================================================
+ (N) Added a count column to the time_sheet table so that a manual
+     number could be inputed and actually come up with a proper count.
+ (F) Fixed a number of formatting and addition errors on the screen reports.
+     Including rounding, %'s and more.
+ (N) LAST OF CHANGES PROMISED FOR MARK E. MEACHAM, INC. NOW IT IS TIME TO
+     MOVE ON!
 
 =================================================================
 RELEASE 2.26

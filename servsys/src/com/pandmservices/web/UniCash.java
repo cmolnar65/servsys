@@ -5806,7 +5806,14 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.26";
+			vnumber = "2.27";
+			if (dbvnumber.equalsIgnoreCase("2.26")) {
+			Statement stmtu2 = con.createStatement();
+			int result225a1 = stmtu2.executeUpdate("alter table time_sheet add callcount int(11) default 1 after servsync;");
+			//int result225a2 = stmtu2.executeUpdate("");
+			int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.27';");
+			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-14';");
+						}
 						if (dbvnumber.equalsIgnoreCase("2.25")) {
 			Statement stmtu2 = con.createStatement();
 			int result225a1 = stmtu2.executeUpdate("drop table if exists locktable;");
@@ -10567,7 +10574,7 @@ out.println("<head>");
 out.println("<title>Time Sheet Edit</title>");
 out.println("</head>");
 out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updatetimeentry \" name=\"addtime\">");
-out.println("<table><tr><td><table>");
+out.println("<table>");
 out.println("<tr><td>Date            :</td>");
 out.println("<td><input type=\"text\" name=\"listdate\" value=\""+ doFormatDate(getDate(tdate)) +"\">");
 out.println("</tr>");
@@ -10616,18 +10623,17 @@ out.println("<tr><td>Commision        :</td>");
 out.println("<td><input type=\"text\" name=\"commision\" value=\""+ commision +"\"></td></tr>");
 out.println("<tr><td>Call Type        :</td>");
 out.println("<td><input type=\"text\" name=\"ctype\" value=\""+ctype  +"\">");
-out.println("</tr></table></td><td><table>");
-                Vector vt;
-                vt = TimeCat.getAllItems(con);
-                for (int i = 0 ; i < vt.size(); i++)
+out.println("<tr><td>Call Type        :</td>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"ctype\">");
+                Vector vtc = TimeCat.getAllItems(con);
+		out.println("<option value=\""+ctype+"\">-</option>");
+                for (int it = 0 ; it < vtc.size(); it++)
                 {
-                       	TimeCat t = (TimeCat) vt.elementAt(i);
-                      	int catnum = t.getCatnum();
-                        String category = t.Category();
-			String code = t.Code();
-                        out.println("<tr><td>"+code+"</td><td>"+category+"</td></tr>");
-                }
-out.println("</table></td></tr></table>");
+                TimeCat tc = (TimeCat) vtc.elementAt(it);
+		out.println("<option value="+tc.Code()+">"+tc.Code()+" - "+tc.Category()+"</option>");
+		}
+		out.println("</select></td></tr>");
+out.println("</table>");
 out.println("<input type=\"hidden\" name=\"timeadd\" value=1>");
 out.println("<input type=\"hidden\" name=\"tsid\" value="+ttsid+">");
 out.println("<p> <CENTER>");

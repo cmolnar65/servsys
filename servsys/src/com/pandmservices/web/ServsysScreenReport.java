@@ -613,7 +613,7 @@ public class ServsysScreenReport extends UniCash
 		String sdepartment = rs2.getString("department");
 	mbody5=combinestring(mbody5,"<tr><td><table border=1  align=\"left\">");
 	if (department.equalsIgnoreCase("service")) {
-	mbody5=combinestring(mbody5,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>#ps</td><td>#Tel<br>Leads</td><td>#PS<br>demand<br>calls</td><td>#TM<br>demand<br>calls</td><td>$<br>repair</td><td>avg<br>repair</td><td>Equip<br>Sales</td><td>#psa<br>Sold</td><td>%psa<br>Sold</td><td>$Upgrade<br>Sales</td><td>#War</td><td>#Svc<br>Cb</td><td>#Ins<br>Cb</td><td>#Maint<br>CB</td><td>#Sales<br>Leads</td><td>#Install</td></tr>");
+	mbody5=combinestring(mbody5,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>#ps</td><td>#Tel<br>Leads</td><td>#PS<br>demand<br>calls</td><td>#TM<br>demand<br>calls</td><td>$<br>repair</td><td>avg<br>repair</td><td>Equip<br>Sales</td><td>#psa<br>Sold</td><td>%psa<br>Sold</td><td>$Upgrade<br>Sales</td><td>#War</td><td>#Svc<br>Cb</td><td>#Ins<br>Cb</td><td>#Maint<br>CB</td><td>#Sales<br>Leads</td><td>#Install</td><td>Total<br>Calls<br>Run</td></tr>");
 	}
 	if (department.equalsIgnoreCase("maintenance")) {
 	mbody5=combinestring(mbody5,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>NL<br>Run</td><td>NL<br>Sold</td><td>%<br>NL<br>Sold</td><td>NL<br>$</td><td>NC<br>$</td><td>#<br>PMR</td><td>#PMRR<br>Sold</td><td>%PMRR<br>Sold</td><td>PMRR<br>$</td><td>PMRR<br>NC<br>$</td><td>#PMNR<br>Run</td><td>#<br>Sold</td><td>%PMNR<br>Sold</td><td>$PMNR<br>Sold</td><td>$<br>PMNR<br>NC</td><td>SLNP<br>Run</td><td>SLPG<br>Run</td><td>#<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td><td>Tot<br>Run</td><td>Tot<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td><td>$<br>NC</td></tr>");
@@ -1022,7 +1022,7 @@ public class ServsysScreenReport extends UniCash
 				BigDecimal d3=new BigDecimal(0.00);
 				if (totsalescalls > 0) {
 				persales=(Double.parseDouble(""+totslsold+"")/Double.parseDouble(""+totsalescalls+""))*100;	
-				d3 = new BigDecimal(perpmnrsold);
+				d3 = new BigDecimal(persales);
 				d3 = d3.setScale(0, BigDecimal.ROUND_HALF_UP);
 				}
 				
@@ -1044,12 +1044,12 @@ public class ServsysScreenReport extends UniCash
 				} else {
 				avgsvccall=0.00;
 				}								
-				
+				int totruncalls = totpmcalls+totnl+totservfcall+totservtcall+war+cbs+cbm+totsalescalls+ins;
 				if (department.equalsIgnoreCase("service")) {
-				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+pssold+"</td><td>"+perpssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+pssold+"</td><td>"+perpssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td><td>"+totruncalls+"</td></tr>");
 				}
 				if (department.equalsIgnoreCase("maintenance")) {
-				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"</td><td>"+totpmrcalld+"</td><td>"+totpmrcalldc+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"</td><td>"+totsalescallsdc+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"</td><td>"+totcomsold+"</td><td>"+totnoncomsold+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totnldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnld)+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalld)+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalld)+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totsalescallsdc)+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totcomsold)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnoncomsold)+"</td></tr>");
 				}
 		}
 	}
@@ -1334,7 +1334,7 @@ public class ServsysScreenReport extends UniCash
 					// Preventative for renewal
 					pmrd=Double.parseDouble(tamount);
 					pmrdc=Double.parseDouble(tcamount);
-					pmrd=Integer.parseInt(callcount);
+					pmr=Integer.parseInt(callcount);
 				} else if (ctype.equalsIgnoreCase("pmre")) {
 					// Preventative renewal equipment sold
 					pmred=Double.parseDouble(tamount);
@@ -1446,7 +1446,7 @@ public class ServsysScreenReport extends UniCash
 				perpmnrsold=999;
 				perpmnrsold=(Double.parseDouble(""+totpmnrsold+"")/Double.parseDouble(""+totpmnrcall+""))*100;
 				d2 = new BigDecimal(perpmnrsold);
-				d2 = d2.setScale(2, BigDecimal.ROUND_HALF_UP);
+				d2 = d2.setScale(0, BigDecimal.ROUND_HALF_UP);
 				}
 				
 				//double ppmnrsold=0.00;
@@ -1476,12 +1476,12 @@ public class ServsysScreenReport extends UniCash
 				d3 = d3.setScale(0, BigDecimal.ROUND_HALF_UP);
 				}
 				
-				
+				int totruncalls = totpmcalls+totnl+totservfcall+totservtcall+war+cbs+cbm+totsalescalls+ins;
 				if (department.equalsIgnoreCase("service")) {
-				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+pssold+"</td><td>"+perpssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+pssold+"</td><td>"+perpssold+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td><td>"+totruncalls+"</td></tr>");
 				}
 				if (department.equalsIgnoreCase("maintenance")) {
-				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"</td><td>"+totnldc+"</td><td>"+totnld+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"</td><td>"+totpmrcalld+"</td><td>"+totpmrcalldc+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"</td><td>"+totpmnrcalldc+"</td><td>"+totpmnrcalld+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"</td><td>"+totsalescallsdc+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"</td><td>"+totcomsold+"</td><td>"+totnoncomsold+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totnldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnld)+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalld)+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalld)+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totsalescallsdc)+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totcomsold)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnoncomsold)+"</td></tr>");
 				}
 				
 				
