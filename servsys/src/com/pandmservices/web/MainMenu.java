@@ -161,6 +161,7 @@ mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=config target=nav>Configuration</a><br>");
 	if (menu.equalsIgnoreCase("config")) {
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=editcompinfo target=phpmain>Company Configuration</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=addmanualtime target=phpmain>Manual Time Adjustment</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=listtechinfo target=phpmain>Tech Configuration</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=editserverconfig target=phpmain>Db Server Config</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=editemailtruckcat target=phpmain>Edit Stock Email Cats</a><br>");

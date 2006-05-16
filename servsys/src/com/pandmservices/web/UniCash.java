@@ -887,6 +887,17 @@ out.println("</CENTER>");
 				doLoginAdminUser(req, res, out, session, action, username);
 					}
 				}
+	                        else if (action.equalsIgnoreCase("addmanualtime"))
+	                        {
+	//ADMIN FUNCTION
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+                                doAddAdminTimeEntry(req, res, out, session, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
+				}		
                         else if (action.equalsIgnoreCase("editcompinfo"))
 	                        {
 	//ADMIN FUNCTION
@@ -1818,6 +1829,10 @@ out.println("</CENTER>");
 			else if (action.equalsIgnoreCase("savetimeentry"))
 			{
 				doSaveTimeEntry(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("saveadmintimeentry"))
+			{
+				doSaveAdminTimeEntry(req, res, out, session, username);
 			}
 			else if (action.equalsIgnoreCase("savecustomerentry"))
 			{
@@ -10722,7 +10737,100 @@ out.println("</CENTER>");
 		con.close();
 	}
 
-private void doUpdatePackageItem(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+
+private void doAddAdminTimeEntry(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+String timesheetdate = req.getParameter("listdate");
+out.println("<html>");
+out.println("<head>");
+out.println("<title>Time Sheet Entry</title>");
+out.println("</head>");
+out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=saveadmintimeentry \" name=\"addtime\">");
+out.println("<table><tr><td>");
+out.println("<table>");
+out.println("<tr><td>Tech ID (Lowercase<br> exactly how they log in)</td>");
+out.println("<td><input type=\"text\" name=\"techid\"></td></tr>");
+out.println("<tr><td>Date</td>");
+out.println("<td><input type=\"text\" name=\"listdate\" value=\""+timesheetdate+"\"></td></tr>");
+out.println("<tr><td>Call Slip        :</td>");
+out.println("<td><input type=\"text\" name=\"callslip\"></td></tr>");
+out.println("<tr><td>Call Count         :</td>");
+out.println("<td><input type=\"text\" name=\"callcount\"></td></tr>");
+out.println("<tr><td>Customer         :</td>");
+out.println("<td><input type=\"text\" name=\"customer\"></td></tr>");
+out.println("<tr><td>Dispatched       :</td>");
+out.println("<td><input type=\"text\" value=\"00:00\" name=\"dispatch_time\"></td></tr>");
+out.println("<tr><td>Time In          :</td>");
+out.println("<td><input type=\"text\" value=\"00:00\"  name=\"time_in\"></td></tr>");
+out.println("<tr><td>Time Out         :</td>");
+out.println("<td><input type=\"text\" value=\"00:00\" name=\"time_out\"></td></tr>");
+out.println("<tr><td>Non-Commission Item Sold         :</td>");
+out.println("<td><input type=\"text\" name=\"isold\"></td></tr>");
+out.println("<tr><td>Non-Commission Amount Sold        :</td>");
+out.println("<td><input type=\"text\" name=\"asold\" value=\"0\"></td></tr>");
+out.println("<tr><td>Commission Item Sold         :</td>");
+out.println("<td><input type=\"text\" name=\"cisold\"></td></tr>");
+out.println("<tr><td>Commission Amount Sold        :</td>");
+out.println("<td><input type=\"text\" name=\"casold\" value=\"0\"></td></tr>");
+out.println("<tr><td>Amount Collected   :</td>");
+out.println("<td><input type=\"text\" name=\"collected\" value=\"0\"></td></tr>");
+out.println("<tr><td>How Paid   :</td>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"paytype\">");
+                Vector vp = SupPaytype.getAllItems(con);
+		out.println("<option value=\"-\">-</option>");
+                for (int i = 0 ; i < vp.size(); i++)
+                {
+                SupPaytype t = (SupPaytype) vp.elementAt(i);
+		out.println("<option value="+t.getAnswer()+">"+t.getAnswer()+"</option>");
+		}
+		out.println("</select></td></tr>");
+out.println("<tr><td>Commision        :</td>");
+out.println("<td><input type=\"text\" name=\"commision\" value=\"0\"></td></tr>");
+out.println("<tr><td>Call Type        :</td>");
+out.println("<td align=\"left\"><select width=\"50\" name=\"ctype\">");
+             //   Vector vtc = TimeCat.getAllItems(con);
+		out.println("<option value=\"-\">-</option>");
+              //  for (int it = 0 ; it < vtc.size(); it++)
+              //  {
+              //  TimeCat tc = (TimeCat) vtc.elementAt(it);
+		out.println("<option value=\"NLRUN\"> NLRUN - New Lead Run Count</option>");
+		out.println("<option value=\"NLSNORUN\"> NLSNORUN - New Lead Not Run Count</option>");
+		out.println("<option value=\"PMRRUN\"> PMRRUN  - Preventative Renewal Run</option>");
+		out.println("<option value=\"PMNRRUN\"> PMNRRUN - Preventative No Renewal Run</option>");
+		out.println("<option value=\"SLPGRUN\"> SLPGRUN - Sales Lead Proposal Given Run</option>");
+		out.println("<option value=\"PMNRNORUN\"> PMNRNORUN - Preventative Not Renewal Not Run</option>");
+		out.println("<option value=\"PMRNORUN\"> PMRNORUN - Preventative Renewal Not Run</option>");
+		//out.println("<option value=\"\"> - </option>");
+		//out.println("<option value=\"\"> - </option>");
+		//}
+		out.println("</select></td></tr>");
+		
+out.println("<input type=\"hidden\" name=\"timeadd\" value=1>");
+out.println("</table></td>");
+out.println("<td><table>");
+ /*               Vector v;
+                v = TimeCat.getAllItems(con);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	TimeCat t = (TimeCat) v.elementAt(i);
+                      	int catnum = t.getCatnum();
+                        String category = t.Category();
+			String code = t.Code();
+                        out.println("<tr><td>"+code+"</td><td>"+category+"</td></tr>");
+                }
+		*/
+out.println("</table></td></tr></table>");
+out.println("<p> <CENTER>");
+out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+out.println("<INPUT TYPE=\"reset\">");
+out.println("</CENTER>");
+		con.close();
+	}
+
+	
+	private void doUpdatePackageItem(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
                 String trecid = req.getParameter("recid");
@@ -10778,6 +10886,41 @@ private void doUpdateTimeEntry(HttpServletRequest req, HttpServletResponse res, 
 		res.sendRedirect(""+classdir+"UniCash?action=showtimesheet&listdate="+listdate+"");
 			}
             }
+	    
+private void doSaveAdminTimeEntry(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+                String listdate = req.getParameter("listdate");
+                String callslip = req.getParameter("callslip");
+                String customer = req.getParameter("customer");
+                String dispatch_time = req.getParameter("dispatch_time");
+                String time_in = req.getParameter("time_in");
+                String time_out = req.getParameter("time_out");
+                String isold = req.getParameter("isold");
+                String asold = req.getParameter("asold");
+                String collected = req.getParameter("collected");
+                String commision = req.getParameter("commision");
+                String cisold = req.getParameter("cisold");
+                String casold = req.getParameter("casold");
+                String ctype = req.getParameter("ctype");
+                String paytype = req.getParameter("paytype");
+		String callcount = req.getParameter("callcount");
+		String techid=req.getParameter("techid");
+        if (callslip == null || callslip.length() < 1)
+                    {
+                    out.println("Callslip field blank please use back key and try again");
+                    return;
+                     } else {
+                UniTimeSheet.addAdminTimeSheetItem(con, doFormatDateDb(getDateDb(listdate)), callslip, customer, dispatch_time, time_in, time_out, isold, asold, collected, commision, cisold, casold, ctype, techid, paytype, callcount);
+                out.println("Your item has been added to the database<br>");
+		
+		//res.sendRedirect(""+classdir+"UniCash?action=showtimesheet");
+		res.sendRedirect(""+classdir+"UniCash?action=addmanualtime");
+		con.close();
+	//	doShowTimeSheet(req, res, out, session, username);
+			}
+            }
+
 
 private void doSaveTimeEntry(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception

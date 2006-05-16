@@ -187,6 +187,13 @@ public class UniTimeSheet
 			Statement stmt = con.createStatement();
 	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"')");
 		        }
+	
+	public static void addAdminTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype, String callcount)
+                throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
+		        {
+			Statement stmt = con.createStatement();
+	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype, callcount) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"', '"+callcount+"')");
+		        }
 
         public int getId() { return tsid; }
 

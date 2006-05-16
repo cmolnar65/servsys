@@ -44,204 +44,19 @@ import javax.servlet.http.*;
  */
 public class ServsysScreenReport extends UniCash
 {
-    
-  	public static String getIndividualItem (Connection con, HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username, String classdir)
-	throws SQLException, TodoException, Exception
-        {
-
-            //String mbody="";
-
-	    	Format formatter;
-        Calendar now = Calendar.getInstance();
-        Date date = new Date();
-        formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String s = formatter.format(date);
-        int hour = now.get(Calendar.HOUR_OF_DAY); 
-        int second = now.get(Calendar.SECOND);
-        int year = now.get(Calendar.YEAR);
-        int month = now.get(Calendar.MONTH);
-        int minute = now.get(Calendar.MINUTE);
-        int millisecond = now.get(Calendar.MILLISECOND);
-	
-	
-	String startdate = req.getParameter("startlistdate");
-	String enddate = req.getParameter("endlistdate");
-	out.println("Time Report From "+startdate+" to "+enddate+" \n");
-	Statement stmt2 = con.createStatement();
-	Statement stmt = con.createStatement();
-	ResultSet rs2 = stmt2.executeQuery("select department, transmit from tech_table where transmit=1 group by department;");
-	//Format formatter;
-        //String startdate = doFormatDate(dateToBeTested.getTime());
-	System.out.println ("Start Date: "+startdate+"\n");
-	System.out.println ("End Date: "+enddate+"\n");
-
-   	Vector u;
-	String mbody="";
-	String mbody2="";
-	mbody=combinestring(mbody,"<html><basefont size=-1>");
-	mbody=combinestring(mbody,"<head><title>Time Sheet Report</title></head><body><h2>By Technician</h2>");
-	//doStyleSheet(req, res, out, session, username);
-	u = UniTechInfo.getAllTransmitItems(con);
-	int counter=0;
-	for (int iu = 0 ; iu < u.size(); iu++)
-	{
-		UniTechInfo tu = (UniTechInfo) u.elementAt(iu);
-		String tech_init = tu.getTechInit();
-		String lusername = tu.getUserName();
-		String tech_name = tu.getTechName();
-		String department = tu.getDepartment();
-		Vector v;
-		v = TimeSheetSummary.getLoginItemsMultiDate(con,lusername, doFormatDateDb(getDateDb(startdate)),doFormatDateDb(getDateDb(enddate)));
-		mbody=combinestring(mbody,"<table width=\"75%\"><tr><td><table border=1 width=\"75%\" align=\"left\">");
-		mbody=combinestring(mbody,"<tr><td>Tech ID: "+lusername+" - "+tech_name+"</td></tr>");
-		mbody=combinestring(mbody,"</table></td></tr>");		
-		if (v.size()>0)
-		{
-			mbody=combinestring(mbody,"<tr><td><table border=1 width=\"75%\" align=\"left\">");
-			mbody=combinestring(mbody,"<tr><td>Call-Type</td><td>Count</td><td>Total-Collected</td><td>Non-Commision-Billed</td><td>Commision-Billed</td><td>Commision</td><td>Time</td><td>Time-Without-Travel</td></tr>");
-			for (int i = 0 ; i < v.size(); i++)
-			{
-				TimeSheetSummary ts = (TimeSheetSummary) v.elementAt(i);
-				String tamount = ts.Amount();
-				String tcamount = ts.CAmount();
-				String tamount_collected = ts.AmountCollected();
-				String tcommision = ts.Commision();
-				String ctype=ts.CType();
-				String callcount=ts.CallCount();
-				String timewithtravel=ts.TimeWithTravel();
-				String timenotravel=ts.TimeNoTravel();
-				mbody=combinestring(mbody,"<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-				
-			}
-			        ResultSet rs = stmt.executeQuery("select count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel, ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where login='"+lusername+"' and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"';");
-                while(rs.next())
-                {
-                        String tamount =rs.getString("amount");
-                        String tcamount = rs.getString("camount");
-                        String tamount_collected = rs.getString("amount_collected");
-                        String tcommision = rs.getString("commision");
-                        String callcount=rs.getString("callcount");
-                        String timewithtravel=rs.getString("time_with_travel");
-                        //String timewithtravel="-";
-                        String timenotravel=rs.getString("time_no_travel");
-                        //String timenotravel="-";
-        mbody=combinestring(mbody,"<tr><td>Total</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-                }
-
-
-			mbody=combinestring(mbody,"</table><br></td></tr>");
-		}
-		else {
-			mbody=combinestring(mbody,"<tr><td><table border=0 width=\"75%\" align=\"left\">");
-			mbody=combinestring(mbody,"<tr><td>**NO DATA TRANSMITTED</td></tr></table><br></td></tr>");
-		}
-		mbody=combinestring(mbody,"<tr><td><table border=0 width=\"75%\" align=\"left\">");
-		mbody=combinestring(mbody,"<tr><td> </td></tr></table><br>");
-	}
-	mbody=combinestring(mbody,"</td></tr></table></table>");
-	mbody2=combinestring(mbody2,"");
-	//mbody2=combinestring(mbody2,"<h2>By Department</h2><br>");
-		while(rs2.next())
-		{
-		String sdepartment = rs2.getString("department");
-		Vector v;
-		v = TimeSheetSummary.getDepartmentItemsMultiDate(con,sdepartment, doFormatDateDb(getDateDb(startdate)),doFormatDateDb(getDateDb(enddate)));		
-		mbody2=combinestring(mbody2,"<table width=\"75%\"><tr><td><table border=1 width=\"75%\" align=\"left\">");
-		mbody2=combinestring(mbody2,"<tr><td>Department: "+sdepartment+"</td></tr>");
-		mbody2=combinestring(mbody2,"</table></td></tr>");	
-
-		if (v.size()>0)
-		{
-			mbody2=combinestring(mbody2,"<tr><td><table border=1 width=\"75%\" align=\"left\">");
-			mbody2=combinestring(mbody2,"<tr><td>Call-Type</td><td>Count</td><td>Total-Collected</td><td>Non-Commision-Billed</td><td>Commision-Billed</td><td>Commision</td><td>Time</td><td>Time-Without-Travel</td></tr>");
-			for (int i = 0 ; i < v.size(); i++)
-			{
-				TimeSheetSummary ts = (TimeSheetSummary) v.elementAt(i);
-				String tamount = ts.Amount();
-				String tcamount = ts.CAmount();
-				String tamount_collected = ts.AmountCollected();
-				String tcommision = ts.Commision();
-				String ctype=ts.CType();
-				String callcount=ts.CallCount();
-				String timewithtravel=ts.TimeWithTravel();
-				String timenotravel=ts.TimeNoTravel();
-				mbody2=combinestring(mbody2,"<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-				
-			}
- //System.out.println("select tech_table.department as department, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"' and department='"+sdepartment+"' group by department;\n");
- ResultSet rs3 = stmt.executeQuery("select tech_table.department as department, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet, tech_table  where time_sheet.login=tech_table.username and tdate>='"+doFormatDateDb(getDateDb(startdate))+"' and tdate<='"+doFormatDateDb(getDateDb(enddate))+"' and department='"+sdepartment+"' group by department;");
-
-                while(rs3.next())
-                {
-                        String tamount =rs3.getString("amount");
-                        String tcamount = rs3.getString("camount");
-                        String tamount_collected = rs3.getString("amount_collected");
-                        String tcommision = rs3.getString("commision");
-                        String callcount=rs3.getString("callcount");
-                        String timewithtravel=rs3.getString("time_with_travel");
-                        //String timewithtravel="-";
-                        String timenotravel=rs3.getString("time_no_travel");
-                        //String timenotravel="-";
-        mbody2=combinestring(mbody2,"<tr><td>Total</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
-		}
-		mbody2=combinestring(mbody2,"</table><br></td></tr>");
-
-			}
-		else {
-
-			mbody2=combinestring(mbody2,"<tr><td><table border=0 width=\"75%\" align=\"left\">");
-			mbody2=combinestring(mbody2,"<tr><td>**NO DATA TRANSMITTED</td></tr></table><br></td></tr>");
-		}
-		mbody2=combinestring(mbody2,"<tr><td><table border=0 width=\"75%\" align=\"left\">");
-		mbody2=combinestring(mbody2,"<tr><td> </td></tr></table><br>");
-	}
-	mbody2=combinestring(mbody2,"</td></tr></table></table>");
-		
-
-
-
-
-////////////////////////////////////////////////////////
-// Here is where we end the http headers
-////////////////////////////////////////////////////////
-//		out.println(
-               //String newstring = mbody.replaceAll("<br>","\n");
-                out.println(mbody);
-                out.println(mbody2);
-		mbody="";
-	//con.close();
-	return mbody;
-        }
-	
-	
 	
  public static String getYesterday (Connection con, HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username, String classdir)
 	throws SQLException, TodoException, Exception
         {
 
             //String mbody="";
-/*
-	    	Format formatter;
-		Calendar now = Calendar.getInstance();
-		Date date = new Date();
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-		formatter = new SimpleDateFormat("yyyy-MM-dd");
-		String s = formatter.format(date);
-		Date expireationDate=null;
-                expireationDate=dateFormatter.parse(s);
-                Calendar dateToBeTested=Calendar.getInstance();
-                dateToBeTested.setTime(expireationDate);
-                dateToBeTested.add(Calendar.DAY_OF_YEAR,-1);
-                String enddate = doFormatDate(dateToBeTested.getTime());
-                dateToBeTested.add(Calendar.DAY_OF_YEAR,-8);
-                String startdate = doFormatDate(dateToBeTested.getTime());  */
 
 		String department=req.getParameter("department");
 		String timeframe=req.getParameter("timeframe");
 		String enddate=req.getParameter("enddate");
 		String startdate=req.getParameter("startdate");
 		String reptype=req.getParameter("reptype");
-		
+		String mbody10="<table border=\"1\">";
 		String action=req.getParameter("action");
 		if (action.equalsIgnoreCase("screenmaintthisweek")) {
 		
@@ -481,10 +296,6 @@ public class ServsysScreenReport extends UniCash
 		
 		sunday=calendar.getTime();
 		monday=calendar.getTime();
-		// 1st quarter = Sept 1 to December 31
-		// 2nd quarter = Jan 1 to March 31
-		// 3rd quarter = April 1 to June 31
-		// 4th quarter = July 1 to August 31
 		String endqtr="";
 		String startqtr="";
 		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY)
@@ -579,21 +390,9 @@ public class ServsysScreenReport extends UniCash
 		startdate=doFormatDate(getDate(UniCash.doGetYearEndDate()));	
 		}
 		
-	
-	
-	//if ((!timeframe.equalsIgnoreCase("quarter"))&&(!timeframe.equalsIgnoreCase("ytd"))) {	
-	//	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-	//	formatter = new SimpleDateFormat("yyyy-MM-dd");
-	//	enddate = doFormatDate(sunday);
-	//	startdate = doFormatDate(monday);
-	//}
-		
-	//out.println("Time Report For "+enddate+"<br>");
 	Statement stmt2 = con.createStatement();
 	Statement stmt = con.createStatement();
 	ResultSet rs2 = stmt2.executeQuery("select department, transmit from tech_table where transmit=1 and department='"+department+"' group by department;");
-	//Format formatter;
-        //String startdate = doFormatDate(dateToBeTested.getTime());
 
    	Vector u;
 	String mbody="";
@@ -616,7 +415,8 @@ public class ServsysScreenReport extends UniCash
 	mbody5=combinestring(mbody5,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>#ps</td><td>#Tel<br>Leads</td><td>#PS<br>demand<br>calls</td><td>#TM<br>demand<br>calls</td><td>$<br>repair</td><td>avg<br>repair</td><td>Equip<br>Sales</td><td>#psa<br>Sold</td><td>%psa<br>Sold</td><td>$Upgrade<br>Sales</td><td>#War</td><td>#Svc<br>Cb</td><td>#Ins<br>Cb</td><td>#Maint<br>CB</td><td>#Sales<br>Leads</td><td>#Install</td><td>Total<br>Calls<br>Run</td></tr>");
 	}
 	if (department.equalsIgnoreCase("maintenance")) {
-	mbody5=combinestring(mbody5,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>NL<br>Run</td><td>NL<br>Sold</td><td>%<br>NL<br>Sold</td><td>NL<br>$</td><td>NC<br>$</td><td>#<br>PMR</td><td>#PMRR<br>Sold</td><td>%PMRR<br>Sold</td><td>PMRR<br>$</td><td>PMRR<br>NC<br>$</td><td>#PMNR<br>Run</td><td>#<br>Sold</td><td>%PMNR<br>Sold</td><td>$PMNR<br>Sold</td><td>$<br>PMNR<br>NC</td><td>SLNP<br>Run</td><td>SLPG<br>Run</td><td>#<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td><td>Tot<br>Run</td><td>Tot<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td><td>$<br>NC</td></tr>");
+	mbody5=combinestring(mbody5,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>NL<br>Run</td><td>NL<br>Sold</td><td>%<br>NL<br>Sold</td><td>NL<br>$</td><td>NC<br>$</td><td>#<br>PMR</td><td>#PMRR<br>Sold</td><td>%PMRR<br>Sold</td><td>PMRR<br>$</td><td>PMRR<br>NC<br>$</td><td>#PMNR<br>Run</td><td>#<br>Sold</td><td>%PMNR<br>Sold</td><td>$PMNR<br>Sold</td><td>$<br>PMNR<br>NC</td><td>SLNP<br>Run</td><td>SLPG<br>Run</td><td>#<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td></tr>");
+	mbody10=combinestring(mbody10,"<tr BGCOLOR=#A0B8C8><td>"+sdepartment+"<br>Department</td><td>Tot<br>Run</td><td>Tot<br>Sold</td><td>%<br>Sold</td><td>$<br>Sold</td><td>$<br>NC</td></tr>");
 	}
 	u = UniTechInfo.getAllTransmitItems(con, sdepartment);
 	int counter=0;
@@ -738,6 +538,24 @@ public class ServsysScreenReport extends UniCash
 				double trdc=0.00;
 				double wardc=0.00;
 				double dashdc=0.00;
+				// NEW CODE 2006-05-16 ADDED
+				int countnlrun=0;
+				int countpmrrun=0;
+				int countpmnrrun=0;
+				int countslpgrun=0;
+				double mannlsnorund=0.00;
+				double mannlsnorundc=0.00;
+				int mannlsnorun=0;
+				int manslpgnorun=0;
+				double manslpgnorund=0.00;
+				double manslpgnorundc=0.00;
+				int manpmrnorun=0;
+				int manpmnrnorun=0;
+				double manpmrnorund=0.00;
+				double manpmnrnorund=0.00;
+				double manpmrnorundc=0.00;
+				double manpmnrnorundc=0.00;
+				
 				
 		if (v.size()>0)
 		{
@@ -932,16 +750,46 @@ public class ServsysScreenReport extends UniCash
 					slpgsd=Double.parseDouble(tamount);
 					slpgsdc=Double.parseDouble(tcamount);
 					slpg=Integer.parseInt(callcount);
-				} 
+					// NEW CODE HERE 2006-05-16
+				} else if (ctype.equalsIgnoreCase("nlrun")) {
+					countnlrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmrrun")) {
+					countpmrrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmnrrun")) {
+					countpmnrrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("slpgrun")) {
+					countslpgrun=Integer.parseInt(callcount);
+				}  else if (ctype.equalsIgnoreCase("nlsnorun")) {
+					// Sales lead proposal given sold
+					mannlsnorund=Double.parseDouble(tamount);
+					mannlsnorundc=Double.parseDouble(tcamount);
+					mannlsnorun=Integer.parseInt(callcount);
+				}  else if (ctype.equalsIgnoreCase("slpgnorun")) {
+					// Sales lead proposal given sold
+					manslpgnorund=Double.parseDouble(tamount);
+					manslpgnorundc=Double.parseDouble(tcamount);
+					manslpgnorun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmrnorun")) {
+					// Sales lead proposal given sold
+					manpmrnorund=Double.parseDouble(tamount);
+					manpmrnorundc=Double.parseDouble(tcamount);
+					manpmrnorun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmnrnorun")) {
+					// Sales lead proposal given sold
+					manpmnrnorund=Double.parseDouble(tamount);
+					manpmnrnorundc=Double.parseDouble(tcamount);
+					manpmnrnorun=Integer.parseInt(callcount);
+				}
 				
 					}
 					
-				int totsalescalls=pf+slnp+slpg+slpgs+pfs;
-				int totslpgrun=slpg+slpgs;
-				int totslsold=pfs+slpgs;
+				int totsalescalls=pf+slnp+slpg+slpgs+pfs+countslpgrun;
+					// NEW CODE HERE 2006-05-16
+				int totslpgrun=slpg+slpgs+countslpgrun;
+				int totslsold=pfs+slpgs+manslpgnorun;
 				
-				double totsalescallsd=pfd+slnpd+slpgd;
-				double totsalescallsdc=pfdc+slnpdc+slpgdc;
+				double totsalescallsd=pfd+slnpd+slpgd+manslpgnorund;
+				double totsalescallsdc=pfdc+slnpdc+slpgdc+manslpgnorundc;
 				
 				int totservtcall=sc+sct+scte+sctp+sctu+dash;
 				int totservfcall=scf+scfe+scfp+scfu;
@@ -954,30 +802,31 @@ public class ServsysScreenReport extends UniCash
 				double totservfcalldc=scfdc+scfedc+scfpdc+scfudc;
 				double totservcallsdc=totservtcalldc+totservfcalldc;
 				
-				int totpmnrcall = pmnr+pmnre+pmnru;
-				int totpmnrsold = pmnre+pmnru;
-				int totpmrcall=pmr+pmre+pmrr+pmru;
-				int totpmrsold = pmre+pmrr+pmru;
+				int totpmnrcall = pmnr+pmnre+pmnru+countpmnrrun;
+				int totpmnrsold = pmnre+pmnru+manpmnrnorun;
+				int totpmrcall=pmr+pmre+pmrr+pmru+countpmrrun;
+				int totpmrsold = pmre+pmrr+pmru+manpmrnorun;
 
 				
 				
-				double totpmnrcalld = pmnrd+pmnred+pmnrud;
-				double totpmrcalld=pmrd+pmred+pmrrd+pmrud;
+				double totpmnrcalld = pmnrd+pmnred+pmnrud+manpmnrnorund;
+				double totpmrcalld=pmrd+pmred+pmrrd+pmrud+manpmrnorund;
 			
 				double totpmcallsd=totpmrcalld+totpmnrcalld;
 				
-				double totpmnrcalldc = pmnrdc+pmnredc+pmnrudc;
-				double totpmrcalldc=pmrd+pmredc+pmrrdc+pmrudc;
+				double totpmnrcalldc = pmnrdc+pmnredc+pmnrudc+manpmnrnorundc;
+				double totpmrcalldc=pmrd+pmredc+pmrrdc+pmrudc+manpmrnorundc;
 				double totpmcallsdc=totpmrcalldc+totpmnrcalldc;
 				
 				double totupsales = pmrud+pmnrud+scfud+sctud+nlud+pmrudc+pmnrudc+scfudc+sctudc+nludc;
 				
 				double totequipsales = pmred+pmnred+scfed+scted+nled+pmredc+pmnredc+scfedc+sctedc+nledc+slpgd+slpgdc+pfd+pfdc;
 				
-				int totnl=nl+nle+nlu+nlp;
-				int totnlsold=nle+nlu+nlp;
-				double totnld=nld+nled+nlud+nlpd;
-				double totnldc=nldc+nledc+nludc+nlpdc;
+				int totnl=nl+nle+nlu+nlp+countnlrun;
+				int totnlsold=nle+nlu+nlp+mannlsnorun;
+				int totnlpsold=nlp+mannlsnorun;
+				double totnld=nld+nled+nlud+nlpd+mannlsnorund;
+				double totnldc=nldc+nledc+nludc+nlpdc+mannlsnorundc;
 				int totpmcalls=totpmrcall+totpmnrcall;				
 				int totpspossible = totpmrcall+totpmnrcall+totnl+totservtcall;
 				int pssold= pmrr+nlp+sctp;
@@ -989,7 +838,7 @@ public class ServsysScreenReport extends UniCash
 				BigDecimal d4=new BigDecimal(0.00);
 				double pernlsold= 0.00;
 				if (totnl > 0) {
-				pernlsold=(Double.parseDouble(""+nlp+"")/Double.parseDouble(""+totnl+""))*100;
+				pernlsold=(Double.parseDouble(""+totnlpsold+"")/Double.parseDouble(""+totnl+""))*100;
 				d4 = new BigDecimal(pernlsold);
 				d4 = d4.setScale(0, BigDecimal.ROUND_HALF_UP);
 				}
@@ -1049,7 +898,8 @@ public class ServsysScreenReport extends UniCash
 				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+pssold+"</td><td>"+perpssold+"</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td><td>"+totruncalls+"</td></tr>");
 				}
 				if (department.equalsIgnoreCase("maintenance")) {
-				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totnldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnld)+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalld)+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalld)+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totsalescallsdc)+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totcomsold)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnoncomsold)+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr><td>"+tech_name+"</td><td>"+totnl+"</td><td>"+totnlpsold+"</td><td>"+d4+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totnldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnld)+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalld)+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalld)+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totsalescallsdc)+"</td></tr>");
+				mbody10=combinestring(mbody10,"<tr><td>"+tech_name+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totcomsold)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnoncomsold)+"</td></tr>");
 				}
 		}
 	}
@@ -1172,6 +1022,24 @@ public class ServsysScreenReport extends UniCash
 				double slpgsdc=0.00;
 				int pfs=0;
 				int slpgs=0;
+				// NEW CODE 2006-05-16 ADDED
+				int countnlrun=0;
+				int countpmrrun=0;
+				int countpmnrrun=0;
+				int countslpgrun=0;
+				int mannlsnorun=0;
+				double mannlsnorund=0.00;
+				double mannlsnorundc=0.00;
+				int manslpgnorun=0;
+				double manslpgnorund=0.00;
+				double manslpgnorundc=0.00;
+				int manpmrnorun=0;
+				int manpmnrnorun=0;
+				double manpmrnorund=0.00;
+				double manpmnrnorund=0.00;
+				double manpmrnorundc=0.00;
+				double manpmnrnorundc=0.00;
+				
 				
 			for (int i = 0 ; i < v.size(); i++)
 			{
@@ -1365,17 +1233,45 @@ public class ServsysScreenReport extends UniCash
 					slpgsd=Double.parseDouble(tamount);
 					slpgsdc=Double.parseDouble(tcamount);
 					slpg=Integer.parseInt(callcount);
-				} 
-				
-					}
+					// NEW CODE HERE 2006-05-16
+				} else if (ctype.equalsIgnoreCase("nlrun")) {
+					countnlrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmrrun")) {
+					countpmrrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmnrrun")) {
+					countpmnrrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("slpgrun")) {
+					countslpgrun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("nlsnorun")) {
+					// Sales lead proposal given sold
+					mannlsnorund=Double.parseDouble(tamount);
+					mannlsnorundc=Double.parseDouble(tcamount);
+					mannlsnorun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("slpgnorun")) {
+					// Sales lead proposal given sold
+					manslpgnorund=Double.parseDouble(tamount);
+					manslpgnorundc=Double.parseDouble(tcamount);
+					manslpgnorun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmrnorun")) {
+					// Sales lead proposal given sold
+					manpmrnorund=Double.parseDouble(tamount);
+					manpmrnorundc=Double.parseDouble(tcamount);
+					manpmrnorun=Integer.parseInt(callcount);
+				} else if (ctype.equalsIgnoreCase("pmnrnorun")) {
+					// Sales lead proposal given sold
+					manpmnrnorund=Double.parseDouble(tamount);
+					manpmnrnorundc=Double.parseDouble(tcamount);
+					manpmnrnorun=Integer.parseInt(callcount);
+				}
+			}
 					
-				int totsalescalls=pf+slnp+slpg;
-				int totslsold = pfs+slpgs;
+				int totsalescalls=pf+slnp+slpg+countslpgrun;
+				int totslsold = pfs+slpgs+manslpgnorun;
 				
-				int totslpgrun=slpg+slpgs;
+				int totslpgrun=slpg+slpgs+countslpgrun;
 				
-				double totsalescallsd=pfd+slnpd+slpgd;
-				double totsalescallsdc=pfdc+slnpdc+slpgdc;
+				double totsalescallsd=pfd+slnpd+slpgd+manslpgnorund;
+				double totsalescallsdc=pfdc+slnpdc+slpgdc+manslpgnorundc;
 				
 				int totservtcall=sc+sct+scte+sctp+sctu+dash;
 				int totservfcall=scf+scfe+scfp+scfu;
@@ -1388,27 +1284,28 @@ public class ServsysScreenReport extends UniCash
 				double totservfcalldc=scfdc+scfedc+scfpdc+scfudc;
 				double totservcallsdc=totservtcalldc+totservfcalldc;
 				
-				int totpmnrcall = pmnr+pmnre+pmnru;
-				int totpmrcall=pmr+pmre+pmrr+pmru;
-				int totpmnrsold = pmnre+pmnru;
-				int totpmrsold = pmre+pmrr+pmru;
+				int totpmnrcall = pmnr+pmnre+pmnru+countpmnrrun;
+				int totpmrcall=pmr+pmre+pmrr+pmru+countpmrrun;
+				int totpmnrsold = pmnre+pmnru+manpmnrnorun;
+				int totpmrsold = pmre+pmrr+pmru+manpmrnorun;
 
 
-				double totpmnrcalld = pmnrd+pmnred+pmnrud;
-				double totpmrcalld=pmrd+pmred+pmrrd+pmrud;
+				double totpmnrcalld = pmnrd+pmnred+pmnrud+manpmnrnorund;
+				double totpmrcalld=pmrd+pmred+pmrrd+pmrud+manpmrnorund;
 			
 				double totpmcallsd=totpmrcalld+totpmnrcalld;
 				
-				double totpmnrcalldc = pmnrdc+pmnredc+pmnrudc;
-				double totpmrcalldc=pmrd+pmredc+pmrrdc+pmrudc;
+				double totpmnrcalldc = pmnrdc+pmnredc+pmnrudc+manpmnrnorundc;
+				double totpmrcalldc=pmrd+pmredc+pmrrdc+pmrudc+manpmrnorundc;
 				double totpmcallsdc=totpmrcalldc+totpmnrcalldc;
 				
 				double totupsales = pmrud+pmnrud+scfud+sctud+nlud+pmrudc+pmnrudc+scfudc+sctudc+nludc;
 				double totequipsales = pmred+pmnred+scfed+scted+nled+pmredc+pmnredc+scfedc+sctedc+nledc+slpgd+slpgdc+pfd+pfdc;
 				
-				int totnl=nl+nle+nlu+nlp;
-				double totnld=nld+nled+nlud+nlpd;
-				double totnldc=nldc+nledc+nludc+nlpdc;
+				int totnl=nl+nle+nlu+nlp+countnlrun;
+				int totnlpsold = mannlsnorun+nlp;
+				double totnld=nld+nled+nlud+nlpd+mannlsnorund;
+				double totnldc=nldc+nledc+nludc+nlpdc+mannlsnorundc;
 				int totpmcalls=totpmrcall+totpmnrcall;				
 				int totpspossible = totpmrcall+totpmnrcall+totnl+totservtcall;
 				int pssold= pmrr+nlp+sctp+pmnru;
@@ -1426,7 +1323,7 @@ public class ServsysScreenReport extends UniCash
 				BigDecimal d4 = new BigDecimal(0.00);				
 				double pernlsold= 0.00;
 				if (totnl > 0) {
-				pernlsold=(Double.parseDouble(""+nlp+"")/Double.parseDouble(""+totnl+""))*100;
+				pernlsold=(Double.parseDouble(""+totnlpsold+"")/Double.parseDouble(""+totnl+""))*100;
 				d4 = new BigDecimal(pernlsold);
 				d4 = d4.setScale(0, BigDecimal.ROUND_HALF_UP);
 				}
@@ -1481,7 +1378,8 @@ public class ServsysScreenReport extends UniCash
 				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totpmcalls+"</td><td>"+totnl+"</td><td>"+totservfcall+"</td><td>"+totservtcall+"</td><td>"+NumberFormat.getCurrencyInstance().format(totservcallsd)+"</td><td>"+NumberFormat.getCurrencyInstance().format(avgsvccall)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totequipsales)+"</td><td>"+pssold+"</td><td>"+perpssold+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totupsales)+"</td><td>"+war+"</td><td>"+cbs+"</td><td>"+cbi+"</td><td>"+cbm+"</td><td>"+totsalescalls+"</td><td>"+ins+"</td><td>"+totruncalls+"</td></tr>");
 				}
 				if (department.equalsIgnoreCase("maintenance")) {
-				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+nlp+"</td><td>"+d4+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totnldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnld)+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalld)+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalld)+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totsalescallsdc)+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totcomsold)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnoncomsold)+"</td></tr>");
+				mbody5=combinestring(mbody5,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+totnl+"</td><td>"+totnlpsold+"</td><td>"+d4+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totnldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnld)+"</td><td>"+totpmrcall+"</td><td>"+totpmrsold+"</td><td>"+d1+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmrcalld)+"</td><td>"+totpmnrcall+"</td><td>"+totpmnrsold+"</td><td>"+d2+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalldc)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totpmnrcalld)+"</td><td>"+slnp+"</td><td>"+totslpgrun+"</td><td>"+totslsold+"</td><td>"+d3+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totsalescallsdc)+"</td></tr>");
+				mbody10=combinestring(mbody10,"<tr BGCOLOR=\"red\"><td>"+sdepartment+"</td><td>"+gtrun+"</td><td>"+gtsold+"</td><td>"+d5+"%</td><td>"+NumberFormat.getCurrencyInstance().format(totcomsold)+"</td><td>"+NumberFormat.getCurrencyInstance().format(totnoncomsold)+"</td></tr>");
 				}
 				
 				
@@ -1505,6 +1403,8 @@ public class ServsysScreenReport extends UniCash
 		}
 			}
 	}
+		mbody5=combinestring(mbody5,"</table>");
+		mbody5=combinestring(mbody5,mbody10);
 		mbody5=combinestring(mbody5,"</table></html>");
 		out.println(mbody5);
 		//out.println(mbody4);	
