@@ -9440,6 +9440,7 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 	String localdate=null;
 	String remotedate=null;
 	String protocol = (String) config.getInitParameter("db.protocol");
+	String nocustonlaptop=doGetCompanyCustOnLaptop();
 	String subProtocol = (String) config.getInitParameter("db.subprotocol");
 	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);
 	
@@ -9512,8 +9513,11 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 			sitenum=t2.getSiteNum();
 			custsite=t2.getCustSite();
 			counter2++;
-
+	
+			// put if statement here to only allow if Delete laptop is Yes and if user record allows it.
+			if (nocustonlaptop.equalsIgnoreCase("yes")) {
 	CustUnlock.deleteCustomerInfo(con, custsite, sitenum, crecnum2);
+			}
 
 	}
 
@@ -9528,11 +9532,9 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 		
 		}
 		}		
-	
-	
-	
-	out.println("Now need to download customers that are on the unlocktable and not on local machine.<br>");
-String remotecrecnum="";
+		
+		out.println("Now need to download customers that are on the unlocktable and not on local machine.<br>");
+		String remotecrecnum="";
 		Vector vl;
 		vl = CustUnlock.getAllItems(con);
 		for (int i4 = 0; i4 < vl.size(); i4++)
