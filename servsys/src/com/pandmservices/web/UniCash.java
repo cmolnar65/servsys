@@ -311,6 +311,10 @@ out.println("</CENTER>");
 	                        {
                                 doSaveHeatLoad(req, res, out, session, username);
 	                        }
+			else if (action.equalsIgnoreCase("updaterateconfig"))
+	                        {
+                                doSaveRateConfig(req, res, out, session, username);
+	                        }
 			else if (action.equalsIgnoreCase("updateheatload"))
 	                        {
                                 doSaveHeatLoad(req, res, out, session, username);
@@ -436,6 +440,14 @@ out.println("</CENTER>");
                         else if (action.equalsIgnoreCase("uploadflatrates"))
 	                        {
                                 doUploadFlatRateTable(req, res, out, session, username);
+				}
+			else if (action.equalsIgnoreCase("updaterateserver"))
+	                        {
+                                doUploadRateServer(req, res, out, session, username);
+				}
+			else if (action.equalsIgnoreCase("downloadrateserver"))
+	                        {
+                                doDownloadRateServer(req, res, out, session, username);
 				}
                         else if (action.equalsIgnoreCase("updateuserinfo"))
 	                        {
@@ -800,6 +812,17 @@ out.println("</CENTER>");
 				adminok = req.getParameter("adminok");
 				if ((adminok=="1")||(adminok!=null)) {
                                 doEditWsConfig(req, res, out, session, username);
+					} else
+					{
+				doLoginAdminUser(req, res, out, session, action, username);
+					}
+				}
+			//ADMIN FUNCTION
+			else if (action.equalsIgnoreCase("editrateconfig"))
+			{
+				adminok = req.getParameter("adminok");
+				if ((adminok=="1")||(adminok!=null)) {
+                                doEditRateConfig(req, res, out, session, username);
 					} else
 					{
 				doLoginAdminUser(req, res, out, session, action, username);
@@ -4405,8 +4428,106 @@ private void doEditWsConfig(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("<INPUT TYPE=\"reset\">");
 	out.println("</CENTER>");
 	}
+	
+private void doUploadRateServer(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+	String slaborrate= req.getParameter("slaborrate");
+	String spartmult = req.getParameter("spartmult");
+	String stotalmult = req.getParameter("stotalmult");
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);	
+	UniRateInfo.SyncServer(conu,con);
+	res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
+	}
 
+private void doDownloadRateServer(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+	String slaborrate= req.getParameter("slaborrate");
+	String spartmult = req.getParameter("spartmult");
+	String stotalmult = req.getParameter("stotalmult");
+	String dbserver=doGetDbServer();
+	String dbpasswd=doGetDbPassword();
+	String dbuser=doGetDbUser();
+	String dbname=doGetDbName();
+	String protocol = (String) config.getInitParameter("db.protocol");
+	String subProtocol = (String) config.getInitParameter("db.subprotocol");
+	conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+dbserver+"/"+dbname+"?autoReconnect=true", dbuser, dbpasswd);	
+	UniRateInfo.SyncServer(con,conu);
+	res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
+	}
 
+	
+private void doSaveRateConfig(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+	String slaborrate= req.getParameter("slaborrate");
+	String spartmult = req.getParameter("spartmult");
+	String stotalmult = req.getParameter("stotalmult");
+	UniRateInfo.UpdateItem(con,spartmult,slaborrate,stotalmult);
+	res.sendRedirect(""+classdir+"UniCash?action=showhomepage");
+	}
+	
+private void doEditRateConfig(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+	String slaborrate= "0.00";
+	String spartmult = "0.00";
+	String stotalmult = "0.00";
+	Vector v;
+        v = UniRateInfo.getAllItems(con);
+	int counter=0;
+        for (int i = 0 ; i < v.size(); i++)
+                {
+                UniRateInfo t = (UniRateInfo) v.elementAt(i);
+		slaborrate=t.getLaborRate();
+		spartmult=t.getPartMult();
+		stotalmult=t.getTotalMult();
+                }
+
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Edit Rate Config</title>");
+	out.println("</head>");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updaterateconfig\" name=\"addcust\">");
+	out.println("<table><tr><td>");
+	out.println("Labor Rate        :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"slaborrate\" size=\"40\" value=\""+ slaborrate+"\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Part Multiplier  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"spartmult\" size=\"40\" value=\""+ spartmult +"\">");
+	out.println("Total Multuplier  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"stotalmult\" size=\"40\" value=\""+ stotalmult +"\">");
+	out.println("</td></tr></table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+	String thismainserver=doGetThisMainServer();
+	if (!thismainserver.equalsIgnoreCase("yes")) {	
+	out.println("<br><table border=1>");
+	out.println("<tr><td>Labor Rate</td><td>"+slaborrate+"</td></tr>");
+	out.println("<tr><td>Part Multiplier</td><td>"+slaborrate+"</td></tr>");
+	out.println("<tr><td>Total Multiplier</td><td>"+stotalmult+"</td></tr>");
+	out.println("</table>");
+	out.println("<br><a href="+classdir+"UniCash?action=updaterateserver&slaborrate="+slaborrate+"&spartmult="+spartmult+"&stotalmult="+stotalmult+">Upload to Server  - MUST HAVE INTERNET CONNECT</a>");
+	out.println("");
+	}
+	}
+
+	
+	
 
 //ADMIN FUNCTION
 //
@@ -5821,7 +5942,15 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.27";
+			vnumber = "2.28";
+			if (dbvnumber.equalsIgnoreCase("2.27")) {
+			Statement stmtu2 = con.createStatement();
+			int result225a1 = stmtu2.executeUpdate("alter table inv_use add invloc text after servsync;");
+			int result226a1=stmtu2.executeUpdate("update inv_use set invloc='TRUCK';");
+			//int result225a2 = stmtu2.executeUpdate("");
+			int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.28';");
+			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-17';");
+						}
 			if (dbvnumber.equalsIgnoreCase("2.26")) {
 			Statement stmtu2 = con.createStatement();
 			int result225a1 = stmtu2.executeUpdate("alter table time_sheet add callcount int(11) default 1 after servsync;");
@@ -7771,16 +7900,17 @@ private void doShowInvItems(HttpServletRequest req, HttpServletResponse res, Pri
 	if (ci.size()>0) {
 	out.println("<table width=\"100%\" align=\"center\" border=1>");
 	out.println("<font size=1>");
-	out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th>");
+	out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th><th>Location</th>");
 	for (int cc = 0 ; cc < ci.size(); cc++)
 	{
 		InvUse ti = (InvUse) ci.elementAt(cc);
 		String keycode = ti.getKeyCode();
 		String nitemname = ti.getItemName();
 		String pquant = ti.getQuantity();
+		String invloc = ti.getInvLoc();
 		String idate = doFormatDate(getDate(ti.getTDate()));
 		int transnum = ti.getItemnum();
-		out.println("<tr><td>"+keycode+"</td><td>"+nitemname+"</td><td>"+pquant+"</td><td>"+idate+"</td></tr>");
+		out.println("<tr><td>"+keycode+"</td><td>"+nitemname+"</td><td>"+pquant+"</td><td>"+idate+"</td><td>"+invloc+"</td></tr>");
 	}
 	out.println("</font>");
 	out.println("</table>");
@@ -7819,6 +7949,7 @@ private void doSaveInvTransEntry2(HttpServletRequest req, HttpServletResponse re
 		String description=req.getParameter("description");
 		String crecnum=req.getParameter("crecnum");
 		String psource=req.getParameter("psource");
+		String invloc=req.getParameter("invloc");
                //Vector v;
                 //v = InvKeyCodes.getSingleKeyCode(con, keycode);
                 //for (int i = 0 ; i < v.size(); i++)
@@ -7827,7 +7958,7 @@ private void doSaveInvTransEntry2(HttpServletRequest req, HttpServletResponse re
                 //description=t.getDescription();
 		//}
 		username=(String)session.getAttribute("login");
-		InvUse.addInvTrans(con, callslip, doFormatDateDb(getDateDb(tdate)), quantity, keycode, description, notes, username, 0);
+		InvUse.addInvTrans(con, callslip, doFormatDateDb(getDateDb(tdate)), quantity, keycode, description, notes, username, 0, invloc);
 			con.close();
                 res.sendRedirect(""+classdir+"UniCash?action="+psource+"&custnum="+custnum+"&callslip="+callslip+"&crecnum="+crecnum);
             }
@@ -7922,28 +8053,29 @@ private void doSaveTimeCat(HttpServletRequest req, HttpServletResponse res, Prin
 	out.println("<title>Add Inventory Transaction</title>");
 	out.println("</head>");
 	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=saveinvtrans2&catnum="+catnum+" \" name=\"addtime\">");
-	out.println("<p>Key Code       :");
-	out.println("<input type=\"text\" name=\"keycode\" value=\""+keycode+"\" > ");
-	out.println("<p>Description    :");
-	out.println("<input type=\"text\" name=\"description\" value=\""+description+"\" > ");
-	out.println("<p>Callslip        :");
-	out.println(""+callslip+"");
-	out.println("<input type=\"hidden\" name=\"callslip\" value=\""+callslip+"\" > ");
-	out.println("</p>");
-	out.println("<p>Date         :");
-	out.println("<input type=\"text\" name=\"tdate\" value=\""+doFormatDate(getDate(cdate))+"\" > ");
-	out.println("</p>");
-	out.println("<p>Quantity      :");
-	out.println("<input type=\"text\" name=\"quantity\">");
-	out.println("</p>");
-	out.println("<p>Notes      :");
-	out.println("<input type=\"text\" name=\"notes\">");
-	out.println("</p>");
+	out.println("<table><tr><td>Key Code       :</td><td>");
+	out.println("<input type=\"text\" name=\"keycode\" value=\""+keycode+"\" ></td></tr> ");
+	out.println("<tr><td>Description    :</td><td>");
+	out.println("<input type=\"text\" name=\"description\" value=\""+description+"\" ></td> ");
+	out.println("<tr><td>Callslip        :</td><td>");
+	out.println("<input type=\"hidden\" name=\"callslip\" value=\""+callslip+"\" ></td></tr>  ");
+	out.println("<tr><td>Date         :</td><td>");
+	out.println("<input type=\"text\" name=\"tdate\" value=\""+doFormatDate(getDate(cdate))+"\" ></td></tr>  ");
+	out.println("<tr><td>Quantity      :</td><td>");
+	out.println("<input type=\"text\" name=\"quantity\"></td></tr> ");
+	out.println("<tr><td>Notes      :</td><td>");
+	out.println("<input type=\"text\" name=\"notes\"></td></tr> ");
+	out.println("<tr><td>Stock From        :</td>");
+	out.println("<td align=\"left\"><select width=\"50\" name=\"invloc\">");
+	out.println("<option value=\"TRUCK\">Truck Stock</option>");
+	out.println("<option value=\"STOCK\">Stock Room</option>");
+	out.println("<option value=\"POORDER\">Purchase Order</option>");
+	out.println("</select></td></tr>");
 	out.println("<input type=\"hidden\" name=\"keyprefix\" value=\""+keyprefix+"\">");
 	out.println("<input type=\"hidden\" name=\"psource\" value=\""+psource+"\">");
 	out.println("<input type=\"hidden\" name=\"crecnum\" value=\""+crecnum+"\">");
 	out.println("<input type=\"hidden\" name=\"custnum\" value=\""+custnum+"\">");
-	out.println("<input type=\"hidden\" name=\"cdate\" value=\""+cdate+"\">");
+	out.println("<input type=\"hidden\" name=\"cdate\" value=\""+cdate+"\"></table>");
 	out.println("<p> <CENTER>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
 	out.println("<INPUT TYPE=\"reset\">");
@@ -7991,7 +8123,7 @@ private void doSaveTimeCat(HttpServletRequest req, HttpServletResponse res, Prin
 	if (ci.size()>0) {
 	out.println("<table width=\"100%\" align=\"center\" border=1>");
 	out.println("<font size=1>");
-	out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th>");
+	out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th><th>Location</th>");
 	for (int cc = 0 ; cc < ci.size(); cc++)
 	{
 		InvUse ti = (InvUse) ci.elementAt(cc);
@@ -8000,7 +8132,8 @@ private void doSaveTimeCat(HttpServletRequest req, HttpServletResponse res, Prin
 		String pquant = ti.getQuantity();
 		String idate = doFormatDate(getDate(ti.getTDate()));
 		int transnum = ti.getItemnum();
-		out.println("<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+idate+"</td></tr>");
+		String invloc = ti.getInvLoc();
+		out.println("<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+idate+"</td><td>"+invloc+"</td></tr>");
 		}
 	out.println("</font>");
 	out.println("</table>");
@@ -10403,28 +10536,28 @@ out.println("</CENTER>");
 		out.println("<title>Edit Inventory Transaction</title>");
 		out.println("</head>");
 		out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updateinvtrans&keyprefix="+keyprefix+" \" name=\"addtime\">");
-		out.println("<p>Callslip        :");
-		out.println("<input type=\"text\" name=\"callslip\" value=\""+callslip+"\">");
-		out.println("</p>");
-		out.println("<p>Key Code        :");
-		out.println("<input type=\"text\" name=\"keycode\" value=\""+keycode+"\">");
-		out.println("</p>");
-		out.println("<p>Item Name        :");
-		out.println("<input type=\"text\" name=\"itemname\" value=\""+itemname+"\">");
-		out.println("</p>");
-		out.println("<p>Date         :");
-		out.println("<input type=\"text\" name=\"tdate\" value=\""+doFormatDate(getDate(tdate))+"\" > ");
-		out.println("</p>");
-		out.println("<p>Quantity      :");
-		out.println("<input type=\"text\" name=\"quantity\" value=\""+quantity+"\">");
-		out.println("</p>");
-		out.println("<p>Notes      :");
-		out.println("<input type=\"text\" name=\"notes\" value=\""+notes+"\">");
-		out.println("</p>");
+		out.println("<tr><td>Callslip        :</td><td>");
+		out.println("<input type=\"text\" name=\"callslip\" value=\""+callslip+"\"></td></tr>");
+		out.println("<tr><td>Key Code        :</td><td>");
+		out.println("<input type=\"text\" name=\"keycode\" value=\""+keycode+"\"></td></tr>");
+		out.println("<tr><td>Item Name        :</td><td>");
+		out.println("<input type=\"text\" name=\"itemname\" value=\""+itemname+"\"></td></tr>");
+		out.println("<tr><td>Date         :</td><td>");
+		out.println("<input type=\"text\" name=\"tdate\" value=\""+doFormatDate(getDate(tdate))+"\" > </td></tr>");
+		out.println("<tr><td>Quantity      :</td><td>");
+		out.println("<input type=\"text\" name=\"quantity\" value=\""+quantity+"\"></td></tr>");
+		out.println("<tr><td>Notes      :</td><td>");
+		out.println("<input type=\"text\" name=\"notes\" value=\""+notes+"\"></td></tr>");
+		out.println("<tr><td>Stock From        :</td>");
+		out.println("<td align=\"left\"><select width=\"50\" name=\"invloc\">");
+		out.println("<option value=\"TRUCK\">Truck Stock</option>");
+		out.println("<option value=\"STOCK\">Stock Room</option>");
+		out.println("<option value=\"POORDER\">Purchase Order</option>");
+		out.println("</select></td></tr>");
 		out.println("<input type=\"hidden\" name=\"keyprefix\" value=\""+keyprefix+"\">");
 		out.println("<input type=\"hidden\" name=\"okeycode\" value=\""+keycode+"\">");
 		out.println("<input type=\"hidden\" name=\"transnum\" value=\""+transnum+"\">");
-		out.println("<p> <CENTER>");
+		out.println("</table><CENTER>");
 		out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Update\">");
 		out.println("<INPUT TYPE=\"reset\">");
 		out.println("</CENTER>");
@@ -10965,6 +11098,7 @@ private void doSaveInvTransEntry(HttpServletRequest req, HttpServletResponse res
                 String keyprefix = req.getParameter("keyprefix");
                 String tdate = req.getParameter("tdate");
                 String notes = req.getParameter("notes");
+		String invloc=req.getParameter("invloc");
 		String description="-";
                Vector v;
                 v = InvKeyCodes.getSingleKeyCode(con, keycode);
@@ -10974,7 +11108,7 @@ private void doSaveInvTransEntry(HttpServletRequest req, HttpServletResponse res
                 description=t.getDescription();
 		}
 		username=(String)session.getAttribute("login");
-		InvUse.addInvTrans(con, callslip, doFormatDateDb(getDateDb(tdate)), quantity, keycode, description, notes, username, 0);
+		InvUse.addInvTrans(con, callslip, doFormatDateDb(getDateDb(tdate)), quantity, keycode, description, notes, username, 0, invloc);
                 //UniInvDetail.addInvTrans(con, callslip, itemnum, doFormatDateDb(getDateDb(tdate)), notes, quantity);
 		con.close();
 		res.sendRedirect(""+classdir+"UniCash?action=showinvdetail&keycode="+keycode+"&keyprefix="+keyprefix+"");
@@ -11047,7 +11181,8 @@ private void doUpdateInvTrans(HttpServletRequest req, HttpServletResponse res, P
 		String keyprefix=req.getParameter("keyprefix");
                 String tdate = req.getParameter("tdate");
                 String notes = req.getParameter("notes");
-                InvUse.UpdateItem(con, transnum, callslip, notes, quantity, keycode, itemname);
+		String invloc = req.getParameter("invloc");
+                InvUse.UpdateItem(con, transnum, callslip, notes, quantity, keycode, itemname, invloc);
                 out.println("Your item has been added to the database<br>");
 		con.close();
 		res.sendRedirect(""+classdir+"UniCash?action=showinvdetail&keycode="+keycode+"&keyprefix="+keyprefix);
@@ -11822,7 +11957,7 @@ if (etype==null) {
 	//Print Inventory Data
 	///////////////////////////////////////////////////
 		mbody=combinestring(mbody,"<br><br>Parts Used<br>--------------------------<br>");
-	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th>");
+	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th><th>Location</th>");
 Vector ci;
 ci = InvUse.getAllCallslipItems(con, callslip, cdate);
 for (int cc = 0 ; cc < ci.size(); cc++)
@@ -11831,8 +11966,9 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String keycode = ti.getKeyCode();
 	String itemname = ti.getItemName();
 	String pquant = ti.getQuantity();
+	String invloc=ti.getInvLoc();
 	String iidate = doFormatDate(getDate(ti.getTDate()));
-	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td><td>"+invloc+"</td></tr>");
 	}
 	mbody=combinestring(mbody,"</table>");
 
@@ -12481,7 +12617,7 @@ if (etype==null) {
 	mbody=combinestring(mbody,"</table>");
 	pmbody=combinestring(pmbody,"</table>");
 	mbody=combinestring(mbody,"<br><br>Parts Used<br>--------------------------<br>");
-	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th>");
+	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th><th>Location</th>");
 Vector ci;
 ci = InvUse.getAllCallslipItems(con, callslip, cdate);
 for (int cc = 0 ; cc < ci.size(); cc++)
@@ -12490,8 +12626,9 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String keycode = ti.getKeyCode();
 	String itemname = ti.getItemName();
 	String pquant = ti.getQuantity();
+	String invloc=ti.getInvLoc();
 	String iidate = doFormatDate(getDate(ti.getTDate()));
-	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td><td>"+invloc+"</td></tr>");
 			}
 	mbody=combinestring(mbody,"</table>");
 
@@ -12817,7 +12954,7 @@ if (etype==null) {
 	//Print Inventory Data
 	///////////////////////////////////////////////////
 		mbody=combinestring(mbody,"<br><br>Parts Used<br>--------------------------<br>");
-	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th>");
+	mbody=combinestring(mbody,"<table width=\"100%\" border=1><th>Key Code</th><th>Item</th><th>Quantity</th><th>Date</th><th>Location</th>");
 Vector ci;
 ci = InvUse.getAllCallslipItems(con, callslip, cdate);
 for (int cc = 0 ; cc < ci.size(); cc++)
@@ -12826,8 +12963,9 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String keycode = ti.getKeyCode();
 	String itemname = ti.getItemName();
 	String pquant = ti.getQuantity();
+	String invloc=ti.getInvLoc();
 	String iidate = doFormatDate(getDate(ti.getTDate()));
-	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td></tr>");
+	mbody=combinestring(mbody,"<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+iidate+"</td><td>"+invloc+"</td></tr>");
 			}
 	mbody=combinestring(mbody,"</table>");
 
@@ -14765,7 +14903,8 @@ private void doShowQuoteCatList(HttpServletRequest req, HttpServletResponse res,
                 String dtransdate=rs.getString("date");
                 String dcallslip=rs.getString("callslip");
                 String dquantity=rs.getString("quant");
-        	mbody=combinestring(mbody,"<tr><td>"+ditemname+"</td><td>"+dkeycode+"</td><td>"+dtransdate+"</td><td>"+dquantity+"</td><td>"+dcallslip+"</td></tr>");
+		String invloc = rs.getString("invloc");
+        	mbody=combinestring(mbody,"<tr><td>"+ditemname+"</td><td>"+dkeycode+"</td><td>"+dtransdate+"</td><td>"+dquantity+"</td><td>"+dcallslip+"</td><td>"+invloc+"</td></tr>");
         }
 		mbody=combinestring(mbody,"</table><br>");
 	// END OF SINGLE QUOTE HERE
@@ -18867,7 +19006,7 @@ out.println("</table>");
 out.println("<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parts Used</h4>");
 out.println("<table width=\"95%\" align=\"center\" border=1>");
 out.println("<font size=1>");
-out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th>");
+out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th><th>Location</th>");
 Vector ci;
 ci = InvUse.getAllCallslipItems(con, callslip, cdate);
 for (int cc = 0 ; cc < ci.size(); cc++)
@@ -18876,8 +19015,9 @@ for (int cc = 0 ; cc < ci.size(); cc++)
 	String keycode = ti.getKeyCode();
 	String itemname = ti.getItemName();
 	String pquant = ti.getQuantity();
+	String invloc = ti.getInvLoc();
 	String idate = doFormatDate(getDate(ti.getTDate()));
-	out.println("<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+idate+"</td></tr>");
+	out.println("<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+idate+"</td><td>"+invloc+"</td></tr>");
 	}
 
 	out.println("</font>");

@@ -49,12 +49,35 @@ public class UniRateInfo
 
 
 	public static void UpdateItem(Connection con, String part_mult, String labor_rate,String total_mult)
-		throws SQLException
+		throws SQLException, TodoException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update rates Set partmult='" +part_mult+ "' ,labor='"+labor_rate+"' , total_mult='"+total_mult+"';");
+      		stmt.executeUpdate("Update rates Set partmult='" +part_mult+ "' ,labor='"+labor_rate+"' , totalmult='"+total_mult+"';");
       	}
 
+	public static void SyncServer(Connection con, Connection conu)
+		throws SQLException, TodoException
+	{
+		Statement stmt = con.createStatement();
+		Statement stmtu = conu.createStatement();
+		
+		stmt.executeUpdate("drop table if exists rates;");
+		stmt.executeUpdate("CREATE TABLE rates (partmult decimal(10,2) NOT NULL default '0.00', labor decimal(10,2) NOT NULL default '0.00', totalmult decimal(10,2) NOT NULL default '0.00')  ;");
+
+		ResultSet rs = stmtu.executeQuery("Select * from rates;");
+		
+		while (rs.next()) 
+		{
+		String partmult=rs.getString("partmult");
+		String labor=rs.getString("labor");
+		String totalmult=rs.getString("totalmult");
+		
+		stmt.executeUpdate("insert into rates (partmult, labor, totalmult) values ('"+partmult+"','"+labor+"','"+totalmult+"');");
+		
+		}
+		
+	}
+	
 
         public String getPartMult() { return part_mult; }
         public String getLaborRate() { return labor_rate; }

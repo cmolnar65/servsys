@@ -23,6 +23,7 @@ public class SyncInvUse
 	private String keycode;
 	private String descript;
 	private String techid;
+	private String invloc;
 	private int servsync;
 
         public SyncInvUse (Connection con, Connection conu)
@@ -44,6 +45,7 @@ public class SyncInvUse
 		this.recnum = rs.getInt("recnum");
 		this.techid = rs.getString("techid");
 		this.servsync = rs.getInt("servsync");
+		this.invloc = rs.getString("invloc");
 
 				String tnotes="";
                                 if (notes!=null) {
@@ -55,9 +57,7 @@ public class SyncInvUse
                               }
 
 			Statement stmtu = conu.createStatement();
-	                stmtu.executeUpdate("INSERT INTO inv_use ( date, callslip, keycode, quant, descript, notes, techid, servsync) Values ('" +tdate+ "','"+callslip+"','"+keycode+"','"+quantity+"','"+descript+"','"+tnotes+"', '"+techid+"','"+servsync+"')");
-//	                System.out.println("INSERT INTO inv_use ( date, callslip, keycode, quant, descript, notes, techid, servsync) Values ('" +tdate+ "','"+callslip+"','"+keycode+"','"+quantity+"','"+descript+"','"+notes+"', '"+techid+"','"+servsync+"')\n");
-// NOW TURN ON SYNCED FLAG FOR ORIGIONAL CUSTOMER
+	                stmtu.executeUpdate("INSERT INTO inv_use ( date, callslip, keycode, quant, descript, notes, techid, servsync, invloc) Values ('" +tdate+ "','"+callslip+"','"+keycode+"','"+quantity+"','"+descript+"','"+tnotes+"', '"+techid+"','"+servsync+"','"+invloc+"')");
                 stmt2.executeUpdate("Update inv_use Set servsync=2 Where recnum='" + recnum + "';");
 
 		        }

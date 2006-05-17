@@ -16,6 +16,13 @@
   appropriate people.
 
 =================================================================
+RELEASE 2.28
+=================================================================
+ (N) Added Rate Config Screen and ability to upload and download the information from server. AdminOK and not 
+     on main server has been set for the upload and edit.
+ 
+
+=================================================================
 RELEASE 2.27
 =================================================================
  (N) Added a count column to the time_sheet table so that a manual

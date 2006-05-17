@@ -176,6 +176,7 @@ mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=zerotruckstock target=_blank>Zero Truck Stock</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=configforms target=phpmain>Forms</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=edrespsform target=phpmain>Residential Planned Service Form</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=editrateconfig target=phpmain>Rate Calculation Configuration</a><br>");
 	}
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=reports target=nav>Reports</a><br>");
 	if (menu.equalsIgnoreCase("reports")) {
@@ -217,6 +218,7 @@ mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadtimecat target=phpmain>Time Sheet Categories</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadcompconfig target=phpmain>Company Configuration</a><br>");
         mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=syncdbserver target=phpmain>DbServer Config</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=downloadrateserver target=phpmain>Rate Calculator</a><br>");
 					} else if (thismainserver.equalsIgnoreCase("yes"))
 					 {
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;You are on the main server - anything<br>&nbsp;&nbsp;&nbsp;-&nbsp; you have done here is live Ask<br>&nbsp;&nbsp;&nbsp;-&nbsp; server admin to update dates.<br>");

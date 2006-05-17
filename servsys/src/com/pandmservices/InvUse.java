@@ -22,6 +22,7 @@ public class InvUse
 	private String keycode;
 	private String descript;
 	private String techid;
+	private String invloc;
 	private int servsync;
 
         public InvUse (Connection c, int transnum)
@@ -44,6 +45,7 @@ public class InvUse
 		this.recnum = rs.getInt("recnum");
 		this.techid = rs.getString("techid");
 		this.servsync = rs.getInt("servsync");
+		this.invloc = rs.getString("invloc");
 		rs.close();
 
 	}
@@ -97,18 +99,18 @@ public class InvUse
                 return V;
         }
 
-	public static void UpdateItem(Connection con, int transnum, String callslip, String notes, String quantity, String keycode, String descript)
+	public static void UpdateItem(Connection con, int transnum, String callslip, String notes, String quantity, String keycode, String descript, String invloc)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update inv_use Set quant ='" +quantity + "', callslip='"+callslip +"', notes='"+notes+"', descript='"+descript+"', keycode='"+keycode+"' Where recnum=" + transnum + ";");
+      		stmt.executeUpdate("Update inv_use Set quant ='" +quantity + "', callslip='"+callslip +"', notes='"+notes+"', descript='"+descript+"', keycode='"+keycode+"', invlo='"+invloc+"' Where recnum=" + transnum + ";");
       	}
 
-	public static void addInvTrans( Connection con, String callslip, String tdate, String quantity, String keycode, String descript, String notes, String techid, int servsync)
+	public static void addInvTrans( Connection con, String callslip, String tdate, String quantity, String keycode, String descript, String notes, String techid, int servsync, String invloc)
                 throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
 		        {
 			Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO inv_use ( date, callslip, keycode, quant, descript, notes, techid, servsync) Values ('" +tdate+ "','"+callslip+"','"+keycode+"','"+quantity+"','"+descript+"','"+notes+"', '"+techid+"','"+servsync+"')");
+	                stmt.executeUpdate("INSERT INTO inv_use ( date, callslip, keycode, quant, descript, notes, techid, servsync, invloc) Values ('" +tdate+ "','"+callslip+"','"+keycode+"','"+quantity+"','"+descript+"','"+notes+"', '"+techid+"','"+servsync+"', '"+invloc+"')");
 		        }
 
 
@@ -131,6 +133,7 @@ public static void deleteAllItems(Connection con, String callslip)
         public int getItemnum() { return recnum; }
 	public int getServSync() { return servsync; }
 	public String getTechId() { return techid; }
+	public String getInvLoc() { return invloc; }
 
         public String getCallslip() { return callslip; }
 		public String getItemName() { return itemname; }
