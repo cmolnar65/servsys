@@ -9648,7 +9648,7 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 			counter2++;
 	
 			// put if statement here to only allow if Delete laptop is Yes and if user record allows it.
-			if (nocustonlaptop.equalsIgnoreCase("yes")) {
+			if (nocustonlaptop.equalsIgnoreCase("no")) {
 	CustUnlock.deleteCustomerInfo(con, custsite, sitenum, crecnum2);
 			}
 
