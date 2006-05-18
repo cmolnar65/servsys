@@ -3919,7 +3919,7 @@ private void SaveTechInfo(HttpServletRequest req, HttpServletResponse res, Print
 		String servsync=req.getParameter("servsync");
 		String lusername=req.getParameter("lusername");
 		String transmit=req.getParameter("transmit");
-		String department=req.getParameter("depatment");
+		String department=req.getParameter("department");
                 UniTechInfo.AddItem(con, tname, tinit, tnum,nate_id, allow_delete, mod_airbal, mod_install, mod_servadmin, serv_update, create_worksheet, edit_compphonelist, servsync, lusername, transmit, department);
                 out.println("Your item has been updated in the database<br>");
                 res.sendRedirect(""+classdir+"UniCash?action=listtechinfo");
@@ -5033,11 +5033,13 @@ private void doListUsers(HttpServletRequest req, HttpServletResponse res, PrintW
 				}
 		out.println("<td><a href="+classdir+"UniCash?action=edittechinfo&tsid="+lusername+">"+lusername+"</a></td><td>"+tech_name+"</td><td>"+tech_init+"</td><td>"+tech_truck+"</td><td>"+nate_id+"</td><td>"+allow_delete+"</td><td>"+mod_install+"</td><td>"+mod_airbal+"</td><td>"+mod_servadmin+"</td><td>"+serv_update+"</td><td>"+servsync+"</td><td>"+edit_compphonelist+"</td><td>"+create_worksheet+"</td><td>"+transmit+"</td><td>"+department+"</td><td><a href="+classdir+"UniCash?action=editemailinfo&adminok=1&tsid="+lusername+">Email</a></td><td><a href="+classdir+"UniCash?action=deluserrec&adminok=1&tsid="+lusername+">Del</a></td></tr>");
                 }
-
 	out.println("</td></tr></table>");
 	out.println("<p> <CENTER>");
 	out.println("<a href="+classdir+"UniCash?action=adduser&adminok=1>Add User to Tech Table</a><br><br>");
+	String thismainserver=doGetThisMainServer();
+		if (thismainserver.equalsIgnoreCase("no")) {
 	out.println("<br><a href="+classdir+"UniCash?action=uploaduser&adminok=1>Upload to Main Server</a><br></center>");
+		}
 	out.println("</html>");
 	}
  
