@@ -8988,8 +8988,12 @@ private void doPrintCustForm(HttpServletRequest req, HttpServletResponse res, Pr
                 }
 
                 out.println("</table>");
+		
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=addtimecat>Add a Category</a></body></html>");
+		String thismainserver=doGetThisMainServer();
+		if (!thismainserver.equalsIgnoreCase("yes") {
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=uploadtimecat>Upload to Main Server (NEED INTERNET CONNECT)</a></body></html>");
+		}
 			con.close();
         }
 
