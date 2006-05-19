@@ -218,6 +218,40 @@ public class UniCallslip
 		}
 		return V;
 	}
+	
+	
+	public static void SyncCallSlipFollowup(Connection con, Connection conu, String techid)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmtu = conu.createStatement();
+		Statement stmt = con.createStatement();
+		ResultSet rsu = stmtu.executeQuery("SELECT callslip, custsite, sitenum, cdate, crecnum  FROM callslip where followup=1 and techid='"+techid+"';");
+		while(rsu.next())
+		{
+		// select from serer
+		int screcnum = rsu.getInt("crecnum");
+		int sfollowup = rsu.getInt("followup");
+		String scallslip = rsu.getString("callslip");
+		String scdate = rsu.getString("cdate");
+		String stechid=rsu.getString("techid");
+		String scustsite=rsu.getString("custsite");
+		String ssitenum=rsu.getString("sitenum");
+		
+		ResultSet rs = stmt.executeQuery("SELECT crecnum  FROM callslip where callslip='"+scallslip+"' and cdate='"+scdate+"' and techid='"+stechid+"' and custsite='"+scustsite+"' and sitenum='"+ssitenum+"' and followup="+sfollowup+";");
+		
+		if (!rs.next())
+		{
+		
+		// record not found - update server followup to 0.
+		stmtu.executeUpdate("Update callslip set followup=0 where crecnum='"+screcnum+"';");
+		}
+		
+		// record exists - move to next one.
+		
+		}
+	
+	}
 
 	public static void UpdateItem(Connection con, int crecnum, int custnum, String callslip, String cdate, String equip1, String equip2, String equip3, String equip4, String reason, String services, String recommendations, String rscheduled, String charges, String collected, String notes, int followup, String custsite, String sitenum, String crectype, String techid, String parts)
 		throws SQLException

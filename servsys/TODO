@@ -15,12 +15,24 @@
   information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
   appropriate people.
 
+
+=================================================================
+RELEASE 2.29
+=================================================================
+
+	
+
 =================================================================
 RELEASE 2.28
 =================================================================
  (N) Added Rate Config Screen and ability to upload and download the information from server. AdminOK and not 
      on main server has been set for the upload and edit.
- 
+ (N) Follow-up report routine
+ 	1) Select all callslips with followups on server for tech id.
+		a) pass routine con, conu, techid
+	2) Find callslip on local machine.
+	3) If missing or followup flag turned off unselect on server.
+	4) If turned on on local machine, leave on on server. 
 
 =================================================================
 RELEASE 2.27

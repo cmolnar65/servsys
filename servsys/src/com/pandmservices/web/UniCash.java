@@ -9581,7 +9581,7 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 	
 	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 	formatter = new SimpleDateFormat("yyyy-MM-dd");
-	
+	UniCallslip.SyncCallSlipFollowup(con, conu, username);
 	todaydate = formatter.format(tunlockdate);
 	CustUnlock.CustUnlockDownloadInfo(con, conu, username, todaydate);
 	out.println ("Customer Lock Table is now Downloaded and Updated.<br>Next comes the delete all customers without customer numbers.<br>");
