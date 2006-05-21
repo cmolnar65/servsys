@@ -208,7 +208,21 @@ public class UniCustomer
 		return V;
 	}
 
+	public static Vector getAllItems(Connection c, String cname, String phone, String zip)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT custnum, cname, address1, city FROM customers where cname ='"+cname+"' and homephone ='"+phone+"' and zip ='"+zip+"' order by cname");
+		while(rs.next())
+		{
+			UniCustomer t = new UniCustomer(c,rs.getInt("custnum"));
+			V.addElement(t);
+		}
+		return V;
+	}
 
+	
 	public static Vector getAllItems(Connection c, String custstart, String custstop)
 		throws SQLException, TodoException
 	{	
@@ -227,15 +241,13 @@ public class UniCustomer
 		throws SQLException, TodoException
 	{
 		Statement stmt = c.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT id FROM todo ORDER BY id;");
+		ResultSet rs = stmt.executeQuery("SELECT max(custnum) as id FROM customers;");
 		int idlarge = 0;	
 		while(rs.next())
 		  {
 			idlarge = rs.getInt("id");
 		  }
-
 		return idlarge;
-
 	}
 
 	public static String getAccountID(Connection c, String TAName)

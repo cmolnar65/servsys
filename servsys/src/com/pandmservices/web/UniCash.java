@@ -107,7 +107,19 @@ public class UniCash extends HttpServlet
 			log("just got session information in doGet. User: "+username+"");
 			if (action.equalsIgnoreCase("checklogin")) {
 				doCheckUserLogin(req, res, out, session, username);	
-					} else {
+			} else if (action.equalsIgnoreCase("customerrequest")) {
+				doCustomerRequest(req, res, out, session, username);
+			} else if (action.equalsIgnoreCase("checkcustomer")) {
+				doCheckCustomer(req, res, out, session, username);
+			} else if (action.equalsIgnoreCase("custaddform")) {
+				doCustAddForm(req, res, out, session, username);
+			} else if (action.equalsIgnoreCase("savecustaddform")) {
+				doSaveCustAddForm(req, res, out, session, username);
+			} else if (action.equalsIgnoreCase("addservicerequest")) {
+				doAddServiceRequest(req, res, out, session, username);
+			} else if (action.equalsIgnoreCase("savecustcallslip")) {
+				doSaveCustCallslip(req, res, out, session, username);
+			} else{
 			if (username==null) {
 			
 			doLoginUser(req, res, out, session, username);	
@@ -4796,6 +4808,437 @@ private void doLoginAdminUser(HttpServletRequest req, HttpServletResponse res, P
         res.sendRedirect(""+classdir+"UniCash?action=checkadminuser&next_page="+next_page+"");
 	}
 
+private void doCustomerRequest(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+		doVersionInfo_VNumber();
+		String action = req.getParameter("action");
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Customer Service Request</title>");
+	out.println("</head><table border=0><tr><td valign=\"top\" width=\"50%\">");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=checkcustomer\" name=\"addcust\">");
+	out.println("<table><tr><td>");
+	out.println("Last Name<br>Business Name:");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"lname\" size=\"20\" >");
+	out.println("</td></tr><tr><td>");
+	out.println("First Name:");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"fname\" size=\"20\" >");
+	out.println("</td></tr><tr><td>");
+	out.println("Phone Number (example: 508-555-1212)    :");
+	out.println("</td><td>");
+	out.println("<input type=\"phone\" name=\"phonenumber\" size=\"20\" >");
+	out.println("</td></tr><tr><td>");
+	out.println("Zip Code (example: 06279)    :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"zipcode\" size=\"5\" >");
+	out.println("</td></tr><tr><td>");
+	out.println("</td></tr></table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Login\">");
+	out.println("<INPUT TYPE=\"reset\">");
+out.println("</CENTER>");
+	out.println("</form></td><td>");
+
+		String imagename=null;
+		String imagewidth=null;
+		String imagehight=null;
+		String compname=null;
+		String complogo=null;
+		String compaddress=null;
+		String compphone=null;
+
+                Vector v;
+                v = UniCompConfig.getAllItems(con);
+		int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                       	UniCompConfig t = (UniCompConfig) v.elementAt(i);
+			imagename=t.getImage();
+			imagewidth=t.getImageWidth();
+			imagehight=t.getImageHight();
+			compname=t.getCoName();
+			complogo=t.getCoLogo();
+			compaddress=t.getCoAddress();
+			compphone=t.getCoPhone();
+		}
+            
+    out.println("<HTML>");
+out.println("<HEAD>");
+out.println("        <META HTTP-EQUIV=\"CONTENT-TYPE\" CONTENT=\"text/html; charset=iso-8859-1\">");
+ out.println("       <TITLE>Servsys Login</TITLE>");
+out.println("</HEAD>");
+out.println("<BODY TEXT=\"#000000\" LINK=\"#0000ff\" VLINK=\"#000080\" BGCOLOR=\"#ffffff\">");
+
+out.println("<TABLE WIDTH=100% BORDER=0 CELLPADDING=4 CELLSPACING=0>");
+	out.println("<THEAD>");
+		out.println("<TR>");
+			out.println("</TD>");
+			out.println("<TD WIDTH=30% VALIGN=TOP>");
+				out.println("<P><IMG SRC=\""+imagename+"\" NAME=\"Graphic1\" ALIGN=CENTER WIDTH="+imagewidth+" HEIGHT="+imagehight+" BORDER=0><BR CLEAR=LEFT><BR>");
+				out.println("</P>");
+			out.println("</TD>");
+			out.println("<TD WIDTH=50% ALIGN=LEFT>");
+			out.println("<h2><i>Service Entry and Reporting System</i></h2>");
+			out.println("</TD>");
+		out.println("</TR>");
+	out.println("</THEAD>");
+out.println("</TABLE>");
+out.println("</BODY>");
+out.println("</HTML>");
+out.println("<br><br><br><br><CENTER>");
+out.println("(C) Copyright 2002-2006 - Our World Services, LLC<br>");
+out.println("<br>Version: "+doVersionInfo_VNumber()+" - Compiled: "+doFormatDate(getDate(doVersionInfo_VDate()))+"<br>");
+//out.println("<br>Software Expire Date: "+doFormatDate(getDate(doGetExpireDate()))+"<br>");
+//out.println("<br>Software Expire Date has been removed for GPL version.<br>");
+//out.println("<br>Source code per the GPL can be found on sourceforge.net or at servsys.org<br>");
+out.println("<br><br><br>For assistance with this product please contact:<br>Chris Molnar<br>860-798-7032<br>molnarc@mac.com");
+out.println("<br><br><br><P><IMG SRC=\""+Gwebhome+"MacOS_Pnthr_Vert_v1.gif\" NAME=\"Graphic1\" ALIGN=CENTER WIDTH=50 HEIGHT=60 BORDER=0><BR CLEAR=LEFT><BR>");
+out.println("Developed on Mac OS/X for all platforms<br>");
+/* #system("uptime"); */
+
+	out.println("</CENTER>");
+		con.close();
+	}
+
+private void doCheckCustomer(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+		
+		String action = req.getParameter("action");
+		String lname = req.getParameter("lname");
+		String fname = req.getParameter("fname");
+		String phonenumber = req.getParameter("phonenumber");
+		String zipcode=req.getParameter("zipcode");
+		String cname1=null;
+		String address1=null;
+		String address2=null;
+		String city=null;
+		String state=null;
+		String zip=null;
+		String homephone=null;
+		String altphone=null;
+		String custsite=null;
+		String sitenum=null;
+		String crecnum=null;
+		
+		String cname = "";
+		if (fname.length() > 1 ) {
+		cname = combinestring(cname, lname+", ");
+		cname = combinestring(cname, fname);
+		} else {
+		cname = combinestring(cname, lname);
+		}
+		
+		Vector v;
+                v = UniCustomer.getAllItems(con, cname, phonenumber, zipcode);
+		
+		if (v.size() == 0) {
+		// put form for no customer found - enter remainder of information
+		out.println("No Information found<br>");
+		// send to a new customer form.
+		  res.sendRedirect(""+classdir+"UniCash?action=custaddform");
+		
+		} else {
+		
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+			address1=t.getAddress1();
+			address2=t.getAddress2();
+			crecnum=t.getCusNum();
+			custsite=t.getCustSite();
+			sitenum=t.getSiteNum();
+		}
+		
+		// show customer information found - ask if correct
+		out.println("<html><body><h2>I believe we have serviced this location before.</h2><br><br>");
+		out.println("<h2>I have your address as: "+address1+" "+address2+"<br><br></h2>");
+		out.println("<h2>Is this correct?<h2><br>");
+		out.println("<h2><a href="+classdir+"UniCash?action=addservicerequest&custsite="+custsite+"&sitenum="+sitenum+"&crecnum="+crecnum+">Yes</a></h2><br>");
+		out.println("<h2><a href="+classdir+"UniCash?action=custaddform>No</a></h2><br>");
+		}
+		
+	}
+	
+ private void doCustAddForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add Customer</title>");
+	out.println("</head>");
+	out.println("<h2>Please complete the following form. Make sure the address and phone number are correct and then press save.</h2>");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=savecustaddform\" name=\"custform\">");
+	out.println("<table><tr><td>");
+	out.println("Customer Name<br>   (Business or Last, First)    :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"cname\" size=\"40\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Address  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"address1\" size=\"40\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Address  :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"address2\" size=\"40\">");
+	out.println("</td></tr><tr><td>");
+	out.println("City     :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"city\" size=\"40\">");
+	out.println("</td></tr><tr><td>");
+	out.println("State    :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"state\" size=\"3\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Zip Code :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"zip\" size=\"10\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Primary Phone:");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"homephone\" size=\"15\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Alt Phone :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"altphone\" size=\"15\">");
+	out.println("</td></tr><tr><td>");
+	out.println("Email Address :");
+	out.println("</td><td>");
+	out.println("<input type=\"text\" name=\"cemail\" size=\"50\">");
+	//out.println("</td></tr><tr><td>");
+	//out.println("Customer Number :");
+	//out.println("</td><td>");
+	//out.println("<input type=\"text\" name=\"custsite\" size=\"15\">");
+	//out.println("</td></tr><tr><td>");
+	//out.println("Site Number :");
+	//out.println("</td><td>");
+	//out.println("<input type=\"text\" name=\"sitenum\" size=\"15\">");
+	//out.println("</td></tr><tr><td>");
+	//out.println("Customer Type (T=T/M, F=Full) :");
+	//out.println("</td><td>");
+	//out.println("<input type=\"text\" name=\"custtype\" size=\"15\">");
+	//out.println("</td></tr><tr><td>");
+	//out.println("Customer Notes :");
+	//out.println("</td><td>");
+	//out.println("<input type=\"text\" name=\"cust_notes\" size=\"80\">");
+	out.println("</td></tr></table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");
+	con.close();
+	}
+		
+
+private void doSaveCustAddForm(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+                String custstart = req.getParameter("custstart");
+                String custstop = req.getParameter("custstop");
+                String cname = req.getParameter("cname");
+                String address1 = req.getParameter("address1");
+                String address2 = req.getParameter("address2");
+                String city = req.getParameter("city");
+                String custtype = req.getParameter("custtype");
+		custtype="T";
+                String state = req.getParameter("state");
+                String zip = req.getParameter("zip");
+                String homephone = req.getParameter("homephone");
+                String altphone = req.getParameter("altphone");
+                String cust_notes = req.getParameter("cust_notes");
+		cust_notes="Added from a customer request";
+                String cemail = req.getParameter("cemail");
+                //String custsite = req.getParameter("custsite");
+                //String sitenum = req.getParameter("sitenum");
+		// get date in YYYYMMDD format
+		if ((cname.length()<=1)||(address1.length()<=1)||(homephone.length()<=7)) {
+			out.println("<h2>You either did not complete<br>1) Name<br>2) Address<br>3)Phone Number<br><br>Please use your back key on the browser and correct problem.<br>");
+		} else {
+		Format formatter;	
+		Calendar now = Calendar.getInstance();
+		Date date = new Date(); 
+		formatter = new SimpleDateFormat("yyyyMMdd");
+		String s = formatter.format(date);
+		// get max customer number and add 1
+		int highrecnum = UniCustomer.getMaxID(con);
+		highrecnum++;
+		// String combine the max customer number and date to get custsite
+		String custsite=combinestring(s,""+highrecnum+"");
+		String sitenum="001";
+		out.println("Custsite: "+custsite+"<br>Sitenum: "+sitenum+"<br>");
+                UniCustomer.addCustomer(con, cname, address1, address2, city, state, zip, homephone, altphone, cust_notes,cemail,custsite,sitenum,custtype);
+                // Now get new max customer record and this is crecnum
+		int newcustrec = UniCustomer.getMaxID(con);
+		out.println("Your item has been added to the database");
+		con.close();
+		res.sendRedirect(""+classdir+"UniCash?action=addservicerequest&custsite="+custsite+"&sitenum="+sitenum+"&crecnum="+newcustrec+"");
+		}
+            }
+
+private void doAddServiceRequest(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+	String custsite=req.getParameter("custsite");
+	String sitenum=req.getParameter("sitenum");
+	String tcustnum=req.getParameter("crecnum");
+		Format formatter;
+        Calendar now = Calendar.getInstance();
+        Date date = new Date();
+        formatter = new SimpleDateFormat("MM-dd-yyyy");
+        String s = formatter.format(date);
+        int hour = now.get(Calendar.HOUR_OF_DAY); 
+        int second = now.get(Calendar.SECOND);
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int minute = now.get(Calendar.MINUTE);
+        int millisecond = now.get(Calendar.MILLISECOND);
+	String collected="0.00";
+	String charges="0.00";
+        int custnum = Integer.parseInt(tcustnum);
+        int eenum=0;
+        int ecustnum=0;
+        String brand=null;
+        String modelnum=null;
+        String serialnum=null;
+        String filter=null;
+        String notes=null;
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add Customer Request</title>");
+	out.println("</head>");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=savecustcallslip&custnum="+custnum+"\" name=\"addcat\">");
+	out.println("<table size=100% border=1>");
+	out.println("<tr><td>Date</td><td>"+s+"");
+	out.println("<input type=\"hidden\" name=\"cdate\" value="+s+"></td>");
+	out.println("</tr>");
+	out.println("<tr><td>Please Enter Your Initials</td><td>");
+	out.println("<input type=\"text\" name=\"custinits\" ></td>");
+	out.println("</tr>");
+	out.println("<tr><td>Reason</td><td>");
+	out.println("<SELECT  name=\"reason\">");
+	out.println("<OPTION>Air Conditioning - System Down");
+	out.println("<OPTION>Air Conditioning - Maintenance Needed");
+	out.println("<OPTION>Heating - System Down");
+	out.println("<OPTION>Heating - Maintenance Needed");
+	out.println("<OPTION>Refrigeration - System Down");
+	out.println("<OPTION>Refrigeration - Maintenance Needed");
+	out.println("<OPTION>Sales Quote - New Equipment");
+	out.println("<OPTION>Sales Quote - Equipment Replacement");
+	out.println("<OPTION>Indoor Air Quality - Inspection");
+	out.println("<OPTION>Indoor Air Quality - Problem");
+	out.println("<OPTION>Other - Please call");	
+	out.println("</SELECT></td></tr>");
+	out.println("<tr><td>Please describe problem or request with as much detail as possible:</td><td>");
+	out.println("<textarea name=\"services\" cols=\"60\" rows=\"8\" wrap=\"VIRTUAL\" style=\"width: 500px\"></textarea></td></tr>");
+	out.println("<input type=\"hidden\" name=\"custsite\" value=\""+custsite+"\">");
+	out.println("<input type=\"hidden\" name=\"sitenum\" value=\""+sitenum+"\">");
+	out.println("<input type=\"hidden\" name=\"custnum\" value=\""+custnum+"\">");
+	out.println("</td></tr></table>");
+	out.println("<p> <CENTER>");
+	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
+	out.println("<INPUT TYPE=\"reset\">");
+	out.println("</CENTER>");	
+	out.println("</form>");	
+	}
+
+private void doSaveCustCallslip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+                        {
+		String tcustnum = req.getParameter("custnum");
+		String custsite = req.getParameter("custsite");
+		String sitenum = req.getParameter("sitenum");
+       		 int custnum = Integer.parseInt(tcustnum);
+		 Format formatter;	
+		Calendar now = Calendar.getInstance();
+		Date date = new Date(); 
+		formatter = new SimpleDateFormat("yyyyMMdd");
+		String s = formatter.format(date);
+		String custinits=req.getParameter("custinits");
+                String callslip ="";
+		callslip=combinestring(s,custinits);
+                String reason= req.getParameter("reason");
+                String services= req.getParameter("services");
+                String cdate= req.getParameter("cdate");
+                String recommendations="Needs Attention - Entered by Customer Request";
+                String rscheduled="";
+                String charges="0.00";
+                String collected= "0.00";
+                String notes= "-";
+                String equip1="0";
+		String equip2="0";
+                String equip3="0";
+		String equip4="0";
+		String crectype="C";
+		String tfollowup= req.getParameter("followup");
+       		//int followup = Integer.parseInt(tfollowup);
+		String tservices = services.replaceAll("\n","<br>");	
+		String trecommendations = recommendations.replaceAll("\n","<br>");	
+		String parts="-";
+		String address1="";
+		String address2="";
+		int followup=5;
+		String cname="";
+		String city="";
+		String homephone="";
+		String altphone="";
+		String crecnum="";
+		String state="";
+		String email="";
+		String zip="";
+                UniCallslip.AddItem(con, custnum, callslip, doFormatDateDb(getDateDb(cdate)), equip1, equip2,equip3, equip4, reason, services, recommendations, rscheduled, charges, collected, notes, followup, custsite, sitenum, crectype, username,parts);
+		String mbody="";
+		mbody=combinestring(mbody,"A Call was just entered on the system by a customer. The information is as follows:<br>");
+		Vector v;
+                v = UniCustomer.getCustNumSite(con, custsite, sitenum);
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniCustomer t = (UniCustomer) v.elementAt(i);
+			address1=t.getAddress1();
+			address2=t.getAddress2();
+			crecnum=t.getCusNum();
+			custsite=t.getCustSite();
+			sitenum=t.getSiteNum();
+			cname = t.getCustomerName();
+			city=t.getCity();
+			state=t.getState();
+			homephone=t.getHomePhone();
+			altphone=t.getAltPhone();
+			email=t.getCEmail();
+			zip=t.getZip();
+		}
+		mbody=combinestring(mbody,"Customer Name: "+cname+"<br>");
+		mbody=combinestring(mbody,"Address: "+address1+"<br>");
+		mbody=combinestring(mbody,"Address: "+address2+"<br>");
+		mbody=combinestring(mbody,"City, State  Zip:"+city+", "+state+"  "+zip+"<br>");
+		mbody=combinestring(mbody,"<br>");
+		mbody=combinestring(mbody,"Date:"+cdate+"<br>");
+		mbody=combinestring(mbody,"Callslip Number: "+callslip+"<br>");
+		mbody=combinestring(mbody,"Reason: "+reason+"<br>");
+		mbody=combinestring(mbody,"<br>Description of Problem:<br>"+services+"<br>"+recommendations+"<br>");
+                out.println("Your item has been added to the database.<br><br>");
+		out.println("Your request was entered on: "+cdate+"<br>");
+		out.println("Your record number is: "+callslip+"<br><br>");
+		out.println("Your request has been emailed out to the appropriate technician who will confirm call with you<br>within 30 minutes<br>");
+		out.println("Please print or write down this confirmation for your reference.<br>");
+		out.println("Thank you for helping us save you money by using our automated system.<br><br><br>--------------------------------------<br>"+mbody+"");
+		
+		// put email routine in here
+
+	String emailserver = doGetSmtpServer("servsys");
+	//emailsendaddress=doGetIns_Email(username);
+	String emailsendaddress=doGetCompanyReportEmail();
+	String techemailaddress=doGetTech_Email("servsys");	
+	String smtpuser = doGetSmtpUser("servsys");
+      	String smtppassword = doGetSmtpPassword("servsys");
+       doMailSend(emailserver, emailsendaddress, techemailaddress, "Customer Service Request: Callslip: "+callslip+"" , mbody, smtpuser, smtppassword);
+		
+		con.close();
+            }
+	       
 private void doLoginUser(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
@@ -8991,7 +9434,7 @@ private void doPrintCustForm(HttpServletRequest req, HttpServletResponse res, Pr
 		
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=addtimecat>Add a Category</a></body></html>");
 		String thismainserver=doGetThisMainServer();
-		if (!thismainserver.equalsIgnoreCase("yes") {
+		if (!thismainserver.equalsIgnoreCase("yes")) {
 		out.println("<br><br><br><a href="+classdir+"UniCash?action=uploadtimecat>Upload to Main Server (NEED INTERNET CONNECT)</a></body></html>");
 		}
 			con.close();

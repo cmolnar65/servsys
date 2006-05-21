@@ -21,6 +21,7 @@ RELEASE 2.29
 =================================================================
 (N) Moved from localhost cvs to svn.sourceforge.net /svnroot/servsys
     re-imported and updated. This is test commit.
+(N) Customer request form is now added
 
 	
 
