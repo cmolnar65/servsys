@@ -1,19 +1,17 @@
 - Need to figure out a way for master worksheets to update when pricing updates.
 55. Identify email of callslips into system -
 54. Read email from server - 
-136. Load calc entry form -
-137. Load calc edit form -
-138. Load calc report - 
 145. Add prompting for package selection -
 146. Add color prompting for package selection -
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
 - if running on master server allow update of server dates.
-- Add customer interface: customer selects on "request service" from main screen prior to log in. 
-  is prompted for customer number from bill. customer number is searched to match address and phone number.
-  customer is presented with a pre-filled form or requested for information. Customer is asked to complete
-  information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
-  appropriate people.
+- Edit Planned Service Pricing need to be added/fixed.
+- Need to add CSV file import for Inventory Data
+
+=================================================================
+RELEASE 2.30
+=================================================================
 
 
 =================================================================
@@ -22,8 +20,13 @@ RELEASE 2.29
 (N) Moved from localhost cvs to svn.sourceforge.net /svnroot/servsys
     re-imported and updated. This is test commit.
 (N) Customer request form is now added
-
-	
+(F) Fixed the return from adding a service proposal to go to the correct spot on the servsys grid.
+(N) Add customer interface: customer selects on "request service" from main screen prior to log in. 
+  is prompted for customer number from bill. customer number is searched to match address and phone number.
+  customer is presented with a pre-filled form or requested for information. Customer is asked to complete
+  information and aknowladge billing and disclaimer. Customer is given a reciept and email is sent to the 
+  appropriate people.
+(F) Fixed the add planned service price routine. Error found while working on documentation.
 
 =================================================================
 RELEASE 2.28
@@ -62,6 +65,9 @@ RELEASE 2.26
  (N) Now added SyncCustQuotes
  (N) Now added SyncCustWorksheet
  (N) Now Added SyncCustPagreement
+136. Load calc entry form 
+137. Load calc edit form -
+138. Load calc report - 
  
 =================================================================
 RELEASE 2.25

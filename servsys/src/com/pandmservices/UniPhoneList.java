@@ -80,18 +80,26 @@ public class UniPhoneList
 	}
 	  
 
-	public static void UpdateItem(Connection con, int record_number, String name, String home_number, String cell_number, String direct_connect, String truck_number, String additional_number)
+	public static void UpdateItem(Connection con, int record_number, String name, String home_number, String cell_number, String direct_connect, String truck_number, String additional_number, String newdate)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
       		stmt.executeUpdate("Update phone_list Set name ='" +name + "', home_number='"+home_number +"', cell_number='"+cell_number +"', direct_connect='"+direct_connect +"', truck_number='"+truck_number +"', additional_number='"+additional_number +"' Where record_number=" + record_number + ";");
+		stmt.executeUpdate("update phone_list_date set dateupdated='"+newdate+"';"); 
       	}
-
 	public static void AddItem(Connection con, String name, String home_number, String cell_number, String direct_connect, String truck_number, String additional_number)
                 throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
 		        {
 			Statement stmt = con.createStatement();
 	                stmt.executeUpdate("INSERT INTO phone_list (name, home_number, cell_number, direct_connect, truck_number, additional_number) Values ('" + name + "','" +home_number+ "','"+ cell_number+ "','"+ direct_connect + "','" + truck_number + "','"+ additional_number + "')");
+		        }
+
+	public static void AddItem(Connection con, String name, String home_number, String cell_number, String direct_connect, String truck_number, String additional_number, String newdate)
+                throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
+		        {
+			Statement stmt = con.createStatement();
+	                stmt.executeUpdate("INSERT INTO phone_list (name, home_number, cell_number, direct_connect, truck_number, additional_number) Values ('" + name + "','" +home_number+ "','"+ cell_number+ "','"+ direct_connect + "','" + truck_number + "','"+ additional_number + "')");
+			stmt.executeUpdate("update phone_list_date set dateupdated='"+newdate+"';");
 		        }
 
         public int getId() { return record_number; }

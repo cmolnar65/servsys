@@ -4823,7 +4823,7 @@ private void doCustomerRequest(HttpServletRequest req, HttpServletResponse res, 
 	out.println("</td><td>");
 	out.println("<input type=\"text\" name=\"lname\" size=\"20\" >");
 	out.println("</td></tr><tr><td>");
-	out.println("First Name:");
+	out.println("First Name:<br>(Leave blank if business)");
 	out.println("</td><td>");
 	out.println("<input type=\"text\" name=\"fname\" size=\"20\" >");
 	out.println("</td></tr><tr><td>");
@@ -4881,7 +4881,7 @@ out.println("<TABLE WIDTH=100% BORDER=0 CELLPADDING=4 CELLSPACING=0>");
 				out.println("</P>");
 			out.println("</TD>");
 			out.println("<TD WIDTH=50% ALIGN=LEFT>");
-			out.println("<h2><i>Service Entry and Reporting System</i></h2>");
+			//out.println("<h2><i>Service Entry and Reporting System</i></h2>");
 			out.println("</TD>");
 		out.println("</TR>");
 	out.println("</THEAD>");
@@ -4890,13 +4890,13 @@ out.println("</BODY>");
 out.println("</HTML>");
 out.println("<br><br><br><br><CENTER>");
 out.println("(C) Copyright 2002-2006 - Our World Services, LLC<br>");
-out.println("<br>Version: "+doVersionInfo_VNumber()+" - Compiled: "+doFormatDate(getDate(doVersionInfo_VDate()))+"<br>");
+//out.println("<br>Version: "+doVersionInfo_VNumber()+" - Compiled: "+doFormatDate(getDate(doVersionInfo_VDate()))+"<br>");
 //out.println("<br>Software Expire Date: "+doFormatDate(getDate(doGetExpireDate()))+"<br>");
 //out.println("<br>Software Expire Date has been removed for GPL version.<br>");
 //out.println("<br>Source code per the GPL can be found on sourceforge.net or at servsys.org<br>");
 out.println("<br><br><br>For assistance with this product please contact:<br>Chris Molnar<br>860-798-7032<br>molnarc@mac.com");
-out.println("<br><br><br><P><IMG SRC=\""+Gwebhome+"MacOS_Pnthr_Vert_v1.gif\" NAME=\"Graphic1\" ALIGN=CENTER WIDTH=50 HEIGHT=60 BORDER=0><BR CLEAR=LEFT><BR>");
-out.println("Developed on Mac OS/X for all platforms<br>");
+//out.println("<br><br><br><P><IMG SRC=\""+Gwebhome+"MacOS_Pnthr_Vert_v1.gif\" NAME=\"Graphic1\" ALIGN=CENTER WIDTH=50 HEIGHT=60 BORDER=0><BR CLEAR=LEFT><BR>");
+//out.println("Developed on Mac OS/X for all platforms<br>");
 /* #system("uptime"); */
 
 	out.println("</CENTER>");
@@ -5213,6 +5213,8 @@ private void doSaveCustCallslip(HttpServletRequest req, HttpServletResponse res,
 		mbody=combinestring(mbody,"Customer Name: "+cname+"<br>");
 		mbody=combinestring(mbody,"Address: "+address1+"<br>");
 		mbody=combinestring(mbody,"Address: "+address2+"<br>");
+		mbody=combinestring(mbody,"Phone: "+homephone+"<br>");
+		mbody=combinestring(mbody,"Phone 2: "+altphone+"<br>");
 		mbody=combinestring(mbody,"City, State  Zip:"+city+", "+state+"  "+zip+"<br>");
 		mbody=combinestring(mbody,"<br>");
 		mbody=combinestring(mbody,"Date:"+cdate+"<br>");
@@ -10260,7 +10262,7 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 	out.println("<head>");
 	out.println("<title>Add Preventative Price</title>");
 	out.println("</head>");
-	out.println("<form method=\"post\" action=\"href="+classdir+"UniCash?action=saveprevprice\" name=\"addcust\">");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=saveprevprice\" name=\"addcust\">");
 	out.println("<p>Description        :");
 	out.println("<input type=\"text\" name=\"descript\" size=\"40\">");
 	out.println("</p>");
@@ -10280,8 +10282,7 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
 	out.println("<INPUT TYPE=\"reset\">");
 	out.println("</CENTER>");
-
-			con.close();
+	con.close();
 	}
 
   private void doSavePrevPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
@@ -10292,9 +10293,15 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
                 String yr2 = req.getParameter("yr2");
                 String yr1 = req.getParameter("yr1");
                 String tm_est = req.getParameter("tm_est");
+		Format formatter;	
+		Calendar now = Calendar.getInstance();
+		Date date = new Date(); 
+		formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String s = formatter.format(date);		
 		
-                UniPreventative.addPreventative(con, descript, tm_est, yr1, yr2, yr3);
+                UniPreventative.addPreventative(con, descript, tm_est, yr1, yr2, yr3, s);
                 out.println("Your item has been added to the database<br>");
+		
 		con.close();
 		res.sendRedirect(""+classdir+"UniCash?action=listprevprice");
 	}
@@ -10367,11 +10374,11 @@ out.println("<head>");
 out.println("<title>Planned Service Prices</title>");
 out.println("</head>");
 out.println("<BODY TEXT=#000000 LINK=#0000ff VLINK=#000080 BGCOLOR=#ffffff> ");
-out.println("<a href="+classdir+"UniCash?action=addprevetative>Add a Service Price</a>");
+out.println("<a href="+classdir+"UniCash?action=addprevprice>Add a Service Plan Price</a>");
 out.println("<P><P>");
 out.println("<table border=1 width=100%>");
-//out.println("<th>Description</th><th>T/M Cost</th><th>1 Year</th><th>2 Year</th><th>3 Year</th>");
-out.println("<th>Description</th><th>T/M Cost</th><th>2 Year</th><th>3 Year</th>");
+out.println("<th>Description</th><th>T/M Cost</th><th>1 Year</th><th>2 Year</th><th>3 Year</th>");
+//out.println("<th>Description</th><th>T/M Cost</th><th>2 Year</th><th>3 Year</th>");
                 Vector v;
                 v = UniPreventative.getAllItems(con);
                 int counter=0;
@@ -10395,12 +10402,11 @@ out.println("<th>Description</th><th>T/M Cost</th><th>2 Year</th><th>3 Year</th>
                         counter=0;
                                 }
 
-//out.println("<tr><td><a href=edprevprice.php?planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_1+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
-				out.println("<tr><td><a href=edprevprice.php?planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
+out.println("<tr><td><a href=edprevprice.php?planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_1+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
+				//out.println("<tr><td><a href=edprevprice.php?planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
                 }
 out.println("</table>");
-out.println("<P><P>");
-out.println("<a href="+classdir+"UniCash?action=addprevetative>Add a Service Price</a>");
+out.println("<P><P>");out.println("<a href="+classdir+"UniCash?action=addprevprice>Add a Service Plan Price</a>");
 		con.close();
 }
   
@@ -21235,7 +21241,13 @@ private void doUpdateCompPhoneListRec(HttpServletRequest req, HttpServletRespons
 		String dirconnect = req.getParameter("dirconnect");
 		String trucknum = req.getParameter("trucknum");
 		String addnum = req.getParameter("addnum");
-                UniPhoneList.UpdateItem(con, recnum, ename, homenum, cellnum, dirconnect, trucknum, addnum);
+		Format formatter;	
+		Calendar now = Calendar.getInstance();
+		Date date = new Date(); 
+		formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String s = formatter.format(date);		
+		
+                UniPhoneList.UpdateItem(con, recnum, ename, homenum, cellnum, dirconnect, trucknum, addnum, s);
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=listphonelist");
             }
@@ -21250,7 +21262,13 @@ private void doSaveCompPhoneListRec(HttpServletRequest req, HttpServletResponse 
 		String dirconnect = req.getParameter("dirconnect");
 		String trucknum = req.getParameter("trucknum");
 		String addnum = req.getParameter("addnum");
-                UniPhoneList.AddItem(con, ename, homenum, cellnum, dirconnect, trucknum, addnum);
+		Format formatter;	
+		Calendar now = Calendar.getInstance();
+		Date date = new Date(); 
+		formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String s = formatter.format(date);		
+		
+                UniPhoneList.AddItem(con, ename, homenum, cellnum, dirconnect, trucknum, addnum, s);
 		con.close();
                 res.sendRedirect(""+classdir+"UniCash?action=listphonelist");
             }
@@ -22357,7 +22375,7 @@ private void doSaveProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		con.close();
 
         out.println("Your item has been updated in the database<br>");
-        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
+        res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=5&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
             }
 	
 private void doSavePrev(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)

@@ -69,7 +69,16 @@ public class UniPreventative
 		Statement stmt = con.createStatement();
       		stmt.executeUpdate("Update todo Set descript='" +desc+ "' Where ID=" + id + ";");
       	}
-
+	
+public static void addPreventative(Connection con, String description, String tm_est, String yr_1, String yr_2, String yr_3, String newdate)
+                throws SQLException
+		        {
+			String tdescription = description.replaceAll("'","''");
+	                Statement stmt = con.createStatement();
+	                stmt.executeUpdate("INSERT INTO prevprices (descript, tm_est, yr1, yr2, yr3) Values ('" + tdescription + "','" +tm_est+ "','"+ yr_1 + "','"+ yr_2 + "','"+ yr_3 + "')");
+			stmt.executeUpdate("update prevprices_date set dateupdated='"+newdate+"';");
+		        }
+			
 public static void addPreventative(Connection con, String description, String tm_est, String yr_1, String yr_2, String yr_3)
                 throws SQLException
 		        {
