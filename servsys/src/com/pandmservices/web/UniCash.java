@@ -6389,14 +6389,19 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.28";
+			vnumber = "2.29";
+			if (dbvnumber.equalsIgnoreCase("2.28")) {
+			Statement stmtu2 = con.createStatement();
+			int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.29';");
+			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-23';");
+						}
 			if (dbvnumber.equalsIgnoreCase("2.27")) {
 			Statement stmtu2 = con.createStatement();
 			int result225a1 = stmtu2.executeUpdate("alter table inv_use add invloc text after servsync;");
 			int result226a1=stmtu2.executeUpdate("update inv_use set invloc='TRUCK';");
 			//int result225a2 = stmtu2.executeUpdate("");
 			int result225z = stmtu2.executeUpdate("UPDATE version set vnumber='2.28';");
-			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-17';");
+			int result221x = stmtu2.executeUpdate("UPDATE version set vdate='2006-05-23';");
 						}
 			if (dbvnumber.equalsIgnoreCase("2.26")) {
 			Statement stmtu2 = con.createStatement();
