@@ -12,6 +12,8 @@
 =================================================================
 RELEASE 2.30
 =================================================================
+(N) Added odometer start and stop to time sheet entries and databases.
+(N) Made sure that odometer readings are added to everything that is printed.
 
 
 =================================================================

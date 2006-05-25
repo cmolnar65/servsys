@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.Vector;
 import java.util.Date;
 import java.security.*;
+import java.lang.Integer.*;
 
 
 public class UniTimeSheet
@@ -30,6 +31,8 @@ public class UniTimeSheet
 	private String commision;
 	private String ctype;
 	private int tsid;
+	private String odostart;
+	private String odostop;
 	private String dispatch_time;
 	private int servsync;
 	private String paytype;
@@ -61,6 +64,8 @@ public class UniTimeSheet
 		this.login = rs.getString("login");
 		this.paytype = rs.getString("paytype");
 		this.servsync=rs.getInt("servsync");
+		this.odostart = rs.getString("odostart");
+		this.odostop=rs.getString("odostop");
 	}
 
 
@@ -174,25 +179,25 @@ public class UniTimeSheet
       		stmt.executeUpdate("Update todo Set Done=true Where ID=" + id + ";");
       	}
 
-	public static void UpdateItem(Connection con, String tsid, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype)
+	public static void UpdateItem(Connection con, String tsid, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype, String odostart, String odostop)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update time_sheet Set tdate ='" +listdate + "', callslip='"+callslip +"', customer='"+customer +"', dispatch_time='"+dispatch_time +"', time_in='"+time_in +"', time_out='"+time_out +"', item_sold='"+isold +"', amount='"+asold +"', citem_sold='"+cisold +"', camount='"+casold +"',amount_collected='"+collected +"', commision='"+commision +"', ctype='"+ctype +"', login='"+login+"', paytype='"+paytype+"'  Where tsid=" + tsid + ";");
+      		stmt.executeUpdate("Update time_sheet Set tdate ='" +listdate + "', callslip='"+callslip +"', customer='"+customer +"', dispatch_time='"+dispatch_time +"', time_in='"+time_in +"', time_out='"+time_out +"', item_sold='"+isold +"', amount='"+asold +"', citem_sold='"+cisold +"', camount='"+casold +"',amount_collected='"+collected +"', commision='"+commision +"', ctype='"+ctype +"', login='"+login+"', paytype='"+paytype+"', odostart='"+odostart+"', odostop='"+odostop+"'  Where tsid=" + tsid + ";");
       	}
 
-	public static void addTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype)
+	public static void addTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype, String odostart, String odostop)
                 throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
 		        {
 			Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"')");
+	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype, odostart, odostop) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"', '"+odostart+"', '"+odostop+"')");
 		        }
 	
-	public static void addAdminTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype, String callcount)
+	public static void addAdminTimeSheetItem( Connection con, String listdate, String callslip, String customer, String dispatch_time, String time_in, String time_out, String isold, String asold, String collected, String commision, String cisold, String casold, String ctype, String login, String paytype, String callcount, String odostart, String odostop)
                 throws SQLException, NoSuchAlgorithmException, NoSuchProviderException
 		        {
 			Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype, callcount) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"', '"+callcount+"')");
+	                stmt.executeUpdate("INSERT INTO time_sheet (tdate, callslip, customer, time_in, time_out, item_sold, amount, amount_collected, commision, dispatch_time, citem_sold, camount, ctype, login, paytype, callcount, odostart, odostop) Values ('" + listdate + "','" +callslip+ "','"+ customer + "','"+ time_in + "','" + time_out + "','"+ isold + "','"+ asold +"','"+collected+"','"+ commision+"','"+ dispatch_time + "', '"+ cisold + "','"+ casold +"','"+ctype+"', '"+login+"', '"+paytype+"', '"+callcount+"','"+odostart+"','"+odostop+"')");
 		        }
 
         public int getId() { return tsid; }
@@ -213,6 +218,8 @@ public class UniTimeSheet
 	public String TLogin() { return login; }
 	public int getServSync() { return servsync; }
 	public String TPayType() { return paytype; }
+	public String OdoStart() { return odostart; }
+	public String OdoStop() { return odostop; }
 
         public void setId(int id) { this.id = id; }
 }
