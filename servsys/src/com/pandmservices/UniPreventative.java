@@ -53,6 +53,21 @@ public class UniPreventative
 		return V;
 	}
 
+	public static Vector getAllItems(Connection c, String d)
+		throws SQLException, TodoException
+	{	
+		Vector V = new Vector();
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM prevprices where planrec='"+d+"' order by descript");
+		while(rs.next())
+		{
+			
+			UniPreventative t = new UniPreventative(c,rs.getInt("planrec"));
+			V.addElement(t);
+		}
+		return V;
+	}
+
 
 	public static void deleteItem(Connection con, String d)
 		throws SQLException
@@ -87,6 +102,16 @@ public static void addPreventative(Connection con, String description, String tm
 	                stmt.executeUpdate("INSERT INTO prevprices (descript, tm_est, yr1, yr2, yr3) Values ('" + tdescription + "','" +tm_est+ "','"+ yr_1 + "','"+ yr_2 + "','"+ yr_3 + "')");
 		        }
 
+public static void UpdatePreventative(Connection con, String prevrec, String description, String tm_est, String yr_1, String yr_2, String yr_3, String newdate)
+                throws SQLException
+		        {
+			String tdescription = description.replaceAll("'","''");
+	                Statement stmt = con.createStatement();
+	                stmt.executeUpdate("Update prevprices set descript='" + tdescription + "', tm_est='" +tm_est+ "', yr1='"+ yr_1 + "', yr2='"+ yr_2 + "', yr3='"+ yr_3 + "' where planrec='"+prevrec+"';");
+			stmt.executeUpdate("update prevprices_date set dateupdated='"+newdate+"';");
+		        }
+
+			
         public int getId() { return planrec; }
 
         public String getDescription() { return description; }

@@ -177,6 +177,7 @@ mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=configforms target=phpmain>Forms</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=edrespsform target=phpmain>Residential Planned Service Form</a><br>");
 	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=editrateconfig target=phpmain>Rate Calculation Configuration</a><br>");
+	mbody=combinestring(mbody,"&nbsp;&nbsp;&nbsp;-&nbsp;<a href="+classdir+"UniCash?action=uploadinvcsvfile target=phpmain>Upload Inventory CSV File</a><br>");
 	}
 	mbody=combinestring(mbody,"<br><a href="+classdir+"UniCash?action=menu&menu=reports target=nav>Reports</a><br>");
 	if (menu.equalsIgnoreCase("reports")) {

@@ -6,15 +6,14 @@
 - Upload checkme
 - move all select statements into other classes and out of UniCash.java.
 - if running on master server allow update of server dates.
-- Edit Planned Service Pricing need to be added/fixed.
-- Need to add CSV file import for Inventory Data
 
 =================================================================
 RELEASE 2.30
 =================================================================
 (N) Added odometer start and stop to time sheet entries and databases.
 (N) Made sure that odometer readings are added to everything that is printed.
-
+(N) Edit Planned Service Pricing has been added, tested and fixed.
+(N) Need to add CSV file import for Inventory Data
 
 =================================================================
 RELEASE 2.29

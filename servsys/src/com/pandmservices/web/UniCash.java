@@ -21,6 +21,21 @@ import java.util.Date;
 import java.sql.*;
 import javax.mail.*;
 import javax.mail.internet.*;
+import org.apache.commons.fileupload.*;
+import org.apache.commons.fileupload.disk.*;
+import org.apache.commons.fileupload.servlet.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.io.PrintWriter;
+import javax.servlet.ServletInputStream;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.MultipartStream;
+import org.apache.commons.io.*;
+//import org.apache.commons.beanutils.*;
+//import org.apache.commons.beanutils.MethodUtils;
 
 public class UniCash extends HttpServlet
 {
@@ -1949,11 +1964,23 @@ out.println("</CENTER>");
 			{
 				doAddPrevPrice(req, res, out, session, username);
 			}
+			else if (action.equalsIgnoreCase("editprevprice"))
+			{
+				doAddPrevPrice(req, res, out, session, username);
+			}
 			else if (action.equalsIgnoreCase("uploadinvcsvfile"))
 			{
 				doUploadInvCSVFile(req, res, out, session, username);	
 			}
+			else if (action.equalsIgnoreCase("importinvcsv"))
+			{
+				doImportInvCSVFile(req, res, out, session, username);	
+			}
 			else if (action.equalsIgnoreCase("saveprevprice"))
+			{
+				doSavePrevPrice(req, res, out, session, username);
+			}
+			else if (action.equalsIgnoreCase("updateprevprice"))
 			{
 				doSavePrevPrice(req, res, out, session, username);
 			}
@@ -10274,13 +10301,17 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
  private void doUploadInvCSVFile(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
+	
 	out.println("<html>");
 	out.println("<head>");
 	out.println("<title>Upload CSV File</title>");
 	out.println("</head>");
-	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=importinvcsv\" name=\"importcsv\">");
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=importinvcsv\" name=\"importcsv\" enctype=\"multipart/form-data\">");
 	out.println("<p>File  :");
-	out.println("<input type=\"file\" name=\"csvfile\" size=\"50\">");
+	out.println("<input type=\"file\" name=\"csvfile\">");
+	out.println("</p>");
+	//out.println("<p>File Name:");
+	out.println("<input type=\"hidden\" name=\"cvsfilename\" value=\"dsaa.csv\">");
 	out.println("</p>");
 	out.println("<p> <CENTER>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Import\">");
@@ -10289,31 +10320,250 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 	con.close();
 	}
 	
+
+ private void doImportInvCSVFile(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+		Format formatter;	
+		Calendar now = Calendar.getInstance();
+		Date date = new Date(); 
+		formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String s = formatter.format(date);		
+		boolean isMultipart = FileUpload.isMultipartContent(req);
+		// Create a new file upload handler
+		DiskFileUpload upload = new DiskFileUpload();
+		// parse this request by the handler
+		// this gives us a list of items from the request
+		List items = null;
+
+		try {
+			items = upload.parseRequest(req);
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			out.println("Problem at Parse Request line 10326<br>");
+		}
+
+		Iterator itr = items.iterator();
+		
+		while(itr.hasNext()) {
+			FileItem item = (FileItem) itr.next();
+			
+			// check if the current item is a form field or an uploaded file
+			if(item.isFormField()) {
+				
+				// get the name of the field
+				String fieldName = item.getFieldName();
+
+				// if it is name, we can set it in request to thank the user
+				if(fieldName.equals("filename")) {
+					req.setAttribute("msg", "Thank You: " + item.getString());
+					// later you can use it like this:	
+					out.println(req.getAttribute("msg")+"<br>");
+				}
+
+				out.println(item.getFieldName() + " = " + item.getString() + "<br>");
+				}
+
+				else {
+
+					// the item must be an uploaded file save it to disk. Note that there
+					// seems to be a bug in item.getName() as it returns the full path on
+					// the client's machine for the uploaded file name, instead of the file
+					// name only. To overcome that, I have used a workaround using
+					// fullFile.getName().
+					File fullFile = new File(item.getName());
+					//File savedFile = new File(getServletContext().getRealPath("/"), fullFile.getName());
+					File savedFile = new File("/tmp/", fullFile.getName());
+					try {
+						item.write(savedFile);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						out.println(e1+"<br>");
+						//out.println("Exception in the file save portion of rountine<br>");
+					}
+					out.println("<br>saved file = " + fullFile.getName()+"<br>");
+					
+					// here is where we do the csv sql stuff.
+					try
+						{
+								// load the driver into memory
+								Class.forName("org.relique.jdbc.csv.CsvDriver");
+								// create a connection. The first command line parameter is assumed to
+								//  be the directory in which the .csv files are held
+								Connection conn = DriverManager.getConnection("jdbc:relique:csv:/tmp");
+								// create a Statement object to execute the query with
+								Statement stmt = conn.createStatement();
+								Statement stmt2 = con.createStatement();
+								// Select the ID and NAME columns from sample.csv
+								ResultSet results = stmt.executeQuery("SELECT * FROM dsaa");
+								// dump out the results
+														
+								int result1=stmt2.executeUpdate("DROP TABLE IF EXISTS inv_keycodes;");
+								int result2=stmt2.executeUpdate("CREATE TABLE inv_keycodes (ID int(11) NOT NULL auto_increment,keycodep text,part_number text,sort_desc text,description text,manu text,location text,oh_qty double,qty_opt double,part_cost double,extended_cost double,sell_price text,stocknum text,orderuom text,conversion double,peak_oh text,off_peak_oh text,PRIMARY KEY (ID),UNIQUE ID (ID),KEY ID_2 (ID));");
+								int counter=0;
+								while (results.next())
+								{
+									
+									//----------------------------------------------------------
+									
+			String keycodep=results.getString("Keycode");
+			String part_number=results.getString("Part Number");
+			String sort_desc=results.getString("Sort Description");
+			String description=results.getString("Description");
+			String manu=results.getString("Manufacturer");
+			String location=results.getString("Location");
+			String oh_qty=results.getString("Qty OH");
+			String qty_opt=results.getString("Opt Qty");
+			String part_cost=results.getString("ACTUAL COST");
+			String extended_cost=results.getString("Extended Cost");
+			String sell_price=results.getString("Sell Price");
+			String stocknum=results.getString("Stock UOM");
+			String orderuom=results.getString("Order UOM");
+			String conversion=results.getString("Conversion");
+			String peak_oh=results.getString("Peak Qty");
+			String off_peak_oh=results.getString("Off-Peak Qty");
+			if ((oh_qty==null)||(oh_qty.equalsIgnoreCase(""))) oh_qty="0";
+			if ((qty_opt==null)||(qty_opt.equalsIgnoreCase(""))) qty_opt="0";
+			if ((part_cost==null)||(part_cost.equalsIgnoreCase(""))) part_cost="0";
+			if ((extended_cost==null)||(extended_cost.equalsIgnoreCase(""))) extended_cost="0";
+			if ((sell_price==null)||(sell_price.equalsIgnoreCase(""))) sell_price="0";
+			if ((conversion==null)||(conversion.equalsIgnoreCase(""))) conversion="0";
+			
+			//if (oh_qty.length()<1) oh_qty="0";
+			//if (qty_opt.length()<1) qty_opt="0";
+			//if (part_cost.length()<1) part_cost="0";
+			//if (extended_cost.length()<1) extended_cost="0";
+			//if (sell_price.length()<1) sell_price="0";
+			//if (conversion.length()<1) conversion="0";
+			counter++;
+			//sort_desc="";
+			if (!description.equalsIgnoreCase("DO NOT USE")) {
+				stmt2.executeUpdate("INSERT INTO inv_keycodes (keycodep, part_number, sort_desc, description, manu, location, oh_qty, qty_opt, part_cost, extended_cost, sell_price, stocknum, orderuom, conversion, peak_oh, off_peak_oh) Values ('"+keycodep+"','" +part_number+ "', '"+sort_desc+"','"+description+"','" +manu+ "', '"+location+"','"+oh_qty+"','" +qty_opt+ "', '"+part_cost+"','"+extended_cost+"','" +sell_price+ "', '"+stocknum+"','"+orderuom+"','" +conversion+ "', '"+peak_oh+"','"+off_peak_oh+"')");
+				out.println("KEYCODE = " + results.getString("Keycode") + "   PART NUMBER= " + results.getString("Part Number")+"<br>");
+			} else {
+									
+									//----------------------------------------------------------
+									
+									out.println("SKIP KEYCODE = " + results.getString("Keycode") + "   PART NUMBER= " + results.getString("Part Number")+"<br>");
+			}
+								}
+								
+								out.println("<br><H1>Records Imported = "+counter+"</h1><br>");
+								
+								stmt2.executeUpdate("update inv_keycodes_date set dateupdated='"+s+"';");		
+								ResultSet rs = stmt2.executeQuery("SELECT * FROM inv_keycodes_date");
+								while(rs.next())
+								{
+									String nlocaldate=rs.getString("dateupdated");
+									out.println("<br>New Local Date: "+ nlocaldate +"<br>");
+								}				
 	
-  private void doAddPrevPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+		
+								
+								// clean up
+								results.close();
+								stmt.close();
+								conn.close();
+								
+							} 
+							catch(Exception e)
+							{
+								out.println("Oops-> " + e);
+							}
+					}
+				}
+		
+				con.close();
+			}
+
+	
+ private void OlddoImportInvCSVFile(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
 	out.println("<html>");
 	out.println("<head>");
-	out.println("<title>Add Preventative Price</title>");
+	out.println("<title>Import Inventory CSV File</title>");
 	out.println("</head>");
+	
+	// Create a factory for disk-based file items
+	DiskFileItemFactory factory = new DiskFileItemFactory();
+
+// Set factory constraints
+	//factory.setSizeThreshold(yourMaxMemorySize);
+	//factory.setRepositoryPath("upload1/");
+        factory.setRepository(new File("/tmp"));
+
+// Create a new file upload handler
+	ServletFileUpload upload = new ServletFileUpload(factory);
+
+	// Set overall request size constraint
+	//upload.setSizeMax(yourMaxRequestSize);
+	// Parse the request
+	List /* FileItem */ items = upload.parseRequest(req);
+	out.println("File Upload Complete");
+	
+	
+	out.println("Import Complete<br>");
+	con.close();
+	}
+	
+  private void doAddPrevPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+                throws Exception
+        {
+	String action=req.getParameter("action");
+	String descript="";
+	String tm_est="";
+	String yr1="";
+	String yr2="";
+	String yr3="";
+	int tplanrec=0;
+	String planrec="";
+	if (action.equalsIgnoreCase("editprevprice")) {
+                planrec= req.getParameter("planrec");
+		Vector v;
+                v = UniPreventative.getAllItems(con, planrec);
+                int counter=0;
+                for (int i = 0 ; i < v.size(); i++)
+                {
+                        UniPreventative t = (UniPreventative) v.elementAt(i);
+                        tplanrec  = t.getId();
+			planrec=""+tplanrec+"";
+                        descript= t.getDescription();
+                        tm_est = t.getTmEst();
+                        yr1 = t.getYr1();
+                        yr2 = t.getYr2();
+                        yr3 = t.getYr3();
+		}
+	}
+	out.println("<html>");
+	out.println("<head>");
+	out.println("<title>Add/Edit Preventative Price</title>");
+	out.println("</head>");
+	if (action.equalsIgnoreCase("addprevprice")) {
 	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=saveprevprice\" name=\"addcust\">");
+	}
+	if (action.equalsIgnoreCase("editprevprice")) {
+	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=updateprevprice\" name=\"addcust\">");
+	}
 	out.println("<p>Description        :");
-	out.println("<input type=\"text\" name=\"descript\" size=\"40\">");
+	out.println("<input type=\"text\" name=\"descript\" value=\""+descript+"\" size=\"40\">");
 	out.println("</p>");
 	out.println("<p>Time and Material Estimate  :");
-	out.println("<input type=\"text\" name=\"tm_est\" size=\"8\">");
+	out.println("<input type=\"text\" name=\"tm_est\" value=\""+tm_est+"\"  size=\"8\">");
 	out.println("</p>");
 	out.println("<p>1 Year  :");
-	out.println("<input type=\"text\" name=\"yr1\" size=\"8\">");
+	out.println("<input type=\"text\" name=\"yr1\"  value=\""+yr1+"\" size=\"8\">");
 	out.println("</p>");
 	out.println("<p>2 Year     :");
-	out.println("<input type=\"text\" name=\"yr2\" size=\"8\">");
+	out.println("<input type=\"text\" name=\"yr2\"  value=\""+yr2+"\" size=\"8\">");
 	out.println("</p>");
 	out.println("<p>3 Year    :");
-	out.println("<input type=\"text\" name=\"yr3\" size=\"8\">");
+	out.println("<input type=\"text\" name=\"yr3\"  value=\""+yr3+"\" size=\"8\">");
 	out.println("</p>");
 	out.println("<p> <CENTER>");
+	out.println("<input type=\"hidden\" Name=\"planrec\" value=\""+planrec+"\">");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
 	out.println("<INPUT TYPE=\"reset\">");
 	out.println("</CENTER>");
@@ -10323,6 +10573,8 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
   private void doSavePrevPrice(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
+		String action=req.getParameter("action");
+		String planrec=req.getParameter("planrec");
                 String descript = req.getParameter("descript");
                 String yr3 = req.getParameter("yr3");
                 String yr2 = req.getParameter("yr2");
@@ -10333,15 +10585,18 @@ out.println("<td align=\"left\"><select width=\"50\" name=\"techid\">");
 		Date date = new Date(); 
 		formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String s = formatter.format(date);		
-		
+		if (action.equalsIgnoreCase("saveprevprice")) {
                 UniPreventative.addPreventative(con, descript, tm_est, yr1, yr2, yr3, s);
-                out.println("Your item has been added to the database<br>");
-		
+		}
+		if (action.equalsIgnoreCase("updateprevprice")) {
+                UniPreventative.UpdatePreventative(con, planrec, descript, tm_est, yr1, yr2, yr3, s);
+		}
+		out.println("Your item has been added to the database<br>");
 		con.close();
 		res.sendRedirect(""+classdir+"UniCash?action=listprevprice");
 	}
 
-  private void doListPhoneList(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
+private void doListPhoneList(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
         {
 	int phonelistperm=Integer.parseInt(doGetEditCompPhoneList(username));
@@ -10437,7 +10692,7 @@ out.println("<th>Description</th><th>T/M Cost</th><th>1 Year</th><th>2 Year</th>
                         counter=0;
                                 }
 
-out.println("<tr><td><a href=edprevprice.php?planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_1+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
+out.println("<tr><td><a href="+classdir+"UniCash?action=editprevprice&planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_1+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
 				//out.println("<tr><td><a href=edprevprice.php?planrec="+planrec+">"+description+"</a></td><td>"+tm_est+"</td><td>"+yr_2+"</td><td>"+yr_3+"</td></tr>");
                 }
 out.println("</table>");
