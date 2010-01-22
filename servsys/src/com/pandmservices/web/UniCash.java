@@ -4920,7 +4920,7 @@ out.println("</TABLE>");
 out.println("</BODY>");
 out.println("</HTML>");
 out.println("<br><br><br><br><CENTER>");
-out.println("(C) Copyright 2002-2009 - Our World Services, LLC<br>");
+out.println("(C) Copyright 2002-2010 - Our World Services, LLC<br>");
 //out.println("<br>Version: "+doVersionInfo_VNumber()+" - Compiled: "+doFormatDate(getDate(doVersionInfo_VDate()))+"<br>");
 //out.println("<br>Software Expire Date: "+doFormatDate(getDate(doGetExpireDate()))+"<br>");
 //out.println("<br>Software Expire Date has been removed for GPL version.<br>");
@@ -6420,7 +6420,12 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.31";
+			vnumber = "2.50";
+			if (dbvnumber.equalsIgnoreCase("2.31")) {
+			Statement stmtu2 = con.createStatement();
+			int result230z = stmtu2.executeUpdate("UPDATE version set vnumber='2.50';");
+			int result230x = stmtu2.executeUpdate("UPDATE version set vdate='2010-01-21';");
+						}
 			if (dbvnumber.equalsIgnoreCase("2.30")) {
 			Statement stmtu2 = con.createStatement();
 			int result230z = stmtu2.executeUpdate("UPDATE version set vnumber='2.31';");
