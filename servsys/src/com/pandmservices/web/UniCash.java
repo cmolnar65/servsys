@@ -11009,13 +11009,16 @@ out.println("</CENTER>");
 	out.println("<input type=\"text\" name=\"cost\">");
 	out.println("</p>");
 	out.println("<p>Labor Hours      :");
-	out.println("<input type=\"text\" value=\"0.00\" name=\"laborhours\">");
+	out.println("<input type=\"text\" value=\"0\" name=\"laborhours\">");
 	out.println("</p>");
 	out.println("<p>Shop Hours      :");
-	out.println("<input type=\"text\" value=\"0.00\" name=\"shophours\">");
+	out.println("<input type=\"text\" value=\"0\" name=\"shophours\">");
 	out.println("</p>");
 	out.println("<p>Labor Cost      :");
 	out.println("<input type=\"text\" name=\"laborcost\" value=\""+doGetLaborCost()+"\">");
+	out.println("</p>");
+	out.println("<p>Sub Cost        :");
+	out.println("<input type=\"text\" name=\"subcost\" value=\"0.00\">");
 	out.println("</p>");
 	out.println("<input type=\"hidden\" name=\"wsnum\" value=\""+wsrec+"\">");
 	out.println("<input type=\"hidden\" name=\"custnum\" value=\""+custrec+"\">");
@@ -23562,6 +23565,7 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 		int quantity=0;
 		double cost=0.00;
 		double subcost=0.00;
+		double totsubcost=0.00;
 		int laborhours=0;
 		int shophours=0;
 		double laborcost=0;
@@ -23669,15 +23673,16 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 		laborhours = tp.getWsLaborHours();
 		shophours = tp.getWsShopHours();
 		laborcost = tp.getWsLaborCost();
+		subcost=tp.getWsSubCost();
 		double subtot=cost*quantity;
 		subtotlabor=(shophours+laborhours)*laborcost;
-
+		totsubcost=totsubcost+subcost;
 		totinvestment=totinvestment+subtot;
 		totlabor = totlabor+subtotlabor;
 		totlaborhours = totlaborhours+laborhours;
 		totshophours = totshophours+shophours;
 		
-		out.println("<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td></tr>");
+		out.println("<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subcost)+"</td></tr>");
 		}
 
 		double partmarkup = totinvestment * doGetPartMult();
@@ -23685,7 +23690,7 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 		double adjtotlabor = (totlaborhours+totshophours) * doGetLabMult();
 		//double fsellprice = (totlabor+partmarkup)/awsmult;
 		double laborsellprice = (laborcost*adjtotlabor)/awsmultlab;
-		double subsellprice = subcost/awsmultsub;
+		double subsellprice = totsubcost/awsmultsub;
 		double partsellprice = partmarkup/awsmult;
 		double fsellprice = laborsellprice+partsellprice+subsellprice;
 		double lsellprice = (totlabor*doGetGpToLabor())+totlabor+partmarkup;
@@ -24055,6 +24060,7 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		
 		String investment=null;
 		double qtotal=0.00;
+log("Action: Enter Edit Worksheet");
 
                 Vector vv;
                 vv = UniWorksheet.getIndItem(con,crecnum,wsnum);
@@ -24068,6 +24074,7 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		wsmultlab=tt.getWsMultLab();
 		wsmultsub=tt.getWsMultSub();
 	}
+log("Action: Get worksheet information");
 	if (Double.parseDouble(wsmult)!=0.00) {
        		 awsmult = Double.parseDouble(wsmult);
 		}
@@ -24076,20 +24083,23 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	
 	}
 
+log("Action: Part markup = "+awsmult+"");
 	if (Double.parseDouble(wsmultlab)!=0.00) {
        		 awsmultlab = Double.parseDouble(wsmultlab);
 		}
 	else {
-		awsmultlab = awsmult;
+		awsmultlab = doGetMarkUpDiv();
 	}
 
+log("Action:  labor markup = "+awsmultlab+"");
 	if (Double.parseDouble(wsmultsub)!=0.00) {
        		 awsmultsub = Double.parseDouble(wsmultsub);
 		}
 	else {
-		awsmultsub = awsmult;
+		awsmultsub = doGetMarkUpDiv();
 	}
-
+log("Action:  sub  markup = "+awsmultsub+"");
+log("Action: Edit Worksheet missing items");
 	out.println("<html>");
 	out.println("<head>");
 	out.println("<title>Edit Worksheet</title>");
@@ -24119,10 +24129,10 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
 	out.println("<INPUT TYPE=\"reset\">");
 	out.println("</CENTER></form>");
-
+log("Action: Form complete");
 	out.println("<br><br><br><table border=\"1\" width=\"100%\">");
 	out.println("<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Sub Cost</th><th>Delete</th></tr>");
-                
+log("Action: Edit Worksheet Top Items");
 		Vector vp;
                 vp = UniWsItems.getAllItems(con,wsnum);
                 for (int j = 0 ; j < vp.size(); j++)
@@ -24187,14 +24197,17 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("<tr><td>");
 	out.println("Total Labor Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(adjtotlabor*laborcost)+"");
 	out.println("</td></tr>");
-
 	out.println("<tr><td>");
-	out.println("<b>Total Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(adjtotlabor*laborcost+partmarkup)+"</b>");
+	out.println("Total Sub Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(totsubcost)+"");
 	out.println("</td></tr>");
 
 	out.println("<tr><td>");
-	out.println("<b>Total Cost / "+awsmult+"</td><td>"+ NumberFormat.getCurrencyInstance().format(fsellprice)+"</b>");
-	out.println("</td></tr>");
+	out.println("<b>Total Cost</td><td>"+ NumberFormat.getCurrencyInstance().format(adjtotlabor*laborcost+partmarkup+totsubcost)+"</b>");
+	out.println("</td></tr></table>");
+
+	//out.println("<tr><td>");
+	//out.println("<b>Total Cost / "+awsmult+"</td><td>"+ NumberFormat.getCurrencyInstance().format(fsellprice)+"</b>");
+	//out.println("</td></tr>");
 
 /*
 	out.println("<tr><td>");
@@ -24216,6 +24229,9 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("</td></tr>");
 	} else {
 */
+	
+	out.println("<br><br>");
+	out.println("<table width=\"75%\" border=1>");
 	out.println("<tr><td>");
 	out.println("<b>Parts Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(partsellprice)+"</b>");
 	out.println("</td></tr>");
@@ -24371,6 +24387,8 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
 		String keycode="";
 		int quantity=0;
 		String wsmult=null;
+		String wsmultsub=null;
+		String wsmultlab=null;
 		double cost=0.00;
 		int laborhours=0;
 		double subcost=0.00;
@@ -24388,9 +24406,11 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
                 UniWorksheet tt = (UniWorksheet) vv.elementAt(i);
 		wsdate=tt.getWsDate();
 		wsmult=tt.getWsMult();
+		wsmultsub=tt.getWsMultSub();
+		wsmultlab=tt.getWsMultLab();
 		wsdescription=tt.getWsDesc();
 		}
-		UniMasterWorksheet.AddItem(con2, wsdate, wsdescription, wsmult);
+		UniMasterWorksheet.AddItem(con2, wsdate, wsdescription, wsmult, wsmultlab, wsmultsub);
 
 
                 Vector v;
@@ -24755,6 +24775,7 @@ private void doCopyWs(HttpServletRequest req, HttpServletResponse res, PrintWrit
 		keycode = tp.getWsKeyCode();
 		quantity = tp.getWsQuant();
 		laborhours = tp.getWsLaborHours();
+		subcost = tp.getWsSubCost();
 		shophours = tp.getWsShopHours();
 		cost=tp.getWsCost();
 		laborcost=tp.getWsLaborCost();
@@ -24803,6 +24824,7 @@ private void doWsToProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		int totlaborhours=0;
 		int totshophours=0;
 		double totlabor=0.00;
+		double totsubcost=0.00;
 		double subtotlabor=0.00;
 
 		int wsrec=0;
@@ -24814,8 +24836,13 @@ private void doWsToProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		int laborhours=0;
 		int shophours=0;
 		double laborcost=0;
+		double subcost=0.00;
 		double awsmult=0.00;
+		double awsmultlab=0.00;
+		double awsmultsub=0.00;
 		String wsmult=null;
+		String wsmultlab=null;
+		String wsmultsub=null;
 		
 		String investment=null;
 		double qtotal=0.00;
@@ -24829,13 +24856,26 @@ private void doWsToProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		wsdate=tt.getWsDate();
 		wsdescription=tt.getWsDesc();
 		wsmult=tt.getWsMult();
+		wsmultlab=tt.getWsMultLab();
+		wsmultsub=tt.getWsMultSub();
 		}
 	if (Double.parseDouble(wsmult)!=0.00) {
        		 awsmult = Double.parseDouble(wsmult);
 		}
 	else {
 		awsmult = doGetMarkUpDiv();
-	
+	}
+	if (Double.parseDouble(wsmultlab)!=0.00) {
+       		 awsmultlab = Double.parseDouble(wsmultlab);
+		}
+	else {
+		awsmultlab = awsmult;
+	}
+	if (Double.parseDouble(wsmultsub)!=0.00) {
+       		 awsmultsub = Double.parseDouble(wsmultsub);
+		}
+	else {
+		awsmultsub = awsmult;
 	}
 	String custsite = doGetCustSite(crecnum);
 			String login=(String)session.getAttribute("login");
@@ -24878,15 +24918,17 @@ private void doWsToProposal(HttpServletRequest req, HttpServletResponse res, Pri
 		laborhours = tp.getWsLaborHours();
 		shophours = tp.getWsShopHours();
 		laborcost = tp.getWsLaborCost();
+		subcost=tp.getWsSubCost();
 		double subtot=cost*quantity;
 		subtotlabor=(shophours+laborhours)*laborcost*doGetLabMult();
 		totinvestment=totinvestment+subtot;
+		totsubcost=totsubcost+subcost;
 		totlabor = totlabor+subtotlabor;
 		totlaborhours = totlaborhours+laborhours;
 		totshophours = totshophours+shophours;
 		double partmarkup = subtot * doGetPartMult();
 		//double ifsellprice = (subtotlabor+partmarkup)/doGetMarkUpDiv();
-		double ifsellprice = (subtotlabor+partmarkup)/awsmult;
+		double ifsellprice = (subtotlabor/awsmultlab)+(partmarkup/awsmult)+(subcost/awsmultsub);
 			String techid=(String)session.getAttribute("login");
 		double ilsellprice = (subtotlabor*doGetGpToLabor())+subtotlabor+partmarkup;
 		//if (lsellprice > fsellprice) {

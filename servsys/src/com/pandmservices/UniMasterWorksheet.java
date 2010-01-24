@@ -14,6 +14,8 @@ public class UniMasterWorksheet
         private String wsdate=null;     //default value to null
         private String wsdesc=null;     //default value to null
 	private String wsmult=null;
+	private String wsmultlab=null;
+	private String wsmultsub=null;
     
 
         public UniMasterWorksheet (Connection c, int id)
@@ -26,6 +28,8 @@ public class UniMasterWorksheet
 			throw new TodoException("Record not found, id = " + id);
 		}
 		this.wsrec = rs.getInt("wsrec");
+		this.wsmultlab=rs.getString("wsmultlab");
+		this.wsmultsub=rs.getString("wsmultsub");
 		this.wsmult = rs.getString("wsmult");
 		this.wsdate = rs.getString("wsdate");
 		this.wsdesc = rs.getString("wsdesc");
@@ -119,11 +123,11 @@ public static void AddItem(Connection con, int wsrec, String wsdate, String wsde
 		        }
 
 
-public static void AddItem(Connection con, String wsdate, String wsdescription, String wsmult)
+public static void AddItem(Connection con, String wsdate, String wsdescription, String wsmult, String wsmultlab, String wsmultsub)
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO masterworksheet (wsdate, wsdesc, wsmult, wsnotes) Values ('" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"','-')");
+	                stmt.executeUpdate("INSERT INTO masterworksheet (wsdate, wsdesc, wsmult, wsnotes, wsmultlab, wsmultsub) Values ('" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"','-', '"+wsmultlab+"', '"+wsmultsub+"')");
 		        }
 
 	public static Vector getMaxItem(Connection c)
@@ -146,6 +150,8 @@ public static void AddItem(Connection con, String wsdate, String wsdescription, 
 
         public int getWsRec() { return wsrec; }
         public String getWsMult() { return wsmult; }
+        public String getWsMultLab() { return wsmultlab; }
+        public String getWsMultSub() { return wsmultsub; }
         public String getWsDate() { return wsdate; }
         public String getWsDesc() { return wsdesc; }
 

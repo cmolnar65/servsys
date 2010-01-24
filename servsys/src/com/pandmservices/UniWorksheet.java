@@ -41,7 +41,7 @@ public class UniWorksheet
 		this.techid=rs.getString("techid");
 		this.servsync=rs.getInt("servsync");
 		this.wsmultlab = rs.getString("wsmultlab");
-		this.wsmult = rs.getString("wsmultsub");
+		this.wsmultsub = rs.getString("wsmultsub");
 	}
 
 
