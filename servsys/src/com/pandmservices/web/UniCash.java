@@ -36,6 +36,8 @@ import org.apache.commons.fileupload.MultipartStream;
 import org.apache.commons.io.*;
 //import org.apache.commons.beanutils.*;
 //import org.apache.commons.beanutils.MethodUtils;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class UniCash extends HttpServlet
 {
@@ -3032,10 +3034,12 @@ private void doUpdateMasterWorkSheets(HttpServletRequest req, HttpServletRespons
 		int laborhours = tp.getWsLaborHours();
 		int shophours = tp.getWsShopHours();
 		double cost=tp.getWsCost();
+		double subcost=tp.getWsSubCost();
 		double laborcost=tp.getWsLaborCost();
 		String scost= ""+cost+"";
+		String ssubcost=""+subcost+"";
 		String slaborcost=""+laborcost+"";
-		UniMasterWsItems.AddItem(con,wsrec,item,keycode,quantity,scost,laborhours,slaborcost,shophours);
+		UniMasterWsItems.AddItem(con,wsrec,item,keycode,quantity,scost,laborhours,slaborcost,shophours, ssubcost);
 		}
 
 		printHeader(req, res, out, username);
@@ -6420,16 +6424,28 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.50";
+			vnumber = "2.51";
+
+			if (dbvnumber.equalsIgnoreCase("2.50")) {
+			Statement stmtu2 = con.createStatement();
+			int result251z = stmtu2.executeUpdate("UPDATE version set vnumber='2.51';");
+			int result251x = stmtu2.executeUpdate("UPDATE version set vdate='2010-01-23';");
+			int result251a = stmtu2.executeUpdate("alter table worksheet add wsmultlab decimal(10,2) default 0.00 after techid;");
+			int result251b = stmtu2.executeUpdate("alter table worksheet add wsmultsub decimal(10,2) default 0.00 after wsmultlab;");
+			int result251c = stmtu2.executeUpdate("alter table masterworksheet add wsmultlab decimal(10,2) default 0.00 after wsmult;");
+			int result251d = stmtu2.executeUpdate("alter table masterworksheet add wsmultsub decimal(10,2) default 0.00 after wsmultlab;");
+			int result251e = stmtu2.executeUpdate("alter table masterwsitem add subcost decimal(10,2) default 0.00 after shophours;");
+			int result251f = stmtu2.executeUpdate("alter table wsitem add subcost decimal(10,2) default 0.00 after techid;");
+						}
 			if (dbvnumber.equalsIgnoreCase("2.31")) {
 			Statement stmtu2 = con.createStatement();
-			int result230z = stmtu2.executeUpdate("UPDATE version set vnumber='2.50';");
-			int result230x = stmtu2.executeUpdate("UPDATE version set vdate='2010-01-21';");
+			int result250z = stmtu2.executeUpdate("UPDATE version set vnumber='2.50';");
+			int result250x = stmtu2.executeUpdate("UPDATE version set vdate='2010-01-21';");
 						}
 			if (dbvnumber.equalsIgnoreCase("2.30")) {
 			Statement stmtu2 = con.createStatement();
-			int result230z = stmtu2.executeUpdate("UPDATE version set vnumber='2.31';");
-			int result230x = stmtu2.executeUpdate("UPDATE version set vdate='2009-08-01';");
+			int result231z = stmtu2.executeUpdate("UPDATE version set vnumber='2.31';");
+			int result231x = stmtu2.executeUpdate("UPDATE version set vdate='2009-08-01';");
 						}
 			if (dbvnumber.equalsIgnoreCase("2.29")) {
 			Statement stmtu2 = con.createStatement();
@@ -8676,6 +8692,8 @@ private void doSaveTimeCat(HttpServletRequest req, HttpServletResponse res, Prin
 		String custnum=req.getParameter("custnum");
 		String wsnum=req.getParameter("wsnum");
                 out.println("<html><head><title>Proposal  System</title></head><body><table width=60% border=1>");
+
+		out.println("<br><br><br><a href="+classdir+"UniCash?action=editws&custnum="+custnum+"&wsnum="+wsnum+">Back to Worksheet</a></body></html>");
                 out.println("<tr>");
                 out.println("<th>Category</th>");
                 out.println("</tr>");
@@ -10898,6 +10916,7 @@ out.println("</CENTER>");
 			double laborcost = 0.00;
 			int laborhours = 0;
 			int shophours = 0;
+			double subcost = 0.00;
 
                 int counter=0;
                 for (int i = 0 ; i < v.size(); i++)
@@ -10911,6 +10930,7 @@ out.println("</CENTER>");
 			laborhours = t.getWsLaborHours();
 			shophours = t.getWsShopHours();
 			laborcost = t.getWsLaborCost();
+			subcost = t.getWsSubCost();
                 }
 	out.println("<html>");
 	out.println("<head>");
@@ -10920,7 +10940,7 @@ out.println("</CENTER>");
 	out.println("<p>Item        :");
 	out.println("<input type=\"text\" name=\"item\" value = \""+item+"\">");
 	out.println("</p>");
-	out.println("<p>Keycode         :");
+	out.println("<p>Keycode or Part #   :");
 	out.println("<input type=\"text\" name=\"keycode\" value = \""+keycode+"\"> ");
 	out.println("</p>");
 	out.println("<p>Quantity      :");
@@ -10937,6 +10957,9 @@ out.println("</CENTER>");
 	out.println("</p>");
 	out.println("<p>Labor Cost      :");
 	out.println("<input type=\"text\" name=\"laborcost\" value=\""+laborcost+"\">");
+	out.println("<p>Sub Cost      :");
+	out.println("<input type=\"text\" name=\"subcost\" value = \""+subcost+"\">");
+	out.println("</p>");
 	out.println("</p>");
 	out.println("<input type=\"hidden\" name=\"itemrec\" value=\""+itemrec+"\">");
 	out.println("<input type=\"hidden\" name=\"wsnum\" value=\""+wsrec+"\">");
@@ -10976,20 +10999,20 @@ out.println("</CENTER>");
 	out.println("<p>Item        :");
 	out.println("<input type=\"text\" name=\"item\">");
 	out.println("</p>");
-	out.println("<p>Keycode         :");
+	out.println("<p>Keycode or Part Number   :");
 	out.println("<input type=\"text\" name=\"keycode\" > ");
 	out.println("</p>");
 	out.println("<p>Quantity      :");
 	out.println("<input type=\"text\" name=\"quantity\">");
 	out.println("</p>");
-	out.println("<p>Cost      :");
+	out.println("<p>Part Cost      :");
 	out.println("<input type=\"text\" name=\"cost\">");
 	out.println("</p>");
 	out.println("<p>Labor Hours      :");
-	out.println("<input type=\"text\" name=\"laborhours\">");
+	out.println("<input type=\"text\" value=\"0.00\" name=\"laborhours\">");
 	out.println("</p>");
 	out.println("<p>Shop Hours      :");
-	out.println("<input type=\"text\" name=\"shophours\">");
+	out.println("<input type=\"text\" value=\"0.00\" name=\"shophours\">");
 	out.println("</p>");
 	out.println("<p>Labor Cost      :");
 	out.println("<input type=\"text\" name=\"laborcost\" value=\""+doGetLaborCost()+"\">");
@@ -11171,7 +11194,7 @@ out.println("</CENTER>");
 	out.println("<p>Item        :");
 	out.println("<input type=\"text\" name=\"item\" value=\""+item+"\">");
 	out.println("</p>");
-	out.println("<p>Keycode         :");
+	out.println("<p>Keycode or Part # :");
 	out.println("<input type=\"text\" name=\"keycode\" value=\""+keycode+"\" > ");
 	out.println("</p>");
 	out.println("<p>Quantity      :");
@@ -11891,13 +11914,14 @@ private void doUpdateWsItem(HttpServletRequest req, HttpServletResponse res, Pri
                 String tquantity = req.getParameter("quantity");
 		int quantity = Integer.parseInt(tquantity);
                 String cost = req.getParameter("cost");
+                String subcost = req.getParameter("subcost");
                 String tlaborhours = req.getParameter("laborhours");
 		int laborhours = Integer.parseInt(tlaborhours);
                 String tshophours = req.getParameter("shophours");
 		int shophours = Integer.parseInt(tshophours);
                 String laborcost = req.getParameter("laborcost");
 
-                UniWsItems.UpdateItem(con, itemrec, wsrec, item, keycode, quantity, cost, laborhours, laborcost, shophours);
+                UniWsItems.UpdateItem(con, itemrec, wsrec, item, keycode, quantity, cost, laborhours, laborcost, shophours, subcost);
 		con.close();
 		res.sendRedirect(""+classdir+"UniCash?action=editws&wsnum="+wsnum+"&custnum="+custnum+"");
             }
@@ -11914,6 +11938,7 @@ private void doSaveWsItem(HttpServletRequest req, HttpServletResponse res, Print
                 String tquantity = req.getParameter("quantity");
 		int quantity = Integer.parseInt(tquantity);
                 String cost = req.getParameter("cost");
+                String subcost = req.getParameter("subcost");
                 String tlaborhours = req.getParameter("laborhours");
 		int laborhours = Integer.parseInt(tlaborhours);
                 String tshophours = req.getParameter("shophours");
@@ -11923,7 +11948,7 @@ private void doSaveWsItem(HttpServletRequest req, HttpServletResponse res, Print
 		BigDecimal d = new BigDecimal(cost);
 		d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
 		String cost2 = d.toString();
-                UniWsItems.AddItem(con, wsrec, item, keycode, quantity, cost2, laborhours, laborcost, shophours);
+                UniWsItems.AddItem(con, wsrec, item, keycode, quantity, cost2, laborhours, laborcost, shophours, subcost);
 		con.close();
 		res.sendRedirect(""+classdir+"UniCash?action=editws&wsnum="+wsnum+"&custnum="+custnum+"&adjper="+adjper+"");
             }
@@ -22334,6 +22359,8 @@ private void doAddWorkSheet(HttpServletRequest req, HttpServletResponse res, Pri
 	out.println("<input type=\"hidden\" name=\"custstart\" value=\""+custstart+"\">");
 	out.println("<input type=\"hidden\" name=\"custstop\" value=\""+custstop+"\">");
 	out.println("<input type=\"hidden\" name=\"wsmult\" value=\""+doGetMarkUpDiv()+"\">");
+	out.println("<input type=\"hidden\" name=\"wsmultlab\" value=\""+doGetMarkUpDiv()+"\">");
+	out.println("<input type=\"hidden\" name=\"wsmultsub\" value=\""+doGetMarkUpDiv()+"\">");
 	out.println("</table>");
 	out.println("<p> <CENTER>");
 	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Save\">");
@@ -22570,13 +22597,15 @@ private void doUpdateWorksheet(HttpServletRequest req, HttpServletResponse res, 
 	String tcustnum = req.getParameter("custnum");
 	String twsnum = req.getParameter("contnum");
 	String wsmult = req.getParameter("wsmult");
+	String wsmultlab = req.getParameter("wsmultlab");
+	String wsmultsub = req.getParameter("wsmultsub");
  	String custstart = req.getParameter("custstart");
 	String custstop = req.getParameter("custstop");
        	int custnum = Integer.parseInt(tcustnum);
        	int wsnum = Integer.parseInt(twsnum);
         String wsdescription = req.getParameter("wsdescription");
         String wsdate = req.getParameter("wsdate");
-        UniWorksheet.UpdateItem(con, wsnum, custnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult);
+        UniWorksheet.UpdateItem(con, wsnum, custnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult, wsmultlab, wsmultsub);
         out.println("Your item has been updated in the database<br>");
 		con.close();
         res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
@@ -22646,13 +22675,15 @@ private void doSaveWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	String custstop = req.getParameter("custstop");
        	int custnum = Integer.parseInt(tcustnum);
 	String wsmult = req.getParameter("wsmult");
+	String wsmultlab = req.getParameter("wsmultlab");
+	String wsmultsub = req.getParameter("wsmultsub");
         String wsdescription = req.getParameter("wssummary");
         String wsdate = req.getParameter("wsdate");
 	String custsite = doGetCustSite(custnum);
 	String sitenum = doGetSiteNum(custnum);
 	int servsync=0;
 	String login=(String)session.getAttribute("login");
-        UniWorksheet.AddItem(con, custnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult, custsite, sitenum,login, 0);
+        UniWorksheet.AddItem(con, custnum, doFormatDateDb(getDateDb(wsdate)), wsdescription, wsmult, custsite, sitenum,login, 0, wsmultlab, wsmultsub);
 		con.close();
         out.println("Your item has been updated in the database<br>");
         res.sendRedirect(""+classdir+"UniCash?action=showcustdetail&csection=6&custnum="+custnum+"&custstart="+custstart+"&custstop="+custstop+"");
@@ -22826,6 +22857,7 @@ private void doSendAllWorksheets(HttpServletRequest req, HttpServletResponse res
 		String keycode="";
 		int quantity=0;
 		double cost=0.00;
+		double subcost=0.00;
 		int laborhours=0;
 		int shophours=0;
 		double laborcost=0;
@@ -22907,7 +22939,7 @@ private void doSendAllWorksheets(HttpServletRequest req, HttpServletResponse res
 	mbody=combinestring(mbody,"</table>");
 
 	mbody=combinestring(mbody,"<br><br><br><table border=\"1\" width=\"100%\">");
-	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
+	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
                 
 		Vector vp;
                 vp = UniWsItems.getAllItems(con,wsnum);
@@ -22924,6 +22956,7 @@ private void doSendAllWorksheets(HttpServletRequest req, HttpServletResponse res
 		laborhours = tp.getWsLaborHours();
 		shophours = tp.getWsShopHours();
 		laborcost = tp.getWsLaborCost();
+		subcost = tp.getWsSubCost();
 		double subtot=cost*quantity;
 		subtotlabor=(shophours+laborhours)*laborcost;
 
@@ -23076,6 +23109,7 @@ private String doSendWorksheetC(int wsrec, int custnum, String username)
 		int totlaborhours=0;
 		int totshophours=0;
 		double totlabor=0.00;
+		double subcost=0.00;
 		double subtotlabor=0.00;
 		int itemrec=0;
 		String item=null;
@@ -23085,6 +23119,7 @@ private String doSendWorksheetC(int wsrec, int custnum, String username)
 		int laborhours=0;
 		int shophours=0;
 		double laborcost=0;
+		double totsubcost=0.00;
 		double awsmult=0.00;
 		String wsmult="";
 		String investment=null;
@@ -23144,7 +23179,7 @@ private String doSendWorksheetC(int wsrec, int custnum, String username)
 	mbody=combinestring(mbody,"</tr>");
 	mbody=combinestring(mbody,"</table>");
 	mbody=combinestring(mbody,"<br><br><br><table border=\"1\" width=\"100%\">");
-	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
+	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Sub Cost</th></tr>");
 		Vector vp;
                 vp = UniWsItems.getAllItems(con,wsnum);
                 for (int j = 0 ; j < vp.size(); j++)
@@ -23156,16 +23191,18 @@ private String doSendWorksheetC(int wsrec, int custnum, String username)
 		keycode = tp.getWsKeyCode();
 		quantity = tp.getWsQuant();
 		cost = tp.getWsCost();
+		subcost=tp.getWsSubCost();
 		laborhours = tp.getWsLaborHours();
 		shophours = tp.getWsShopHours();
 		laborcost = tp.getWsLaborCost();
 		double subtot=cost*quantity;
 		subtotlabor=(shophours+laborhours)*laborcost;
 		totinvestment=totinvestment+subtot;
+		totsubcost=totsubcost+subcost;
 		totlabor = totlabor+subtotlabor;
 		totlaborhours = totlaborhours+laborhours;
 		totshophours = totshophours+shophours;
-		mbody=combinestring(mbody,"<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td></tr>");
+		mbody=combinestring(mbody,"<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subcost)+"</td></tr>");
 		}
 
 		double partmarkup = totinvestment * doGetPartMult();
@@ -23259,6 +23296,7 @@ private void doSendWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		int itemquant=0;
 		int itemnum=0;
 		double totinvestment=0.00;
+		double subcost=0.00;
 		int totlaborhours=0;
 		int totshophours=0;
 		double totlabor=0.00;
@@ -23272,6 +23310,7 @@ private void doSendWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		int laborhours=0;
 		int shophours=0;
 		double laborcost=0;
+		double totsubcost=0.00;
 		double awsmult=0.00;
 		String wsmult="";
 		String investment=null;
@@ -23340,7 +23379,7 @@ private void doSendWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	mbody=combinestring(mbody,"</table>");
 
 	mbody=combinestring(mbody,"<br><br><br><table border=\"1\" width=\"100%\">");
-	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
+	mbody=combinestring(mbody,"<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Sub Cost</th></tr>");
                 
 		Vector vp;
                 vp = UniWsItems.getAllItems(con,wsnum);
@@ -23355,17 +23394,19 @@ private void doSendWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		quantity = tp.getWsQuant();
 		cost = tp.getWsCost();
 		laborhours = tp.getWsLaborHours();
+		subcost = tp.getWsSubCost();
 		shophours = tp.getWsShopHours();
 		laborcost = tp.getWsLaborCost();
 		double subtot=cost*quantity;
 		subtotlabor=(shophours+laborhours)*laborcost;
 
 		totinvestment=totinvestment+subtot;
+		totsubcost = totsubcost + subcost;
 		totlabor = totlabor+subtotlabor;
 		totlaborhours = totlaborhours+laborhours;
 		totshophours = totshophours+shophours;
 		
-		mbody=combinestring(mbody,"<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td></tr>");
+		mbody=combinestring(mbody,"<tr><td>"+item+"</td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subcost)+"</td></tr>");
 		}
 
 		double partmarkup = totinvestment * doGetPartMult();
@@ -23520,11 +23561,16 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 		String keycode="";
 		int quantity=0;
 		double cost=0.00;
+		double subcost=0.00;
 		int laborhours=0;
 		int shophours=0;
 		double laborcost=0;
 		double awsmult=0.00;
+		double awsmultlab=0.00;
+		double awsmultsub=0.00;
 		String wsmult="";
+		String wsmultlab="";
+		String wsmultsub="";
 		String investment=null;
 		double qtotal=0.00;
 
@@ -23553,12 +23599,28 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 		wsdate=doFormatDate(getDate(tt.getWsDate()));
 		wsdescription=tt.getWsDesc();
 		wsmult=tt.getWsMult();
+		wsmultlab=tt.getWsMultLab();
+		wsmultsub=tt.getWsMultSub();
 	}
 	if (Double.parseDouble(wsmult)!=0.00) {
        		 awsmult = Double.parseDouble(wsmult);
 		}
 	else {
 		awsmult = doGetMarkUpDiv();
+	}
+
+	if (Double.parseDouble(wsmultlab)!=0.00) {
+       		 awsmultlab = Double.parseDouble(wsmultlab);
+		}
+	else {
+		awsmultlab = awsmult;
+	}
+
+	if (Double.parseDouble(wsmultsub)!=0.00) {
+       		 awsmultsub = Double.parseDouble(wsmultsub);
+		}
+	else {
+		awsmultsub = awsmult;
 	}
 
 	out.println("<html><basefont size=2>");
@@ -23590,7 +23652,7 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 	out.println("</table>");
 
 	out.println("<br><br><br><table border=\"1\" width=\"100%\">");
-	out.println("<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
+	out.println("<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th></tr>");
                 
 		Vector vp;
                 vp = UniWsItems.getAllItems(con,wsnum);
@@ -23622,10 +23684,12 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 		// HERE IS ADJUSTED LABOR HOUTS
 		double adjtotlabor = (totlaborhours+totshophours) * doGetLabMult();
 		//double fsellprice = (totlabor+partmarkup)/awsmult;
-		double fsellprice = ((laborcost*adjtotlabor)+partmarkup)/awsmult;
+		double laborsellprice = (laborcost*adjtotlabor)/awsmultlab;
+		double subsellprice = subcost/awsmultsub;
+		double partsellprice = partmarkup/awsmult;
+		double fsellprice = laborsellprice+partsellprice+subsellprice;
 		double lsellprice = (totlabor*doGetGpToLabor())+totlabor+partmarkup;
 		totcrewdays = totlaborhours / laborday;
-
 	out.println("</table><br><h4>Summary Section</h4>");
 	out.println("<table width=\"75%\" border=1>");
 	out.println("<tr><td>");
@@ -23679,6 +23743,15 @@ private void doPrintWorksheet(HttpServletRequest req, HttpServletResponse res, P
 	} else {
 */
 
+	out.println("<tr><td>");
+	out.println("<b>Parts Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(partsellprice)+"</b>");
+	out.println("</td></tr>");
+	out.println("<tr><td>");
+	out.println("<b>Labor Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(laborsellprice)+"</b>");
+	out.println("</td></tr>");
+	out.println("<tr><td>");
+	out.println("<b>Subs Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(subsellprice)+"</b>");
+	out.println("</td></tr>");
 	out.println("<tr><td>");
 	out.println("<b>Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(fsellprice)+"</b>");
 	out.println("</td></tr>");
@@ -23802,7 +23875,7 @@ private void doEditMasterWorksheet(HttpServletRequest req, HttpServletResponse r
 	out.println("</CENTER></form>");
 
 	out.println("<br><br><br><table border=\"1\" width=\"100%\">");
-	out.println("<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Delete</th></tr>");
+	out.println("<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Delete</th></tr>");
                 
 		Vector vp;
                 vp = UniMasterWsItems.getAllItems(con,wsnum);
@@ -23958,7 +24031,9 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		int totlaborhours=0;
 		int totshophours=0;
 		double totlabor=0.00;
+		double subcost=0.00;
 		double subtotlabor=0.00;
+		double totsubcost=0.00;
 
 		int laborday = 16;
 		int wsrec=0;
@@ -23968,7 +24043,11 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		int quantity=0;
 		String twsmult=null;
 		String wsmult=null;
+		String wsmultlab=null;
+		String wsmultsub=null;
 		double awsmult=0.00;
+		double awsmultlab=0.00;
+		double awsmultsub=0.00;
 		double cost=0.00;
 		int laborhours=0;
 		int shophours=0;
@@ -23986,6 +24065,8 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		wsdate=tt.getWsDate();
 		wsdescription=tt.getWsDesc();
 		wsmult=tt.getWsMult();
+		wsmultlab=tt.getWsMultLab();
+		wsmultsub=tt.getWsMultSub();
 	}
 	if (Double.parseDouble(wsmult)!=0.00) {
        		 awsmult = Double.parseDouble(wsmult);
@@ -23993,6 +24074,20 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	else {
 		awsmult = doGetMarkUpDiv();
 	
+	}
+
+	if (Double.parseDouble(wsmultlab)!=0.00) {
+       		 awsmultlab = Double.parseDouble(wsmultlab);
+		}
+	else {
+		awsmultlab = awsmult;
+	}
+
+	if (Double.parseDouble(wsmultsub)!=0.00) {
+       		 awsmultsub = Double.parseDouble(wsmultsub);
+		}
+	else {
+		awsmultsub = awsmult;
 	}
 
 	out.println("<html>");
@@ -24004,8 +24099,14 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("<tr><td>Date</td><td>");
 	out.println("<input type=\"text\" name=\"wsdate\" value=\""+doFormatDate(getDate(wsdate))+"\"></td>");
 	out.println("</tr>");
-	out.println("<tr><td>MarkUp</td><td>");
+	out.println("<tr><td>Parts MarkUp</td><td>");
 	out.println("<input type=\"text\" name=\"wsmult\" value=\""+awsmult+"\" size=\"60\" ></td>");
+	out.println("</tr>");
+	out.println("<tr><td>Labor MarkUp</td><td>");
+	out.println("<input type=\"text\" name=\"wsmultlab\" value=\""+awsmultlab+"\" size=\"60\" ></td>");
+	out.println("</tr>");
+	out.println("<tr><td>Subs MarkUp</td><td>");
+	out.println("<input type=\"text\" name=\"wsmultsub\" value=\""+awsmultsub+"\" size=\"60\" ></td>");
 	out.println("</tr>");
 	out.println("<tr><td>Summary</td><td>");
 	out.println("<input type=\"text\" name=\"wsdescription\" value=\""+wsdescription +"\" size=\"60\" ></td>");
@@ -24020,7 +24121,7 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("</CENTER></form>");
 
 	out.println("<br><br><br><table border=\"1\" width=\"100%\">");
-	out.println("<tr><th>Item Name</th><th>Keycode</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Delete</th></tr>");
+	out.println("<tr><th>Item Name</th><th>Keycode<br>Part #</th><th>Quantity</th><th>Price</th><th>Item Cost</th><th>Labor Hours</th><th>Shop Hours</th><th>Labor Cost</th><th>Sub Cost</th><th>Delete</th></tr>");
                 
 		Vector vp;
                 vp = UniWsItems.getAllItems(con,wsnum);
@@ -24035,6 +24136,7 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		quantity = tp.getWsQuant();
 		cost = tp.getWsCost();
 		laborhours = tp.getWsLaborHours();
+		subcost=tp.getWsSubCost();
 		shophours = tp.getWsShopHours();
 		laborcost = tp.getWsLaborCost();
 		double subtot=cost*quantity;
@@ -24043,16 +24145,20 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 		totinvestment=totinvestment+subtot;
 		totlabor = totlabor+subtotlabor;
 		totlaborhours = totlaborhours+laborhours;
+		totsubcost=totsubcost+subcost;
 		totshophours = totshophours+shophours;
 		totcrewdays = totlaborhours / laborday;
 		
-		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editwsitem&custnum="+crecnum+"&wsnum="+wsrec+"&itemrec="+itemrec+"\">"+item+"</a></td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td><td><a href="+classdir+"UniCash?action=delwsitem&custnum="+crecnum+"&wsrec="+wsrec+"&itemrec="+itemrec+">Delete</a></td></tr>");
+		out.println("<tr><td><a href=\""+classdir+"UniCash?action=editwsitem&custnum="+crecnum+"&wsnum="+wsrec+"&itemrec="+itemrec+"\">"+item+"</a></td><td>"+keycode+"</td><td>"+quantity+"</td><td>"+NumberFormat.getCurrencyInstance().format(cost)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtot)+"</td><td>"+laborhours+"</td><td>"+shophours+"</td><td>"+NumberFormat.getCurrencyInstance().format(subtotlabor)+"</td><td>"+NumberFormat.getCurrencyInstance().format(subcost)+"</td><td><a href="+classdir+"UniCash?action=delwsitem&custnum="+crecnum+"&wsrec="+wsrec+"&itemrec="+itemrec+">Delete</a></td></tr>");
 		}
 		double partmarkup = totinvestment * doGetPartMult();
 		// HERE IS ADJUSTED LABOR HOUTS
 		double adjtotlabor = (totlaborhours + totshophours) * doGetLabMult();
 		//double fsellprice = (totlabor+partmarkup)/awsmult;
-		double fsellprice = ((laborcost*adjtotlabor)+partmarkup)/awsmult;
+		double laborsellprice = (laborcost*adjtotlabor)/awsmultlab;
+		double subsellprice = totsubcost/awsmultsub;
+		double partsellprice = partmarkup/awsmult;
+		double fsellprice = laborsellprice+partsellprice+subsellprice;
 		double lsellprice = (totlabor*doGetGpToLabor())+totlabor+partmarkup;
 		totcrewdays = totlaborhours / laborday;
 	out.println("</table><br><h4>Summary Section</h4>");
@@ -24110,6 +24216,15 @@ private void doEditWorksheet(HttpServletRequest req, HttpServletResponse res, Pr
 	out.println("</td></tr>");
 	} else {
 */
+	out.println("<tr><td>");
+	out.println("<b>Parts Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(partsellprice)+"</b>");
+	out.println("</td></tr>");
+	out.println("<tr><td>");
+	out.println("<b>Labor Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(laborsellprice)+"</b>");
+	out.println("</td></tr>");
+	out.println("<tr><td>");
+	out.println("<b>Subs Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(subsellprice)+"</b>");
+	out.println("</td></tr>");
 	out.println("<tr><td>");
 	out.println("<b>Sellprice</td><td>"+ NumberFormat.getCurrencyInstance().format(fsellprice)+"</b>");
 	out.println("</td></tr>");
@@ -24258,6 +24373,7 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
 		String wsmult=null;
 		double cost=0.00;
 		int laborhours=0;
+		double subcost=0.00;
 		int shophours=0;
 		double laborcost=0;
 		
@@ -24299,14 +24415,16 @@ private void doCopyWsMasterServ(HttpServletRequest req, HttpServletResponse res,
 		itemrec = tp.getItemRec();
 		item = tp.getWsItem();
 		keycode = tp.getWsKeyCode();
+		subcost = tp.getWsSubCost();
 		quantity = tp.getWsQuant();
 		laborhours = tp.getWsLaborHours();
 		shophours = tp.getWsShopHours();
 		cost=tp.getWsCost();
 		laborcost=tp.getWsLaborCost();
 		String scost= ""+cost+"";
+		String ssubcost = ""+subcost+"";
 		String slaborcost=""+laborcost+"";
-		UniMasterWsItems.AddItem(con2,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours);
+		UniMasterWsItems.AddItem(con2,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours,ssubcost);
 		}
 		con.close();
 		con2.close();
@@ -24349,8 +24467,11 @@ private void doCopyMasterWstoCus(HttpServletRequest req, HttpServletResponse res
 		String keycode="";
 		int quantity=0;
 		String wsmult=null;
+		String wsmultlab=null;
+		String wsmultsub=null;
 		double cost=0.00;
 		int laborhours=0;
+		double subcost=0.00;
 		int shophours=0;
 		double laborcost=0;
 		
@@ -24365,6 +24486,8 @@ private void doCopyMasterWstoCus(HttpServletRequest req, HttpServletResponse res
                 UniMasterWorksheet tt = (UniMasterWorksheet) vv.elementAt(i);
 		wsdate=tt.getWsDate();
 		wsmult=tt.getWsMult();
+		wsmultlab=tt.getWsMult();
+		wsmultsub=tt.getWsMult();
 		wsdescription=tt.getWsDesc();
 		}
 	String custsite = doGetCustSite(ncrecnum);
@@ -24377,7 +24500,7 @@ private void doCopyMasterWstoCus(HttpServletRequest req, HttpServletResponse res
 	//formatter = new SimpleDateFormat("MM-dd-yyyy");
 	formatter = new SimpleDateFormat("yyyy-MM-dd");
 	String s = formatter.format(date);
-		UniWorksheet.AddItem(con, ncrecnum, s, wsdescription, wsmult, custsite, sitenum, login, servsync);
+		UniWorksheet.AddItem(con, ncrecnum, s, wsdescription, wsmult, custsite, sitenum, login, servsync, wsmultlab, wsmultsub);
 
 
                 Vector v;
@@ -24407,9 +24530,11 @@ private void doCopyMasterWstoCus(HttpServletRequest req, HttpServletResponse res
 		shophours = tp.getWsShopHours();
 		cost=tp.getWsCost();
 		laborcost=tp.getWsLaborCost();
+		subcost=tp.getWsSubCost();
 		String scost= ""+cost+"";
+		String ssubcost =""+subcost+"";
 		String slaborcost=""+laborcost+"";
-		UniWsItems.AddItem(con,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours);
+		UniWsItems.AddItem(con,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours,ssubcost);
 		}
 
 		con.close();
@@ -24443,6 +24568,7 @@ private void doCopyWstoCus(HttpServletRequest req, HttpServletResponse res, Prin
 		int itemnum=0;
 		int qnum=0;
 		double totinvestment=0.00;
+		double subcost=0.00;
 		int totlaborhours=0;
 		double totlabor=0.00;
 		double subtotlabor=0.00;
@@ -24453,6 +24579,8 @@ private void doCopyWstoCus(HttpServletRequest req, HttpServletResponse res, Prin
 		String keycode="";
 		int quantity=0;
 		String wsmult=null;
+		String wsmultlab=null;
+		String wsmultsub=null;
 		double cost=0.00;
 		int laborhours=0;
 		int shophours=0;
@@ -24469,6 +24597,8 @@ private void doCopyWstoCus(HttpServletRequest req, HttpServletResponse res, Prin
                 UniWorksheet tt = (UniWorksheet) vv.elementAt(i);
 		wsdate=tt.getWsDate();
 		wsmult=tt.getWsMult();
+		wsmultlab=tt.getWsMultLab();
+		wsmultsub=tt.getWsMultSub();
 		wsdescription=tt.getWsDesc();
 		}
 	Format formatter;	
@@ -24480,8 +24610,16 @@ private void doCopyWstoCus(HttpServletRequest req, HttpServletResponse res, Prin
 	String custsite = doGetCustSite(ncrecnum);
 	String sitenum = doGetSiteNum(ncrecnum);
 	int servsync=0;
+	if (Double.parseDouble(wsmultlab)==0.00) {
+	       wsmultlab = wsmult;
+	          }
+
+	if (Double.parseDouble(wsmultsub)==0.00) {
+	       wsmultsub = wsmult;
+	          }
+
 	String login=(String)session.getAttribute("login");
-		UniWorksheet.AddItem(con, ncrecnum, s, wsdescription, wsmult, custsite, sitenum, login, servsync);
+		UniWorksheet.AddItem(con, ncrecnum, s, wsdescription, wsmult, custsite, sitenum, login, servsync, wsmultlab, wsmultsub);
 
 
                 Vector v;
@@ -24508,12 +24646,14 @@ private void doCopyWstoCus(HttpServletRequest req, HttpServletResponse res, Prin
 		keycode = tp.getWsKeyCode();
 		quantity = tp.getWsQuant();
 		laborhours = tp.getWsLaborHours();
+		subcost = tp.getWsSubCost();
 		shophours = tp.getWsShopHours();
 		cost=tp.getWsCost();
 		laborcost=tp.getWsLaborCost();
 		String scost= ""+cost+"";
+		String ssubcost=""+subcost+"";
 		String slaborcost=""+laborcost+"";
-		UniWsItems.AddItem(con,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours);
+		UniWsItems.AddItem(con,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours,ssubcost);
 		}
 
 		con.close();
@@ -24555,9 +24695,12 @@ private void doCopyWs(HttpServletRequest req, HttpServletResponse res, PrintWrit
 		String keycode="";
 		int quantity=0;
 		String wsmult=null;
+		String wsmultlab=null;
+		String wsmultsub=null;
 		double cost=0.00;
 		int laborhours=0;
 		int shophours=0;
+		double subcost=0;
 		double laborcost=0;
 		
 		String investment=null;
@@ -24577,13 +24720,15 @@ private void doCopyWs(HttpServletRequest req, HttpServletResponse res, PrintWrit
                 UniWorksheet tt = (UniWorksheet) vv.elementAt(i);
 		wsdate=tt.getWsDate();
 		wsmult=tt.getWsMult();
+		wsmultlab=tt.getWsMultLab();
+		wsmultsub=tt.getWsMultSub();
 		wsdescription=tt.getWsDesc();
 		}
 	String custsite = doGetCustSite(crecnum);
 	String sitenum = doGetSiteNum(crecnum);
 	int servsync=0;
 	String login=(String)session.getAttribute("login");
-		UniWorksheet.AddItem(con, crecnum, s, wsdescription, wsmult, custsite, sitenum, login, servsync);
+		UniWorksheet.AddItem(con, crecnum, s, wsdescription, wsmult, custsite, sitenum, login, servsync, wsmultlab, wsmultsub);
 
 
                 Vector v;
@@ -24614,8 +24759,9 @@ private void doCopyWs(HttpServletRequest req, HttpServletResponse res, PrintWrit
 		cost=tp.getWsCost();
 		laborcost=tp.getWsLaborCost();
 		String scost= ""+cost+"";
+		String ssubcost=""+subcost+"";
 		String slaborcost=""+laborcost+"";
-		UniWsItems.AddItem(con,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours);
+		UniWsItems.AddItem(con,qnum,item,keycode,quantity,scost,laborhours,slaborcost,shophours,ssubcost);
 		}
 
 		con.close();

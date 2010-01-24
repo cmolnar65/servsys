@@ -16,6 +16,7 @@ public class UniMasterWsItems
         private int quantity=0;     //default value to null
         private double cost=0;     //default value to null
         private double laborcost=0;     //default value to null
+	private double subcost=0;
 	private int laborhours=0;
 	private int shophours=0;
     
@@ -38,6 +39,7 @@ public class UniMasterWsItems
 		this.laborhours = rs.getInt("laborhours");
 		this.shophours = rs.getInt("shophours");
 		this.laborcost = rs.getDouble("laborcost");
+		this.subcost=rs.getDouble("subcost");
 
 	}
 
@@ -99,18 +101,18 @@ public class UniMasterWsItems
 	}
 	  
 
-	public static void UpdateItem(Connection con, int itemrec, int wsrec, String item, String keycode, int quantity, String cost, int laborhours, String laborcost, int shophours )
+	public static void UpdateItem(Connection con, int itemrec, int wsrec, String item, String keycode, int quantity, String cost, int laborhours, String laborcost, int shophours, String subcost )
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update masterwsitem Set wsrec='" +wsrec+ "',item = '"+item+"', keycode = '"+keycode +"',quantity = '"+quantity +"',cost = '"+cost +"', laborhours =  '"+laborhours+"', laborcost = '"+laborcost+"', shophours = '"+shophours+"'  Where itemrec=" + itemrec + ";");
+      		stmt.executeUpdate("Update masterwsitem Set wsrec='" +wsrec+ "',item = '"+item+"', keycode = '"+keycode +"',quantity = '"+quantity +"',cost = '"+cost +"', laborhours =  '"+laborhours+"', laborcost = '"+laborcost+"', shophours = '"+shophours+"', subcost = '"+subcost+"'  Where itemrec=" + itemrec + ";");
       	}
 
-public static void AddItem(Connection con, int wsrec, String item, String keycode, int quantity, String cost, int laborhours, String laborcost, int shophours)
+public static void AddItem(Connection con, int wsrec, String item, String keycode, int quantity, String cost, int laborhours, String laborcost, int shophours, String subcost)
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
-	                stmt.executeUpdate("INSERT INTO masterwsitem (wsrec, item, keycode, quantity, cost, laborhours, laborcost, shophours) Values ('" +wsrec+ "','" +item + "','"+keycode +"','"+quantity +"','"+cost+"','"+laborhours+"','"+laborcost+"','"+shophours+"')");
+	                stmt.executeUpdate("INSERT INTO masterwsitem (wsrec, item, keycode, quantity, cost, laborhours, laborcost, shophours, subcost) Values ('" +wsrec+ "','" +item + "','"+keycode +"','"+quantity +"','"+cost+"','"+laborhours+"','"+laborcost+"','"+shophours+"','"+subcost+"')");
 		        }
 
         public int getId() { return id; }
@@ -122,6 +124,7 @@ public static void AddItem(Connection con, int wsrec, String item, String keycod
         public int getWsQuant() { return quantity; }
         public double getWsCost() { return cost; }
 	public double getWsLaborCost() { return laborcost; }
+	public double getWsSubCost() { return subcost; }
         public int getWsLaborHours() { return laborhours; }
         public int getWsShopHours() { return shophours; }
 

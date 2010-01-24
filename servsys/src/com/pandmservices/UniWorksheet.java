@@ -14,6 +14,8 @@ public class UniWorksheet
         private String wsdate=null;     //default value to null
         private String wsdesc=null;     //default value to null
 	private String wsmult=null;
+	private String wsmultlab=null;
+	private String wsmultsub=null;
 	private String custsite=null;
 	private String sitenum=null;
 	private String techid=null;
@@ -38,6 +40,8 @@ public class UniWorksheet
 		this.sitenum=rs.getString("sitenum");
 		this.techid=rs.getString("techid");
 		this.servsync=rs.getInt("servsync");
+		this.wsmultlab = rs.getString("wsmultlab");
+		this.wsmult = rs.getString("wsmultsub");
 	}
 
 
@@ -129,19 +133,19 @@ public class UniWorksheet
 		stmt.executeUpdate("Delete From wsitem Where custsite=NULL and sitenum=NULL;");
 	}
 
-	public static void UpdateItem(Connection con, int wsrec, int crec, String wsdate, String wsdescription, String wsmult)
+	public static void UpdateItem(Connection con, int wsrec, int crec, String wsdate, String wsdescription, String wsmult, String wsmultlab, String wsmultsub)
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-      		stmt.executeUpdate("Update worksheet Set crec='" +crec+ "',wsdate = '"+wsdate+"',wsdesc = '"+wsdescription +"', wsmult='"+wsmult+"', servsync='9' Where wsrec=" + wsrec + ";");
+      		stmt.executeUpdate("Update worksheet Set crec='" +crec+ "',wsdate = '"+wsdate+"',wsdesc = '"+wsdescription +"', wsmult='"+wsmult+"', wsmultlab='"+wsmultlab+"', wsmultsub='"+wsmultsub+"', servsync='9' Where wsrec=" + wsrec + ";");
       	}
 
-public static void AddItem(Connection con, int crec, String wsdate, String wsdescription, String wsmult, String custsite, String sitenum, String techid, int servsync)
+public static void AddItem(Connection con, int crec, String wsdate, String wsdescription, String wsmult, String custsite, String sitenum, String techid, int servsync, String wsmultlab, String wsmultsub)
                 throws SQLException
 		        {
 	       	        Statement stmt = con.createStatement();
 	                //System.out.println("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult) Values ('"+crec+"','" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"')");
-	                stmt.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult, custsite, sitenum, techid, servsync, wsnotes) Values ('"+crec+"','" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"', '"+custsite+"','"+sitenum+"','"+techid+"','"+servsync+"','-')");
+	                stmt.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult, custsite, sitenum, techid, servsync, wsnotes, wsmultlab, wsmultsub) Values ('"+crec+"','" +wsdate+ "','" +wsdescription+ "', '"+wsmult+"', '"+custsite+"','"+sitenum+"','"+techid+"','"+servsync+"','-', '"+wsmultlab+"','"+wsmultsub+"')");
 		        }
 
 	public static Vector getMaxItem(Connection c)
@@ -171,5 +175,7 @@ public static void AddItem(Connection con, int crec, String wsdate, String wsdes
 	public String getCustSite() { return custsite; }
 	public String getTechId() { return techid; }
 	public int getServSync() { return servsync; }
+	public String getWsMultLab() { return wsmultlab; }
+	public String getWsMultSub() { return wsmultsub; }
 
 }
