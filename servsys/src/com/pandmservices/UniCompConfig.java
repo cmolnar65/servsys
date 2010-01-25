@@ -81,7 +81,7 @@ public class UniCompConfig
 	{
 		Statement stmt = con.createStatement();
 		stmt.executeUpdate("DROP TABLE IF EXISTS configcompany;");
-		stmt.executeUpdate("create table configcompany (image text, imagewidth text, imagehight text, coname text, cologo text, coaddress text, cophone text, useletterhead text not null, yearenddate date default '2005-09-31', enabcustomer text not null, nocustonlaptop text, laptopretentiontime int(11), reportemail text not null);");
+		stmt.executeUpdate("create table configcompany (image text, imagewidth text, imagehight text, coname text, cologo text, coaddress text, cophone text, useletterhead text not null, yearenddate date default '2010-12-31', enabcustomer text not null, nocustonlaptop text, laptopretentiontime int(11), reportemail text not null);");
       		stmt.executeUpdate("insert into configcompany (image,imagehight, imagewidth, coname, cologo,coaddress,cophone, useletterhead, enabcustomer, reportemail, yearenddate, nocustonlaptop, laptopretentiontime) values ('"+image+"','"+imagehight+"','"+imagewidth+"','"+coname+"','"+cologo+"','"+coaddress+"','"+cophone+"','"+useletterhead+"', '"+enabcustomer+"', '"+reportemail+"', '"+yearenddate+"', 'yes', 4);");
       	}
 

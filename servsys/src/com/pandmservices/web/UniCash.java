@@ -3003,9 +3003,9 @@ private void doUpdateMasterWorkSheets(HttpServletRequest req, HttpServletRespons
 			int result=stmt.executeUpdate("DROP TABLE IF EXISTS masterworksheet;");
 			result=stmt.executeUpdate("DROP TABLE IF EXISTS masterwsitem;");
 // Rebuild Local Tables
-			result=stmt.executeUpdate("create table masterworksheet (wsrec int(11) NOT NULL auto_increment,wsdesc text NOT NULL, wsdate date NOT NULL default '2000-01-01',wsnotes text NOT NULL,wsmult decimal(10,2) NOT NULL default '0.00',PRIMARY KEY  (wsrec),KEY wsrec (wsrec));");
+			result=stmt.executeUpdate("create table masterworksheet (wsrec int(11) NOT NULL auto_increment,wsdesc text NOT NULL, wsdate date NOT NULL default '2000-01-01',wsnotes text NOT NULL,wsmult decimal(10,2) NOT NULL default '0.00',wsmultlab decimal(10,2) NOT NULL default '0.00',wsmultsub decimal(10,2) NOT NULL default '0.00',PRIMARY KEY  (wsrec),KEY wsrec (wsrec));");
 
-			result=stmt.executeUpdate("CREATE TABLE masterwsitem ( wsrec int(11) NOT NULL default '0',itemrec int(11) NOT NULL auto_increment,item text NOT NULL,keycode text NOT NULL,quantity int(11) NOT NULL default '0',cost decimal(10,2) NOT NULL default '0.00',laborhours int(11) NOT NULL default '0',  laborcost decimal(10,2) NOT NULL default '0.00',shophours int(11) NOT NULL default '0',UNIQUE KEY itemrec_2 (itemrec),KEY itemrec (itemrec));");
+			result=stmt.executeUpdate("CREATE TABLE masterwsitem ( wsrec int(11) NOT NULL default '0',itemrec int(11) NOT NULL auto_increment,item text NOT NULL,keycode text NOT NULL,quantity int(11) NOT NULL default '0',cost decimal(10,2) NOT NULL default '0.00',laborhours int(11) NOT NULL default '0',  laborcost decimal(10,2) NOT NULL default '0.00',shophours int(11) NOT NULL default '0' , subcost decimal(10,2) NOT NULL default '0.00',UNIQUE KEY itemrec_2 (itemrec),KEY itemrec (itemrec));");
 
 // Get Master Worksheet Items
                 Vector vw;

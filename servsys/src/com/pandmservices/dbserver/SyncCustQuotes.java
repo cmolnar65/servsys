@@ -81,7 +81,7 @@ String ID=null;
 
 			String acolumns= new String("quotenum");
 			String tqnotes = qnotes.replaceAll("'","''");
-	       int recordset = stmtu.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync,combineopts) Values ('"+remotecrecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"','"+combineopts+"')",keyColumn);
+	       int recordset = stmtu.executeUpdate("INSERT INTO quotes (crecnum, qdate, qdescription, qpayterms, qnotes, qdisc, qadditionalserv, status, solddate, antstart, custsite, sitenum, techid, servsync,combineopts, jobnum) Values ('"+remotecrecnum+"','" +qdate+ "','" +qdescription+ "','"+qpayterms+"','"+tqnotes+"', '"+qdisc+"','"+qadditionalserv+"', '"+qstatus+"', '"+solddate+"', '"+antstart+"', '"+custsite +"','"+sitenum +"','"+techid +"', '"+servsync+"','"+combineopts+"','"+jobnum+"')",keyColumn);
 
 		ResultSet rsKeyColumn = stmtu.getGeneratedKeys(); 
 		if(rsKeyColumn.next()) { // ADD THIS LINE! IMPORTANT! 

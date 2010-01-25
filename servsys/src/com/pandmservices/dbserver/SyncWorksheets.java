@@ -25,6 +25,7 @@ public class SyncWorksheets
 	private String custsite=null;
 	private String sitenum=null;
 	private String techid=null;
+	private String wsnotes=null;
 	private String remotecrecnum=null;
 	private int custnum=0;
 	private int servsync;
@@ -33,6 +34,8 @@ public class SyncWorksheets
         private String wsdate=null;     //default value to null
         private String wsdesc=null;     //default value to null
         private String wsmult=null;
+        private String wsmultlab=null;
+        private String wsmultsub=null;
 
  
 
@@ -80,7 +83,10 @@ public class SyncWorksheets
                 this.wsrec = rs2.getInt("wsrec");
                 this.crec = rs2.getInt("crec");
                 this.wsmult = rs2.getString("wsmult");
+                this.wsmultlab = rs2.getString("wsmultlab");
+                this.wsmultsub = rs2.getString("wsmultsub");
                 this.wsdate = rs2.getString("wsdate");
+		this.wsnotes = rs2.getString("wsnotes");
                 this.wsdesc = rs2.getString("wsdesc");
 		this.custsite=rs2.getString("custsite");
 		this.sitenum=rs2.getString("sitenum");
@@ -108,8 +114,8 @@ String ID=null;
 
 			String acolumns= new String("quotenum");
 			///String tqnotes = qnotes.replaceAll("'","''");
-System.out.println("\nINSERT INTO worksheet (crec, wsdate, wsdesc, wsmult) Values ('"+remotecrecnum+"','" +wsdate+ "','" +wsdesc+ "', '"+wsmult+"')\n");
-int recordset=stmtu.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult) Values ('"+remotecrecnum+"','" +wsdate+ "','" +wsdesc+ "', '"+wsmult+"')",keyColumn);
+System.out.println("\nINSERT INTO worksheet (crec, wsdate, wsdesc, wsmult, wsmultlab, wsmultsub) Values ('"+remotecrecnum+"','" +wsdate+ "','" +wsdesc+ "', '"+wsmult+"')\n");
+int recordset=stmtu.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, wsmult, wsmultlab, wsmultsub, wsnotes) Values ('"+remotecrecnum+"','" +wsdate+ "','" +wsdesc+ "', '"+wsmult+"', '"+wsmultlab+"', '"+wsmultsub+"', '"+wsnotes+"')",keyColumn);
 		ResultSet rsKeyColumn = stmtu.getGeneratedKeys(); 
 		if(rsKeyColumn.next()) { // ADD THIS LINE! IMPORTANT! 
      		ID = rsKeyColumn.getString(1); 
@@ -133,11 +139,13 @@ int recordset=stmtu.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, 
                 int laborhours = tp.getWsLaborHours();
                 int shophours = tp.getWsShopHours();
                 double laborcost = tp.getWsLaborCost();
+                double subcost = tp.getWsSubCost();
 		String scost=""+cost+"";
+		String ssubcost=""+subcost+"";
 		String slaborcost=""+laborcost+"";
 			String titem = item.replaceAll("'","''");
 
-	UniWsItems.AddItem(conu,Integer.parseInt(ID),titem,keycode,quantity,scost,laborhours,slaborcost,shophours);
+	UniWsItems.AddItem(conu,Integer.parseInt(ID),titem,keycode,quantity,scost,laborhours,slaborcost,shophours,ssubcost);
 
 		}
 
