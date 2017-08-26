@@ -886,7 +886,8 @@ if (!action.equalsIgnoreCase("vinspectprint")) {
 			//NO NATE ID - DO NOT PRINT NATE INFO
 			} else {
 	mbody=combinestring(mbody,"<tr><td> ");
-	mbody=combinestring(mbody,"<IMG SRC=\"http://127.0.0.1:8080/servsys/natelogo.gif\" NAME=\"NateLogo\" ALIGN=LEFT WIDTH=60 HEIGHT=60 BORDER=0><BR CLEAR=LEFT>");
+        //NEED TO MAKE THIS CONFIGURABLE
+	mbody=combinestring(mbody,"<IMG SRC=\"http://192.168.2.225:8080/servsys/natelogo.gif\" NAME=\"NateLogo\" ALIGN=LEFT WIDTH=60 HEIGHT=60 BORDER=0><BR CLEAR=LEFT>");
 	mbody=combinestring(mbody,"</td>");
                         if (custtype.equalsIgnoreCase("T")) {
 

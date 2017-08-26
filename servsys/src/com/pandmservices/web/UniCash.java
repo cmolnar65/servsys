@@ -2441,7 +2441,9 @@ String thismainserver=doGetThisMainServer();
 		conu.close();
 	} else 
 	{
-		out.println("<center><h3>You are on main database server</h3>");
+            doMHeader(req, res, out, session, username);
+            out.println("<center><h3>You are on main database server</h3>");
+                
 	}
 	out.println("</font></html>");
 	out.println("</td></tr><tr><td>");
@@ -19979,7 +19981,8 @@ out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</
 			//NO NATE ID - DO NOT PRINT NATE INFO
 			} else {
 	out.println("<tr><td> ");
-	out.println("<IMG SRC=\"http://127.0.0.1:8080/servsys/natelogo.gif\" NAME=\"NateLogo\" ALIGN=LEFT WIDTH=60 HEIGHT=60 BORDER=0><BR CLEAR=LEFT>");
+        // NEED TO FIX THIS AND MAKE THIS CONFIGURABLE
+	out.println("<IMG SRC=\"http://192.168.2.225:8080/servsys/natelogo.gif\" NAME=\"NateLogo\" ALIGN=LEFT WIDTH=60 HEIGHT=60 BORDER=0><BR CLEAR=LEFT>");
 	out.println("</td>");
                         if (custtype.equalsIgnoreCase("T")) {
 
