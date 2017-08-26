@@ -8,6 +8,11 @@
             <properties/>
             <folders>
                 <source-folder>
+                    <label>.</label>
+                    <type>doc_root</type>
+                    <location>.</location>
+                </source-folder>
+                <source-folder>
                     <label>src</label>
                     <type>java</type>
                     <location>src</location>
@@ -16,11 +21,6 @@
                     <label>dist</label>
                     <type>java</type>
                     <location>dist</location>
-                </source-folder>
-                <source-folder>
-                    <label>.</label>
-                    <type>doc_root</type>
-                    <location>.</location>
                 </source-folder>
             </folders>
             <ide-actions>
@@ -41,8 +41,17 @@
                     <target>compile</target>
                 </action>
             </ide-actions>
+            <export>
+                <type>folder</type>
+                <location>dist</location>
+                <build-target>jar</build-target>
+            </export>
             <view>
                 <items>
+                    <source-folder style="tree">
+                        <label>Web Pages</label>
+                        <location>.</location>
+                    </source-folder>
                     <source-folder style="packages">
                         <label>src</label>
                         <location>src</location>
@@ -50,10 +59,6 @@
                     <source-folder style="packages">
                         <label>dist</label>
                         <location>dist</location>
-                    </source-folder>
-                    <source-folder style="tree">
-                        <label>Web Pages</label>
-                        <location>.</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -67,11 +72,13 @@
                     <ide-action name="rebuild"/>
                 </context-menu>
             </view>
+            <subprojects/>
         </general-data>
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src</package-root>
                 <classpath mode="compile">../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/activation.jar;../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/mail.jar;../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/mysql-connector-java-3.1.6-bin.jar</classpath>
+                <built-to>dist</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>

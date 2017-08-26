@@ -33,6 +33,7 @@ public class SyncCustWorksheets
         private String wsdate=null;     //default value to null
         private String wsdesc=null;     //default value to null
         private String wsmult=null;
+        private String subcost=null;
 
  
 
@@ -107,7 +108,7 @@ int recordset=stmtu.executeUpdate("INSERT INTO worksheet (crec, wsdate, wsdesc, 
 		String slaborcost=""+laborcost+"";
 			String titem = item.replaceAll("'","''");
 
-	UniWsItems.AddItem(conu,Integer.parseInt(ID),titem,keycode,quantity,scost,laborhours,slaborcost,shophours);
+	UniWsItems.AddItem(conu,Integer.parseInt(ID),titem,keycode,quantity,scost,laborhours,slaborcost,shophours,subcost);
 
 		}
 
