@@ -77,7 +77,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/activation.jar;../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/mail.jar;../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/mysql-connector-java-3.1.6-bin.jar</classpath>
+                <classpath mode="compile">../../../../../Program Files/Apache Software Foundation/Tomcat 5.5/common/lib/activation.jar:/Users/cmolnar/code/CLASSPATH/mysql-connector-java-5.1.11-bin.jar</classpath>
                 <built-to>dist</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
