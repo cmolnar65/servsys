@@ -2395,9 +2395,10 @@ private void doSaveInvQuantTransEntry(HttpServletRequest req, HttpServletRespons
 
 	out.println("<table><tr><td>");
 // Stats to date (since beginning of year) from timesheet summary
-String thismainserver=doGetThisMainServer();
-
-		if (!thismainserver.equalsIgnoreCase("yes")) {
+//String thismainserver=doGetThisMainServer();
+//COMMENTED OUT THE MAIN DATABASE SERVER STUFF - NEED TO ASSUME ALL WORKING IN THE CLOUD
+		//if (!thismainserver.equalsIgnoreCase("yes")) {
+                doMHeader(req, res, out, session, username);
 	out.println("<h4>Your Statistics Year To Date</h4>");
 	out.println("<table border=1 width=\"95%\" align=\"left\">");
 	out.println("<th>Call Type</th><th>Count</th><th>Total Collected</th><th>Non-Commision<br>Billed</th><th>Commision<br>Billed</th><th>Commision</th><th>Time</th><th>Time Without Travel</th>");
@@ -2411,7 +2412,7 @@ String thismainserver=doGetThisMainServer();
 			conu = DriverManager.getConnection(protocol+":"+subProtocol+"://"+server+"/"+database+"?autoReconnect=true", user, pass);
 		doOpenConnection();
 		Statement stmt = conu.createStatement();
-	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where tdate>'2005-09-30' group by ctype;");
+	ResultSet rs = stmt.executeQuery("select ucase(ctype) as ctype, count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where tdate>'2017-01-01' group by ctype;");
 		while(rs.next())
 		{
 			String tamount =rs.getString("amount"); 
@@ -2424,7 +2425,7 @@ String thismainserver=doGetThisMainServer();
 			String timenotravel=rs.getString("time_no_travel");
 	out.println("<tr><td>"+ctype+"</td><td>"+callcount+"</td><td>"+tamount_collected+"</td><td>"+tamount+"</td><td>"+tcamount+"</td><td>"+tcommision+"</td><td>"+timewithtravel+"</td><td>"+timenotravel+"</td></tr>");
 		}
-	rs = stmt.executeQuery("select count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where tdate>'2005-09-30';");
+	rs = stmt.executeQuery("select count(tsid) as callcount, sum(amount) as amount, sum(amount_collected) as amount_collected, sum(camount) as camount, sum(commision) as commision,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,dispatch_time))))) as time_with_travel,  ucase(SEC_TO_TIME(sum(TIME_TO_SEC(subtime(time_out,time_in))))) as time_no_travel from time_sheet where tdate>'2017-01-01';");
 		while(rs.next())
 		{
 			String tamount =rs.getString("amount"); 
@@ -2439,12 +2440,12 @@ String thismainserver=doGetThisMainServer();
 
 	out.println("</table>");
 		conu.close();
-	} else 
-	{
-            doMHeader(req, res, out, session, username);
-            out.println("<center><h3>You are on main database server</h3>");
-                
-	}
+	//} else 
+	//{
+        //    doMHeader(req, res, out, session, username);
+        //    out.println("<center><h3>You are on main database server</h3>");
+        //        
+	//}
 	out.println("</font></html>");
 	out.println("</td></tr><tr><td>");
 
@@ -4823,24 +4824,6 @@ private void doEditResPsForm(HttpServletRequest req, HttpServletResponse res, Pr
 private void doLoginAdminUser(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String next_page, String username)
                 throws Exception
         {
-	/* out.println("<html>");
-	out.println("<head>");
-	out.println("<title>Login Admin User</title>");
-	out.println("</head>");
-	out.println("<h4>All admin user access is logged. You must enter valid password to procede</h4><br>");
-	out.println("<form method=\"post\" action=\""+classdir+"UniCash?action=checkadminuser\" name=\"addcust\">");
-	out.println("<table><tr><td>");
-	out.println("Password        :");
-	out.println("</td><td>");
-	out.println("<input type=\"password\" name=\"apasswd\" size=\"40\" >");
-	out.println("</td></tr><tr><td>");
-	out.println("</td></tr></table>");
-	out.println("<input type=\"hidden\" name=\"next_page\" size=\"40\" value=\""+ next_page+"\">");
-	out.println("<p> <CENTER>");
-	out.println("<INPUT TYPE=\"submit\" NAME=\"submit\" VALUE=\"Login\">");
-	out.println("<INPUT TYPE=\"reset\">");
-	out.println("</CENTER>");
-	*/
 
         res.sendRedirect(""+classdir+"UniCash?action=checkadminuser&next_page="+next_page+"");
 	}
@@ -6426,7 +6409,13 @@ private void doEditTechInfo(HttpServletRequest req, HttpServletResponse res, Pri
                 }
 
 //RELEASE_VERSION
-			vnumber = "2.53";
+			vnumber = "2.54";
+                        			if (dbvnumber.equalsIgnoreCase("2.53")) {
+			Statement stmtu2 = con.createStatement();
+			int result253z = stmtu2.executeUpdate("UPDATE version set vnumber='2.54';");
+			int result253x = stmtu2.executeUpdate("UPDATE version set vdate='2017-08-27';");
+				}
+                                                
 			if (dbvnumber.equalsIgnoreCase("2.52")) {
 			Statement stmtu2 = con.createStatement();
 			int result250z = stmtu2.executeUpdate("UPDATE version set vnumber='2.53';");
@@ -16719,7 +16708,7 @@ private void doExCustLeadForm(HttpServletRequest req, HttpServletResponse res, P
 	mbody=combinestring(mbody,"</td>");
 	mbody=combinestring(mbody,"<font size=2><td><P ALIGN=CENTER ><b>"+compname+"<br>");
 	mbody=combinestring(mbody,complogo);
-	mbody=combinestring(mbody,compaddress);
+	mbody=combinestring(mbody,compaddress+"&nbsp;&nbsp;");
 	mbody=combinestring(mbody,compphone+"</b>");
 	mbody=combinestring(mbody,"</font></td>");
 	mbody=combinestring(mbody,"</tr>");
@@ -19655,358 +19644,8 @@ out.println("</html>");
 private void doPrintCallslip(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
 	throws Exception
 {
-Format formatter;
-Calendar now = Calendar.getInstance();
-Date date = new Date();
-formatter = new SimpleDateFormat("yyyy-MM-dd");
-String s = formatter.format(date);
-int hour = now.get(Calendar.HOUR_OF_DAY); 
-int second = now.get(Calendar.SECOND);
-int year = now.get(Calendar.YEAR);
-int month = now.get(Calendar.MONTH);
-int minute = now.get(Calendar.MINUTE);
-int millisecond = now.get(Calendar.MILLISECOND);
-String tcustnum = req.getParameter("custnum");
-String action = req.getParameter("action");
-int custnum = Integer.parseInt(tcustnum);
-String tcrecnum = req.getParameter("crecnum");
-int crecnum = Integer.parseInt(tcrecnum);
-String nate_id=doGetTechInfo_nateid(username);
-int nateid=Integer.parseInt(nate_id);
- int eenum=0;
-int ecustnum=0;
-String brand=null;
-String modelnum=null;
-String serialnum=null;
-String filter=null;
-String notes=null;
-String callslip=null;
-String cdate=null;
-int equip1=0;
-int equip2=0;
-int equip3=0;
-int equip4=0;
-int frcode=0;
-String reason=null;
-String services=null;
-String recommendations=null;
-String rscheduled=null;
-String charges=null;
-String collected=null;
-int followup=0;
-String descript;
-String ccallslip;
-double quant;
-double price;
-double total;
-double totalcharge=0.00;
-int recnum;
-String cname=null;
-String address1=null;
-String address2=null;
-String city =null;
-String state=null;
-String zip=null;
-String homephone=null;
-String altphone=null;
-String cust_notes=null;
-String etype="";
-String techid="";
-String custsite=null;
-String cemail=null;
-String sitenum=null;
-String parts=null;
-	
-String tech_init = doGetTechInfo_init(username);
-String tech_name = doGetTechInfo_name(username);
-String tech_truck = doGetTechInfo_truck(username);
-
-out.println("<html><basefont size=-1>");
-out.println("<head><title>Service Invoice</title></head>");
-
-		if (!action.equalsIgnoreCase("viewpcallslip")) 
-				{
-doMHeader(req, res, out, session, username);
-				}
-Statement stmt = con.createStatement();
-ResultSet rs = stmt.executeQuery("SELECT *  FROM callslip where crecnum='"+crecnum+"' ORDER BY cdate;");
-	 while(rs.next())
-	{
-	crecnum=rs.getInt("crecnum");
-	callslip=rs.getString("callslip");
-	custsite=rs.getString("custsite");
-	sitenum=rs.getString("sitenum");
-	techid=rs.getString("techid");
-	cdate=rs.getString("cdate");
-	equip1=rs.getInt("equip1");
-	equip2=rs.getInt("equip2");
-	equip3=rs.getInt("equip3");
-	equip4=rs.getInt("equip4");
-	reason=rs.getString("reason");
-	services=rs.getString("services");
-	recommendations=rs.getString("recommendations");
-	rscheduled=rs.getString("rscheduled");
-	charges=rs.getString("charges");
-	collected=rs.getString("collected");
-//	notes=rs.getString("notes");
-						notes="";		
-		Vector vcn;
-		vcn = CallslipNotes.getAllItems(con,custsite, sitenum, callslip);
-		if (vcn.size() > 0 ) {
-		notes=combinestring(notes,"<table border=1 width=100%>");
-		notes=combinestring(notes,"<th>Date</th><th>User</th><th>Note</th>");
-		String note="";
-		String ndate="";
-		String ncallslip="";
-		String nuserlogin="";
-		String nnote="";
-		int nrecnum=0;
-		int nservsync=0;
-                for (int icn = 0 ; icn < vcn.size(); icn++)
-                {
-                CallslipNotes tcn = (CallslipNotes) vcn.elementAt(icn);
-		nnote=tcn.getNote();
-		ncallslip=tcn.getCallslip();
-		nuserlogin=tcn.getUserLogin();
-		nrecnum=tcn.getRecNum();
-		ndate=tcn.getNDate();
-		nservsync=tcn.getServsync();
-                notes=combinestring(notes,"<tr><td>"+ndate+"</td><td>"+nuserlogin+"</td><td>"+nnote+"</td></tr>");
-		}
-			notes=combinestring(notes,"</table>");
-		}
-	parts = rs.getString("parts");
-	followup=rs.getInt("followup");
-}
-out.println("<br><font size=2>");
-out.println("<table border=0 width=\"95%\" align=\"center\"><td width=\"30%\">");
-out.println("<b align=Left>Service Invoice:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;Call Slip: "+callslip+"<br>&nbsp;&nbsp;&nbsp;&nbsp;Call Date: "+doFormatDate(getDate(cdate))+"<br><br>");
-out.println("</td>");
-
-
-                Vector vc;
-                vc = UniCustomer.getIndItem(con, custnum);
-                int counter=0;
-                String custtype = null;
-                for (int ic = 0 ; ic < vc.size(); ic++)
-                {
-                        UniCustomer tc = (UniCustomer) vc.elementAt(ic);
-                        custtype = tc.getCustType();
-			cname=tc.getCustomerName();
-			address1=tc.getAddress1();
-			address2=tc.getAddress2();
-			city =tc.getCity();
-			state=tc.getState();
-			zip=tc.getZip();
-			homephone=tc.getHomePhone();
-			altphone=tc.getAltPhone();
-			cust_notes=tc.getCustomerNotes();
-			custsite=tc.getCustSite();
-			sitenum=tc.getSiteNum();
-			cemail=tc.getCEmail();
-		}	
-
-out.println("<td width=\"30%\">");
-out.println("<b>Customer:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;"+cname+"<br>&nbsp;&nbsp;&nbsp;&nbsp;"+address1+"<br>&nbsp;&nbsp;&nbsp;&nbsp;"+city+","+state+"<br>&nbsp;&nbsp;&nbsp;"+cemail+"");
-out.println("</td>");
-
-out.println("<td width=\"30%\">");
-out.println("Customer Number / Site:&nbsp;&nbsp;&nbsp;"+custsite+"&nbsp;/&nbsp;"+sitenum+"<br>Home Phone:&nbsp;&nbsp;&nbsp;"+homephone+"<br>Alt. Phone:&nbsp;&nbsp;&nbsp;"+altphone+"");
-out.println("</td>");
-
-out.println("</table>");
-
-out.println("<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parts Used</h4>");
-out.println("<table width=\"95%\" align=\"center\" border=1>");
-out.println("<font size=1>");
-out.println("<th>Key</th><th>Part</th><th>Quantity</th><th>Date</th><th>Location</th>");
-Vector ci;
-ci = InvUse.getAllCallslipItems(con, callslip, cdate);
-for (int cc = 0 ; cc < ci.size(); cc++)
-{
-	InvUse ti = (InvUse) ci.elementAt(cc);
-	String keycode = ti.getKeyCode();
-	String itemname = ti.getItemName();
-	String pquant = ti.getQuantity();
-	String invloc = ti.getInvLoc();
-	String idate = doFormatDate(getDate(ti.getTDate()));
-	out.println("<tr><td>"+keycode+"</td><td>"+itemname+"</td><td>"+pquant+"</td><td>"+idate+"</td><td>"+invloc+"</td></tr>");
-	}
-
-	out.println("</font>");
-	out.println("</table>");
-
-	out.println("<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equipment</h4>");
-	out.println("<table width=\"95%\" align=\"center\" border=1>");
-	out.println("<font size=1>");
-stmt = con.createStatement();
-rs = stmt.executeQuery("SELECT * FROM  equipment where enum='"+equip1+"' or enum='"+equip2+"' or enum='"+equip3+"' or enum='"+equip4+"';");
-out.println("<th>Type</th><th>Brand</th><th>Model</th><th>Serial</th><th>Filter</th><th>Notes</th>");
-	 while(rs.next())
-	{
-	brand = rs.getString("brand");
-	modelnum = rs.getString("modelnum");
-	serialnum = rs.getString("serialnum");
-	filter = rs.getString("filter");
-	notes = rs.getString("notes");
-// Add type here
-	etype = rs.getString("etype");
-if (etype==null) { 
-	etype = "-";
-	}
-
-out.println("<tr><td>"+etype+"</td><td>"+brand+"</td><td>"+modelnum+"</td><td>"+serialnum+"</td><td>"+filter+"</td><td>"+notes+"</tr>");
-	}
-	out.println("</font>");
-	out.println("</table>");
-
-/////////////////////////////////////
-//Completion Codes Here
-////////////////////////////////////
-
-Vector r = UniSvcCompl.getAllItems(con,callslip);
-if ((r.size()>0) )
-		{
-	out.println("<br><table border=0 width=95% align=\"center\"><font size=1><tr><td><h4>Resolution</h4></td></tr>");
-        out.println("<tr><td><table border=1 width=100% align=\"center\"><font size=1>");
-        out.println("<th>Code</th><th>Resolution</th>");
-		
-                for (int i = 0 ; i < r.size(); i++)
-                {
-                UniSvcCompl t = (UniSvcCompl) r.elementAt(i);
-		int corecnum=t.getRecnum();
-		int codenum=t.getCodeNum();
-		String complcode=t.getComplCode();
-		String compltext=t.getComplText();
-		out.println("<tr><td>"+complcode+"</td><td>"+compltext+"</td><tr>");
-		}
-	out.println("</table></td></tr></table>");
-		}
-
-		
-		out.println("<font size=1>");
-		out.println("<table width=\"95%\" size=\"95%\" align=\"center\" border=1 height=5>");
-		out.println("<font size=1");
-if ((services!=null)||(recommendations!=null)||(rscheduled!=null)||(notes!=null)) {
-		out.println("<br>");
-		out.println("<table width=\"95%\" size=\"95%\" align=\"center\" border=1>");
-		out.println("<font size=1>");
-		if (services.length()>1) {
-		out.println("<tr><td><h4>Services</h4></td></tr><tr><td>"+services+"");
-		out.println("</td></tr>");
-		}
-
-		if (recommendations.length()>1) {
-		out.println("<P></P><br>");
-		out.println("<tr><td><h4>Our Trained Technician Recommends</h4></td></tr><tr><td>"+recommendations+"");
-		out.println("<table><font size=1><tr><td>Customer Accepts Recomendations</td><td>______________</td><td>Customer Declines Recommendations</td><td>________________</td></tr></font></table></tr>");
-		out.println("</td></tr>");
-		}
-	
-		if (rscheduled.length()>1) {
-		out.println("<tr><td><h4>Repair Scheduled</h4></td></tr><tr><td>"+rscheduled+"");
-		out.println("</td></tr>");
-		}
-		if (parts==null) {
-			parts="-";
-		}
-		if (parts.length()>1) {
-		out.println("<tr><td><h4>Parts Needed</h4></td></tr><tr><td>"+parts+"");
-		out.println("</td></tr>");
-			}
-		if ((notes.length()>1)&&action.equalsIgnoreCase("viewpcallslip")) {
-		out.println("<tr><td><h4>THESE NOTES ARE NOT GIVEN TO CUSTOMER!!!</h4></td></tr><tr><td>"+notes+"");
-		out.println("</td></tr>");
-			}
-	out.println("</font>");
-	out.println("</table>");
-	out.println("");
-	}
-        Vector v;
-        v = UniSvcCharges.getAllItems(con,callslip);
-	if ((v.size()>0)) {
-	out.println("<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Charges</h4>");
-        out.println("<table border=1 width=95% align=\"center\">");
-		out.println("<font size=1>");
-        out.println("<th>Code</th><th>Quantity</th><th>Description</th><th>Price</th><th>Sub Total</th>");
-		
-                for (int i = 0 ; i < v.size(); i++)
-                {
-                UniSvcCharges t = (UniSvcCharges) v.elementAt(i);
-		recnum=t.getRecnum();
-		callslip=t.getCallslip();
-		quant=t.getQuant();
-		descript=t.getDescript();
-		price=t.getPrice();
-		frcode = t.getFrcode();
-		total=t.getTotal();
-		totalcharge=totalcharge+total;
-                out.println("<tr><td>"+frcode+"</td><td>"+quant+"</td><td>"+descript+"</td><td>"+NumberFormat.getCurrencyInstance().format(price)+"</td><td>"+NumberFormat.getCurrencyInstance().format(total)+"</td></tr>");
-		}
-	out.println("</font>");
-        out.println("</table>");
-		}
-	out.println("</font>");
-	out.println("<table width=\"95%\" align=\"center\">");
-	out.println("<font size=1>");
-	out.println("<tr>");
-	String itech_name = doGetTechInfo_name(techid);
-	out.println("<P></p><br><br>");
-	if (totalcharge>0) {
-		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>"+NumberFormat.getCurrencyInstance().format(totalcharge)+"</b></td>");
-
-	} else {
-		out.println("<td>____________________________________</td><td>"+itech_name+"</td><td>Amount Due</td><td><b>_________________</b></td>");
-	}
-out.println("</tr><tr><td><h5>Customer Signature</h5></td><td><h5>Service Tech</h5></td><td>Amount Paid</td><td>_________________</td></tr></font></table>");
-
-// Put the discount information in here...
-
-		if (!action.equalsIgnoreCase("viewpcallslip")) 
-				{
-	out.println("<table width=\"95%\" align=\"center\">");
-	out.println("<font size=1>");
-                        if (nateid==0) {
-                        if (custtype.equalsIgnoreCase("T")) {
-
-		out.println("<tr><td></td><td><b>Please ask our technician how you could save money on this call with a Planned Service Agreement!</b></td></tr>");
-                        }
-			else if (custtype.equalsIgnoreCase("F")) {
-
-		out.println("<tr><td></td><td><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-                        else {
-		out.println("<tr><td></td><td><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-			//NO NATE ID - DO NOT PRINT NATE INFO
-			} else {
-	out.println("<tr><td> ");
-        // NEED TO FIX THIS AND MAKE THIS CONFIGURABLE
-	out.println("<IMG SRC=\"http://192.168.2.225:8080/servsys/natelogo.gif\" NAME=\"NateLogo\" ALIGN=LEFT WIDTH=60 HEIGHT=60 BORDER=0><BR CLEAR=LEFT>");
-	out.println("</td>");
-                        if (custtype.equalsIgnoreCase("T")) {
-
-		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Please ask our technician how you could save money on this call with a Planned Service Agreement!</b></td></tr>");
-                        }
-			else if (custtype.equalsIgnoreCase("F")) {
-
-		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Thank you for calling "+doGetCompanyName()+"</td></tr>");
-			}
-                        else {
-		out.println("<td>Your Service Technician is NATE Certified - ID: "+nate_id+"<br><b>Thank you for calling "+doGetCompanyName()+"</b> </td></tr>");
-			}
-			}
-			}
-out.println("</font></table>");
-
-out.println("</body>");
-out.println("</html>");
-	
+		String mbody=ServsysPrintCallslip.getIndividualItem (con, req,res, out, session, username, classdir); 
 		con.close();
-		if (action.equalsIgnoreCase("viewpcallslip")) 
-				{
-                out.println("<br><br><a href="+classdir+"UniCash?action=showcustdetail&csection=2&custnum="+custnum+">Click here to continue</a>");
-				}
 }
 
 
@@ -29764,147 +29403,9 @@ private void doAddCallslip(HttpServletRequest req, HttpServletResponse res, Prin
 private void doPrintServProposal(HttpServletRequest req, HttpServletResponse res, PrintWriter out, HttpSession session, String username)
                 throws Exception
                         {
-		String tcustnum = req.getParameter("custnum");
-		String tcontnum = req.getParameter("propnum");
-       		 int custnum = Integer.parseInt(tcustnum);
-       		 int propnum = Integer.parseInt(tcontnum);
-               int eenum=0;
-                int ecustnum=0;
-                String brand=null;
-                String modelnum=null;
-                String serialnum=null;
-                String filter=null;
-                String enotes=null;
-                String type=null;
-
-                int enum1 =0;
-                int enum2 = 0;
-                int enum3 = 0;
-                int enum4 = 0;
-                int enum5 = 0;
-                int enum6 = 0;
-                int enum7 = 0;
-                int enum8 = 0;
-                int enum9 = 0;
-                int enum10 =0;
-                String aservice  = null;
-                String startdate = null;
-                String enddate = null;
-                String term = null;
-                String cost = null;
-                String notes = null;
-                String agrdate = null;
-                int vperyear = 0;
-
-		String cname=null;
-		String address1=null;
-		String address2=null;
-		String city =null;
-		String state=null;
-		String zip=null;
-		String homephone=null;
-		String altphone=null;
-		String cust_notes=null;
-		
-		String tech_init = doGetTechInfo_init(username);
-		String tech_name = doGetTechInfo_name(username);
-		String tech_truck = doGetTechInfo_truck(username);
-
-                String qdate  = null;
-                String qdescription  = null;
-                String qpayterms  = null;
-                String qnotes  = null;
-                String qadditionalserv  = null;
-		int qpartnum=0;
-		String itemname=null;
-		String mannum=null;
-		int itemquant=0;
-		int itemnum=0;
-		int counter = 0;
-		double totinvestment=0.00;
-		String investment=null;
-		double qtotal=0.00;
-                Vector vv;
-                vv = ServQuotes.getIndItem(con,custnum,propnum);
-		counter=0;
-                for (int i = 0 ; i < vv.size(); i++)
-                {
-                ServQuotes tt = (ServQuotes) vv.elementAt(i);
-		qdate=tt.getQDate();
-		qdescription=tt.getQDescription();
-		qnotes=tt.getQNotes();
-		qpayterms=tt.getQPayterms();
-		qadditionalserv=tt.getQAdditionalServ();
-	}
-
- 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM customers where custnum="+tcustnum+"");
-		 while(rs.next())
-        	        {
-			cname=rs.getString("cname");
-			address1=rs.getString("address1");
-			address2=rs.getString("address2");
-			city =rs.getString("city");
-			state=rs.getString("state");
-			zip=rs.getString("zip");
-			homephone=rs.getString("homephone");
-			altphone=rs.getString("altphone");
-			cust_notes=rs.getString("cust_notes");
-			}
-
-	
-	out.println("<html><head><title>Service Proposal</title>");
-	doStyleSheet(req, res, out, session, username);
-	out.println("</head><body>");
-	doMHeader(req, res, out, session, username); 
-	out.println("<h4 align=CENTER>HVAC REPAIR PROPOSAL</h4>");
-	out.println("<P ALIGN=LEFT>"+doFormatDate(getDate(qdate))+"<table><tr>");
-	out.println("<td>Customer:</td><td>"+cname+" </td></tr> ");
-	out.println("<tr><td></td><td>"+address1+" "+ address2+"<br>"+city+", "+state+"  "+zip+" </td></tr>");
-	out.println("<tr><td></td><td></td></tr>");
-	out.println("</table></p> ");
-	out.println("<p>Re: "+qdescription+".<br>");
-	out.println("<br>"+doGetCompanyName()+", recommends the following repairs for your property located at "+address1+", "+city+". These repairs are for your comfort, safety, and peace of mind.<br>");
-	out.println("<br>We suggest the Following Repairs:<br>");
-	out.println("<ul>");
-	
-                Vector vp;
-                vp = ServQuoteParts.getAllItems(con,propnum);
-                for (int j = 0 ; j < vp.size(); j++)
-                {
-                ServQuoteParts tp = (ServQuoteParts) vp.elementAt(j);
-		qpartnum=tp.getQPartnum();
-		itemname=tp.getItemName();
-		mannum=tp.getManNum();
-		itemquant=tp.getItemQuant();
-		investment=tp.getInvestment();
-		qtotal=tp.getQuoteTotal();
-		double subtot=Double.parseDouble(tp.getInvestment())*itemquant;
-		totinvestment=totinvestment+subtot;
-	out.println("<li>"+itemquant+" - "+itemname+"; "+mannum+".............."+NumberFormat.getCurrencyInstance().format(subtot)+"</li>");
-		}
-	
-	out.println("</ul>");
-	out.println("");
-
-	 Locale[] locales = NumberFormat.getAvailableLocales();
-	  double myNumber = totinvestment;
-	   NumberFormat form;
-	   form = NumberFormat.getIntegerInstance(locales[1]);
-	out.println("<p align=\"right\">Total Investment: "+NumberFormat.getCurrencyInstance().format(form.parse(form.format(myNumber)))+"<br></p>");
-	out.println("<br>");
-	out.println("Pricing does include labor and these prices are subject to change without notice unless accepted within thirty (30) calendar days from the date of this contract.<br><br>");
-	out.println(""+doGetCompanyName()+" will coordinate the scheduling of the project with you as soon as you approve the work.<br><br>Please review, and if you have any questions feel free to contact me.<br><br>");
-
-	out.println("<br><br><p align=center><b>Acceptance of Proposal</b></p>");
-	out.println("The above prices, specifications and conditions are satisfactory and are hereby accepted.  You are authorized to do the work as specified.  Payment will be made upon completion of the work.<br><br>");
-	out.println("</p><table width=\"95%\" align=center><tr><td>____________________________</td><td>_______</td><td>____________________________</td><td>_______</td></tr> ");
-	out.println("<tr><td>Customer Signature</td><td>Date</td><td>"+doGetCompanyName()+"</td><td>Date</td></tr> ");
-	out.println("<tr><td>"+cname+"</td><td></td><td>"+tech_name+"</td><td></td></tr></table> ");
-
-	out.println("<br><br><h3>\"100% MONEY BACK GUARANTEE\"</h3><br>");
+			String mbody=ServsysPrintServProposal.getIndividualItem (con, req,res, out, session, username, classdir); 
 		con.close();
+	                           
     }
-
 
 }//UniCash
