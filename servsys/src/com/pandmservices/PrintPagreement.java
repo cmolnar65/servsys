@@ -6,6 +6,7 @@ import java.lang.String;
 import java.sql.*;
 import com.pandmservices.core.*;
 import com.pandmservices.web.*;
+import static com.pandmservices.web.UniCash.combinestring;
 import java.lang.*;
 import java.util.*;
 import java.util.Vector;
@@ -204,6 +205,20 @@ public class PrintPagreement
 	//
 	// 
 
+        //////////////////////////////////////////////////////
+// Print Header Information
+/////////////////////////////////////////////////////
+
+	//mbody=combinestring(mbody,"<html><basefont size=2>");
+        mbody=combinestring(mbody,"<html>");
+        mbody=combinestring(mbody,"<style type=\"text/css\"><!-- body,table { color: #000000; background-color: #ffffff; margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; font-size: .9em; font-family: Arial, Helvetica, sans-serif; } ");
+	mbody=combinestring(mbody," .tableoffcolor { font-family: Arial, Helvetica, sans-serif; font-size: 1em; background-color: #A0B8C8; height: auto; width: auto; margin: 1em; padding: 1em; border: thin solid; } ");
+	mbody=combinestring(mbody," .tableoffcolor2 { font-family: Arial, Helvetica, sans-serif; font-size: 1em; background-color: #grey; height: auto; width: auto; margin: 1em; padding: 1em; border: thin solid; } ");
+	mbody=combinestring(mbody,"--> </style>");
+	mbody=combinestring(mbody,"<title>Preventative Agreement</title></head><body>");
+	//mbody=doMHeaderString(req, res, out, session, username, mbody);
+
+        
 	mbody = UniCash.combinestring(mbody,psform);
 
 	// Form is now in mbody
