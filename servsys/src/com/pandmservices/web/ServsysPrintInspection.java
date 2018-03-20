@@ -3,7 +3,6 @@
  *
  * Created on March 24, 2006, 6:42 PM
  */
-
 package com.pandmservices.web;
 import java.util.Date;
 import java.math.*;
@@ -267,9 +266,11 @@ public class ServsysPrintInspection extends UniCash
 // Print Header Information
 /////////////////////////////////////////////////////
 
-	mbody=combinestring(mbody,"<html><basefont size=2>");
+	//mbody=combinestring(mbody,"<html><basefont size=2>");
+        mbody=combinestring(mbody,"<html>");
 	if (!action.equalsIgnoreCase("vinspectprint")) {
-	mbody=combinestring(mbody,"<head><title>Inspection Report</title></head><body>");
+        mbody=doStyleSheetString(req, res, out, session, username,mbody);
+	mbody=combinestring(mbody,"<title>Inspection Report</title></head><body>");
 	mbody=doMHeaderString(req, res, out, session, username, mbody);
 			}
 
