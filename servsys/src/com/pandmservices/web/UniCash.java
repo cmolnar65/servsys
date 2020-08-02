@@ -4909,7 +4909,7 @@ out.println("</TABLE>");
 out.println("</BODY>");
 out.println("</HTML>");
 out.println("<br><br><br><br><CENTER>");
-out.println("(C) Copyright 2002-2018 - Christopher Molnar<br>");
+out.println("(C) Copyright 2002-2020 - Christopher Molnar<br>");
 //out.println("<br>Version: "+doVersionInfo_VNumber()+" - Compiled: "+doFormatDate(getDate(doVersionInfo_VDate()))+"<br>");
 //out.println("<br>Software Expire Date: "+doFormatDate(getDate(doGetExpireDate()))+"<br>");
 //out.println("<br>Software Expire Date has been removed for GPL version.<br>");
